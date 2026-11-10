@@ -55,6 +55,24 @@ O script grava `relatorio.html` na raiz, pronto para abrir no navegador. Ele
 reutiliza os mesmos cartões e gráficos do dashboard; os gráficos carregam a
 biblioteca Plotly pelo CDN.
 
+## Testes e pre-commit
+
+Execute os testes unitários com:
+
+```bash
+uv run pytest
+```
+
+Para instalar o hook do repositório e executar manualmente as verificações:
+
+```bash
+uvx pre-commit install
+uvx pre-commit run --all-files
+```
+
+O arquivo `.pre-commit-config.yaml` aplica verificações de espaços, fim de
+arquivo, YAML, TOML e instruções de depuração, além de lint e formatação Ruff.
+
 O painel mostra os indicadores da operação, faturamento mensal filtrável e
 gráficos de categorias, pagamentos, estados, avaliações e concentração de
 vendedores. Os títulos dos gráficos usam o índice do SQL correspondente em

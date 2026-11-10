@@ -272,6 +272,8 @@ dependencies = [
     { name = "duckdb" },
     { name = "pandas" },
     { name = "plotly" },
+    { name = "pytest" },
+    { name = "ruff" },
     { name = "streamlit" },
 ]
 
@@ -286,6 +288,8 @@ requires-dist = [
     { name = "duckdb", specifier = ">=2.0.0" },
     { name = "pandas", specifier = ">=3.1.1" },
     { name = "plotly", specifier = ">=7.1.0" },
+    { name = "pytest", specifier = ">=9.2.0" },
+    { name = "ruff", specifier = ">=0.17.4" },
     { name = "streamlit", specifier = ">=1.67.0" },
 ]
 

@@ -6,6 +6,8 @@ dependencies = [
     "duckdb>=2.0.0",
     "pandas>=3.1.1",
     "plotly>=7.1.0",
+    "pytest>=9.2.0",
+    "ruff>=0.17.4",
     "streamlit>=1.67.0",
 ]
 
@@ -14,3 +16,13 @@ dev = [
     "pytest>=9.2.0",
     "ruff>=0.17.4",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
