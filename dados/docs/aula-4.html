@@ -1,0 +1,1641 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 4 · Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#eef1ee;
+  --surface:#f7f9f7;
+  --sunken:#e4e9e5;
+  --ink:#10171a;
+  --ink-2:#39474a;
+  --ink-3:#6b7b7c;
+  --line:#cdd6cf;
+  --accent:#1a6b52;
+  --accent-soft:#dcebe3;
+  --amber:#a86e05;
+  --amber-soft:#f6ebd2;
+  --danger:#9b3a25;
+  --code-bg:#12191c;
+  --code-ink:#dce7e0;
+  --shadow:0 1px 2px rgba(16,23,26,.06),0 8px 24px -16px rgba(16,23,26,.3);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d1214;
+    --surface:#141c1f;
+    --sunken:#1b2529;
+    --ink:#e7eee9;
+    --ink-2:#b2c0ba;
+    --ink-3:#7d8d88;
+    --line:#2a383c;
+    --accent:#4fbf94;
+    --accent-soft:#12302a;
+    --amber:#e0a800;
+    --amber-soft:#2e2510;
+    --danger:#e0805f;
+    --code-bg:#080d0f;
+    --code-ink:#cfded6;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d1214;
+  --surface:#141c1f;
+  --sunken:#1b2529;
+  --ink:#e7eee9;
+  --ink-2:#b2c0ba;
+  --ink-3:#7d8d88;
+  --line:#2a383c;
+  --accent:#4fbf94;
+  --accent-soft:#12302a;
+  --amber:#e0a800;
+  --amber-soft:#2e2510;
+  --danger:#e0805f;
+  --code-bg:#080d0f;
+  --code-ink:#cfded6;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.ui{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+a{color:var(--accent)}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;
+  grid-template-columns:262px minmax(0,1fr);
+  gap:44px;
+  max-width:1180px;
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:0 72px;
+}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+}
+
+/* ---------- sidebar ---------- */
+.side{
+  position:sticky;
+  top:0;
+  align-self:start;
+  max-height:100vh;
+  overflow-y:auto;
+  padding-block:28px 32px;
+  font-family:Archivo,sans-serif;
+  font-size:13.5px;
+}
+@media (max-width:900px){
+  .side{position:static;max-height:none;border-bottom:1px solid var(--line);margin-bottom:8px}
+}
+.side .brand{
+  font-weight:700;letter-spacing:-.01em;font-size:15px;color:var(--ink);
+  display:flex;align-items:center;gap:8px;margin-bottom:18px;
+}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--amber);flex:none}
+.prog-wrap{margin-bottom:20px}
+.prog-label{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px;
+}
+.prog-label b{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums}
+.prog-track{height:4px;background:var(--sunken);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:var(--accent);transition:width .35s ease}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+nav a{
+  display:flex;gap:9px;align-items:baseline;
+  text-decoration:none;color:var(--ink-2);
+  padding:5px 8px;border-radius:5px;line-height:1.35;
+}
+nav a:hover{background:var(--sunken);color:var(--ink)}
+nav a .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);flex:none;width:18px}
+.side-foot{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);display:flex;gap:8px}
+.tbtn{
+  font-family:Archivo,sans-serif;font-size:12px;
+  background:var(--surface);color:var(--ink-2);
+  border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;
+}
+.tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+
+/* ---------- main ---------- */
+main{padding-block:28px 0;min-width:0}
+.wrap{max-width:68ch}
+
+/* hero */
+.eyebrow{
+  font-family:Archivo,sans-serif;font-size:11.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin:0 0 14px;
+}
+h1{
+  font-size:clamp(34px,5.2vw,50px);font-weight:700;letter-spacing:-.025em;
+  line-height:1.04;margin:0 0 18px;text-wrap:balance;
+}
+.lede{font-size:20px;line-height:1.55;color:var(--ink-2);margin:0 0 26px;text-wrap:pretty}
+.facts{
+  display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:10px;
+  background:var(--surface);overflow:hidden;margin-bottom:40px;
+}
+.fact{flex:1 1 130px;padding:13px 16px;border-right:1px solid var(--line)}
+.fact:last-child{border-right:0}
+@media (max-width:560px){.fact{flex:1 1 50%;border-bottom:1px solid var(--line)}}
+.fact dt{
+  font-family:Archivo,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 3px;
+}
+.fact dd{margin:0;font-family:Archivo,sans-serif;font-weight:600;font-size:15px;color:var(--ink)}
+
+/* sections */
+section{padding-block:34px 0;scroll-margin-top:16px}
+h2{
+  font-size:13px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 6px;
+}
+.h2big{
+  font-family:Archivo,sans-serif;font-size:clamp(24px,3.4vw,31px);font-weight:700;
+  letter-spacing:-.02em;line-height:1.15;margin:0 0 16px;color:var(--ink);text-wrap:balance;
+}
+h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol.body{padding-left:20px;margin:0 0 15px}
+li{margin-bottom:6px}
+strong{font-weight:600}
+.small{font-size:15px;color:var(--ink-2)}
+
+/* pipeline diagram */
+.pipe{
+  display:flex;flex-direction:column;gap:0;margin:0 0 12px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:20px;box-shadow:var(--shadow);
+}
+.layer{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
+@media (max-width:520px){.layer{grid-template-columns:minmax(0,1fr);gap:4px}}
+.layer .tag{
+  font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  padding:5px 8px;border-radius:5px;text-align:center;
+  background:var(--sunken);color:var(--ink-2);
+}
+.layer.l-raw .tag{background:var(--sunken);color:var(--ink-2)}
+.layer.l-ref .tag{background:var(--amber-soft);color:var(--amber)}
+.layer.l-mart .tag{background:var(--accent-soft);color:var(--accent)}
+.layer .desc{font-size:15px;color:var(--ink-2)}
+.layer .desc b{color:var(--ink);font-family:Archivo,sans-serif;font-weight:600}
+.arrow{
+  display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;
+  padding:7px 0;align-items:center;
+}
+@media (max-width:520px){.arrow{grid-template-columns:minmax(0,1fr)}.arrow .stem{display:none}}
+.arrow .stem{display:flex;justify-content:center;color:var(--ink-3);font-size:14px;line-height:1}
+.arrow .what{
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);
+}
+.arrow .what em{font-style:normal;color:var(--accent);font-weight:600}
+
+/* steps */
+.step{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:22px;margin-bottom:16px;box-shadow:var(--shadow);
+}
+.step.done{border-color:var(--accent);background:var(--surface)}
+.step-head{display:flex;gap:13px;align-items:flex-start;margin-bottom:4px}
+.step-n{
+  font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  background:var(--amber-soft);color:var(--amber);
+  border-radius:6px;padding:4px 8px;flex:none;margin-top:3px;
+}
+.step.done .step-n{background:var(--accent-soft);color:var(--accent)}
+.step-title{font-family:Archivo,sans-serif;font-weight:600;font-size:20px;letter-spacing:-.01em;margin:0;line-height:1.25}
+.step-sub{font-size:14.5px;color:var(--ink-3);margin:2px 0 0;font-family:Archivo,sans-serif}
+.step-body{margin-top:14px}
+.step-body > :last-child{margin-bottom:0}
+
+/* figura / diagrama */
+.fig{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:22px 20px 16px;margin:0 0 14px;box-shadow:var(--shadow);
+}
+.fig svg{display:block;width:100%;height:auto}
+.fig-scroll{overflow-x:auto;padding-bottom:4px}
+.fig-scroll svg{min-width:660px}
+.er-scroll svg.er{min-width:780px}
+@media (min-width:901px){.er-fig{width:calc(100vw - 386px);max-width:834px}}
+td.nw{white-space:nowrap}
+.fig-cap{
+  font-size:13.5px;color:var(--ink-3);margin:14px 0 0;text-align:center;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* duas colunas comparativas */
+.versus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 16px}
+@media (max-width:620px){.versus{grid-template-columns:minmax(0,1fr)}}
+.vs-card{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:18px 20px;
+}
+.vs-card.bad{border-color:var(--danger)}
+.vs-card.good{border-color:var(--accent)}
+.vs-h{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;margin:0 0 10px;
+}
+.vs-card.bad .vs-h{color:var(--danger)}
+.vs-card.good .vs-h{color:var(--accent)}
+.vs-flow{
+  font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-2);
+  margin:0 0 12px;line-height:1.9;
+}
+.vs-card p{font-size:15px;color:var(--ink-2)}
+.vs-card p:last-child{margin-bottom:0}
+
+/* spec */
+.spec{
+  border:1px solid var(--line);border-radius:12px;background:var(--sunken);
+  padding:20px 22px;margin-bottom:16px;
+}
+.spec-h{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--amber);margin:0 0 10px;
+}
+.spec ol{margin-bottom:0}
+.spec li{margin-bottom:10px;font-size:15.5px}
+.spec li:last-child{margin-bottom:0}
+.spec-foot{
+  font-size:14.5px;color:var(--ink-3);margin:14px 0 0;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* spec colapsavel */
+details.spec-det{padding:0;margin-bottom:16px}
+details.spec-det > summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
+  margin:0;padding:16px 22px;
+}
+details.spec-det > summary::-webkit-details-marker{display:none}
+details.spec-det > summary::before{
+  content:"";width:0;height:0;flex:none;
+  border-left:5px solid currentColor;border-top:4px solid transparent;
+  border-bottom:4px solid transparent;transition:transform .15s ease;
+}
+details.spec-det[open] > summary::before{transform:rotate(90deg)}
+details.spec-det > summary:hover{background:var(--line);border-radius:12px}
+details.spec-det[open] > summary:hover{border-radius:12px 12px 0 0}
+.spec-cue{
+  margin-left:auto;font-size:10px;letter-spacing:.09em;color:var(--ink-3);
+}
+.spec-cue::after{content:"abrir"}
+details.spec-det[open] .spec-cue::after{content:"fechar"}
+details.spec-det > :not(summary){margin-left:22px;margin-right:22px}
+details.spec-det > :last-child{margin-bottom:20px}
+
+/* code */
+pre{
+  background:var(--code-bg);color:var(--code-ink);
+  border-radius:8px;padding:13px 15px;overflow-x:auto;
+  font-size:13.5px;line-height:1.6;margin:0 0 14px;
+}
+pre .c{color:#7d8d88}
+pre .ok{color:#4fbf94}
+code:not(pre code){
+  background:var(--sunken);border-radius:4px;padding:1px 5px;font-size:.87em;color:var(--ink);
+}
+.cmdlabel{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 6px;
+}
+.codewrap{position:relative}
+.copy{
+  position:absolute;top:8px;right:8px;
+  font-family:Archivo,sans-serif;font-size:11px;letter-spacing:.04em;
+  background:rgba(255,255,255,.08);color:#cfded6;
+  border:1px solid rgba(255,255,255,.16);border-radius:5px;padding:3px 8px;cursor:pointer;
+}
+.copy:hover{background:rgba(255,255,255,.16)}
+
+/* verify block */
+.verify{
+  border-left:3px solid var(--accent);background:var(--accent-soft);
+  border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 14px;
+}
+.verify .vh{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 6px;
+}
+.verify p,.verify ul{margin-bottom:0;font-size:15px}
+.note{
+  border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 14px;font-size:15px;
+}
+.note b{font-family:Archivo,sans-serif}
+.note > :last-child{margin-bottom:0}
+
+/* checkbox */
+.mark{
+  display:flex;align-items:center;gap:9px;margin-top:16px;padding-top:14px;
+  border-top:1px solid var(--line);
+  font-family:Archivo,sans-serif;font-size:14px;color:var(--ink-3);cursor:pointer;user-select:none;
+}
+.mark input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex:none}
+.step.done .mark{color:var(--accent);font-weight:600}
+
+/* aulas */
+.aulas{display:flex;flex-direction:column;gap:12px;margin-bottom:8px}
+.aula{
+  display:grid;grid-template-columns:62px minmax(0,1fr);gap:16px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:18px 20px;
+}
+@media (max-width:560px){.aula{grid-template-columns:minmax(0,1fr);gap:8px}}
+.aula .when{
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);
+  border-right:1px solid var(--line);padding-right:12px;
+}
+@media (max-width:560px){.aula .when{border-right:0;padding-right:0}}
+.aula .when b{display:block;font-size:22px;color:var(--amber);line-height:1.1;font-weight:600}
+.aula h3{margin:0 0 6px;font-size:18px}
+.aula p{font-size:15px;margin-bottom:10px;color:var(--ink-2)}
+.chal{
+  font-size:14.5px;background:var(--sunken);border-radius:7px;padding:9px 12px;color:var(--ink-2);
+}
+.chal b{font-family:Archivo,sans-serif;color:var(--ink);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+
+/* desafios */
+[hidden]{display:none!important}
+.embreve{
+  border:1px dashed var(--line);border-radius:12px;background:var(--sunken);
+  padding:16px 20px;margin:0 0 16px;font-size:15px;color:var(--ink-3);
+}
+.embreve b{font-family:Archivo,sans-serif;color:var(--ink-2)}
+.desafios{display:flex;flex-direction:column;gap:12px}
+.desafio{
+  display:grid;grid-template-columns:76px minmax(0,1fr);gap:18px;
+  border:1px solid var(--line);border-left:3px solid var(--amber);
+  border-radius:0 12px 12px 0;background:var(--surface);padding:18px 20px;
+}
+@media (max-width:560px){.desafio{grid-template-columns:minmax(0,1fr);gap:6px}}
+.desafio .de-n{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.desafio .de-n b{display:block;font-size:21px;color:var(--amber);line-height:1.1;letter-spacing:0}
+.desafio h3{margin:0 0 6px;font-size:17px}
+.desafio p{font-size:15.5px;margin-bottom:0;color:var(--ink-2)}
+.desafio p + p{margin-top:8px}
+.desafio .entrega-ex{
+  font-size:13px;color:var(--ink-3);margin-top:8px;
+}
+.desafio .entrega-ex code{font-size:12.5px;line-height:1.7}
+.desafio .entrega{
+  font-family:Archivo,sans-serif;font-size:13px;color:var(--ink-3);
+  margin-top:9px;padding-top:9px;border-top:1px solid var(--line);
+}
+
+/* clock bar */
+.clock{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:6px 0 14px;font-family:Archivo,sans-serif;font-size:11px}
+.clock span{display:flex;align-items:center;justify-content:center;color:#fff;white-space:nowrap;overflow:hidden}
+.c1{background:var(--ink-3)}
+.c2{background:var(--accent)}
+.c3{background:var(--amber)}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:0 0 16px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--line)}
+tbody tr:last-child td{border-bottom:0}
+th{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);background:var(--sunken);
+}
+td.num{text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+td.term{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink);white-space:nowrap}
+
+details{border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:12px 16px;margin-bottom:9px}
+summary{font-family:Archivo,sans-serif;font-weight:600;font-size:16px;cursor:pointer;color:var(--ink)}
+summary::marker{color:var(--ink-3)}
+details[open] summary{margin-bottom:9px}
+details p:last-child{margin-bottom:0}
+
+footer{
+  margin-top:48px;padding-top:20px;border-top:1px solid var(--line);
+  font-family:Archivo,sans-serif;font-size:13px;color:var(--ink-3);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* links laterais entre páginas */
+.side-links{display:flex;flex-direction:column;gap:2px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.side-links a{display:block;text-decoration:none;color:var(--ink-3);padding:4px 8px;border-radius:5px}
+.side-links a:hover{background:var(--sunken);color:var(--ink)}
+
+/* ferramentas lado a lado */
+.tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 16px}
+@media (max-width:620px){.tools{grid-template-columns:minmax(0,1fr)}}
+.tool{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:18px 20px}
+.tool .vs-h{color:var(--amber)}
+.tool p{font-size:15px;color:var(--ink-2)}
+.tool p:last-child{margin-bottom:0}
+.tool .tent{font-size:14px;background:var(--sunken);border-radius:7px;padding:8px 11px;color:var(--ink-2)}
+p code,li code{overflow-wrap:anywhere}
+kbd{font-size:.8em;background:var(--sunken);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;color:var(--ink)}
+.tool .tent b{font-family:Archivo,sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--danger)}
+</style>
+</head>
+<body>
+
+<div class="shell">
+<aside class="side">
+  <div class="brand"><span class="dot"></span>Pipeline Olist &middot; Aula 4</div>
+
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Progresso da aula</span><b id="pct">0/7</b></div>
+    <div class="prog-track"><div class="prog-fill" id="fill"></div></div>
+  </div>
+
+  <nav>
+    <ol>
+      <li><a href="#correcao"><span class="n">00</span>A correção do desafio 3</a></li>
+      <li><a href="#partida"><span class="n">01</span>Onde paramos</a></li>
+      <li><a href="#leitura"><span class="n">02</span>Quem lê, e em que ordem</a></li>
+      <li><a href="#rascunho"><span class="n">03</span>O rascunho &middot; Figma ou Canva</a></li>
+      <li><a href="#graficos"><span class="n">04</span>Um gráfico por pergunta</a></li>
+      <li><a href="#marts"><span class="n">05</span>Os dois marts que faltam</a></li>
+      <li><a href="#ferramentas"><span class="n">06</span>Power BI, Tableau, Python, HTML</a></li>
+      <li><a href="#painel"><span class="n">07</span>O painel em Python</a></li>
+      <li><a href="#html"><span class="n">08</span>O painel num arquivo HTML</a></li>
+      <li><a href="#testes"><span class="n">09</span>Testes, qualidade e coverage</a></li>
+      <li><a href="#desafio"><span class="n">10</span>O desafio final</a></li>
+      <li><a href="#referencia"><span class="n">A1</span>Números da tela</a></li>
+      <li><a href="#erros"><span class="n">A2</span>Quando quebrar</a></li>
+    </ol>
+  </nav>
+
+  <nav class="side-links">
+    <a href="index.html">&larr; Todas as aulas</a>
+    <a href="aula-1.html">Aula 1</a>
+    <a href="aula-2.html">Aula 2</a>
+    <a href="aula-3.html">Aula 3</a>
+    <a href="indicadores.html#dash">Indicadores do dashboard</a>
+  </nav>
+
+  <div class="side-foot">
+    <button class="tbtn" id="theme" type="button">Tema</button>
+    <button class="tbtn" id="reset" type="button">Zerar progresso</button>
+  </div>
+</aside>
+
+<main>
+<div class="wrap">
+
+  <p class="eyebrow">Aula 4 de 4 &middot; Dashboard e testes &middot; 1h20</p>
+  <h1>O desenho vem antes do gráfico</h1>
+  <p class="lede">Os marts já respondem as perguntas. Hoje as respostas vão para uma tela que alguém entende em cinco segundos &mdash; desenhada primeiro no Figma ou no Canva, montada em Python, e comparada com o que o Power BI, o Tableau e um arquivo HTML fariam com os mesmos marts. E, no fim, o que é um teste e o que ele confere num pipeline em que o dado muda todo dia.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Entra</dt><dd class="mono">marts.*</dd></div>
+    <div class="fact"><dt>Sai</dt><dd class="mono">app.py</dd></div>
+    <div class="fact"><dt>Rascunho</dt><dd>Figma ou Canva</dd></div>
+    <div class="fact"><dt>Saída extra</dt><dd class="mono">relatorio.html</dd></div>
+    <div class="fact"><dt>Regra</dt><dd>A tela não calcula</dd></div>
+  </dl>
+
+  <div class="clock">
+    <span class="c1" style="flex:1 1 19%">correção 15min</span>
+    <span class="c2" style="flex:1 1 62%">construção 50min</span>
+    <span class="c3" style="flex:1 1 19%">dúvidas 15min</span>
+  </div>
+  <p class="small">O relógio de sempre, dividido em cinco blocos de construção: dez minutos de rascunho, cinco de SQL nos dois marts que faltam, quinze para o painel em Python subir, cinco para ver as outras ferramentas e quinze para entender o que é um teste e o que ele confere num pipeline. O SQL continua sendo seu; o encanamento do painel a IA escreve, a partir de uma spec que é o seu rascunho escrito em palavras.</p>
+
+  <div class="pipe">
+    <div class="layer l-mart"><span class="tag">marts.*</span><span class="desc"><b>Doze tabelas, uma por pergunta.</b> Os cinco da aula 3, os cinco do desafio e dois novos de hoje.</span></div>
+    <div class="arrow"><span class="stem">&darr;</span><span class="what">painel.py &middot; <em>só SELECT</em>, formata e desenha</span></div>
+    <div class="layer l-mart"><span class="tag">app.py</span><span class="desc"><b>O dashboard.</b> Streamlit no navegador, lendo o banco em somente leitura.</span></div>
+    <div class="arrow"><span class="stem">&darr;</span><span class="what">relatorio.py &middot; <em>mesmos gráficos</em>, congelados</span></div>
+    <div class="layer l-mart"><span class="tag">relatorio.html</span><span class="desc"><b>O mesmo painel num arquivo.</b> Abre com dois cliques, sem Python e sem servidor.</span></div>
+  </div>
+  <p class="small">Nenhuma camada nova de dado: <code>marts</code> é a última. O que muda é quem lê. Até a aula 3, quem lia era você, no notebook. A partir de hoje é alguém que nunca viu um <code>SELECT</code> &mdash; e que vai decidir alguma coisa com o número que a tela mostrar.</p>
+
+  <!-- ============ 00 CORREÇÃO ============ -->
+  <section id="correcao">
+    <h2>00 &middot; Correção ao vivo</h2>
+    <p class="h2big">Os marts 06 a 10</p>
+    <p>Cada arquivo <code>.sql</code> entregue rodou contra a <code>refined</code> da spec de referência, e o resultado foi comparado linha a linha com o gabarito &mdash; não só a contagem, todos os valores.</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Mart</th><th style="text-align:right">Acertos</th></tr></thead>
+        <tbody>
+          <tr><td class="term">06_ticket_medio_por_estado</td><td class="num">100%</td></tr>
+          <tr><td class="term">07_mix_pagamento</td><td class="num">100%</td></tr>
+          <tr><td class="term">08_nota_por_prazo</td><td class="num">100%</td></tr>
+          <tr><td class="term">09_vendedores_pareto</td><td class="num">90%</td></tr>
+          <tr><td class="term">10_tempo_entrega_por_estado</td><td class="num">90%</td></tr>
+          <tr><td><b>Total</b></td><td class="num"><b>96%</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>O SQL da turma está maduro. Onde ainda há ponto a ganhar é no que vem escrito em volta dele: <strong>60%</strong> das entregas trouxeram o grão na primeira linha de cada arquivo <em>e</em> a explicação pedida no mart 07.</p>
+
+    <h3>O que conferir no seu arquivo</h3>
+    <ul>
+      <li><strong>09: a receita vem de <code>itens_pedido.preco</code>.</strong> Usar <code>pagamentos.valor</code> no mesmo <code>JOIN</code> que <code>itens_pedido</code> junta FK com FK: cada pagamento se repete por item, e o total vai a R$&nbsp;20.156.175,58. E o mart não filtra os 80%: ele tem uma linha por vendedor, 3.053, e o corte é leitura de quem olha a curva.</li>
+      <li><strong>10: os nomes das colunas são os do enunciado.</strong> <code>entregues</code>, <code>dias_medio</code> com uma casa e <code>dias_mediana</code>. O painel de hoje lê pelo nome &mdash; coluna renomeada quebra a tela.</li>
+      <li><strong>07: a diferença para a receita é o frete.</strong> Valor pago R$&nbsp;15.739.137,01 menos receita R$&nbsp;13.494.400,74 dá R$&nbsp;2.244.736,27; o frete dos pedidos válidos é R$&nbsp;2.241.126,29, e sobram R$&nbsp;3.609,98 de juros e ajustes. E a soma de <code>pedidos</code> dá 100.417, mais que os 98.206, porque um pedido pago com cartão e voucher conta nos dois tipos.</li>
+      <li><strong>06 por outro caminho também vale.</strong> Dividir a receita da UF pelos pedidos distintos da UF dá o mesmo resultado que somar por pedido e tirar a média: é a mesma conta. O que não pode faltar é o comentário dizendo isso.</li>
+      <li><strong>O mart 03 tem uma linha.</strong> Se a sua saída do executor mostra <code>marts.entrega_no_prazo</code> com mais de uma linha, o seu 03 da aula 3 tem outro grão &mdash; e é ele que alimenta o cartão &ldquo;No prazo&rdquo; de hoje. Confira antes do passo 4.4.</li>
+    </ul>
+    <details class="spec spec-det">
+      <summary class="spec-h">Gabarito dos marts 06 a 10<span class="spec-cue"></span></summary>
+      <p>Uma resposta possível para cada um. Outro caminho vale, desde que o resultado bata com os números do rodapé.</p>
+      <div class="codewrap"><pre><span class="c">-- Ticket médio por estado.</span>
+<span class="c">-- Grão: uma UF do cliente.</span>
+WITH receita_pedido AS (
+    <span class="c">-- Grão: um pedido válido com item.</span>
+    SELECT p.pedido_id, c.uf, sum(i.preco) AS receita
+    FROM refined.itens_pedido AS i
+    JOIN refined.pedidos      AS p ON p.pedido_id  = i.pedido_id
+    JOIN refined.clientes     AS c ON c.cliente_id = p.cliente_id
+    WHERE p.status NOT IN ('canceled', 'unavailable')
+    GROUP BY p.pedido_id, c.uf
+)
+SELECT uf, count(*) AS pedidos, round(avg(receita), 2) AS ticket_medio
+FROM receita_pedido
+GROUP BY uf
+ORDER BY ticket_medio DESC</pre><button class="copy" type="button">copiar</button></div>
+      <div class="codewrap"><pre><span class="c">-- Mix de pagamento nos pedidos válidos.</span>
+<span class="c">-- Grão: um tipo de pagamento.</span>
+<span class="c">-- valor soma R$ 15.739.137,01, mais que a receita do mart 01: o cliente paga</span>
+<span class="c">-- também o frete (R$ 2.241.126,29) e juros. A coluna pedidos não soma entre</span>
+<span class="c">-- tipos: pedido pago com cartão e voucher conta nos dois (soma 100.417).</span>
+SELECT
+    g.tipo,
+    count(*)                                                     AS pagamentos,
+    count(DISTINCT g.pedido_id)                                  AS pedidos,
+    sum(g.valor)                                                 AS valor,
+    round(100.0 * sum(g.valor) / sum(sum(g.valor)) OVER (), 1)   AS pct_valor
+FROM refined.pagamentos AS g
+JOIN refined.pedidos    AS p ON p.pedido_id = g.pedido_id
+WHERE p.status NOT IN ('canceled', 'unavailable')
+GROUP BY g.tipo
+ORDER BY valor DESC</pre><button class="copy" type="button">copiar</button></div>
+      <div class="codewrap"><pre><span class="c">-- A nota de quem recebeu no prazo e atrasado.</span>
+<span class="c">-- Grão: uma situação de entrega. Mesmo denominador do mart 03.</span>
+WITH nota_pedido AS (
+    <span class="c">-- Grão: um pedido avaliado, com a média das suas avaliações.</span>
+    SELECT pedido_id, avg(nota) AS nota
+    FROM refined.avaliacoes
+    GROUP BY pedido_id
+),
+entregue AS (
+    <span class="c">-- Grão: um pedido delivered com data de entrega.</span>
+    SELECT pedido_id,
+           CASE WHEN data_entrega::DATE &lt;= data_entrega_prevista
+                THEN 'no_prazo' ELSE 'atrasado' END AS situacao
+    FROM refined.pedidos
+    WHERE status = 'delivered'
+      AND data_entrega IS NOT NULL
+)
+SELECT
+    e.situacao,
+    count(*)                                                     AS pedidos_avaliados,
+    round(avg(n.nota), 2)                                        AS nota_media,
+    round(100.0 * count(*) FILTER (WHERE n.nota &lt;= 2) / count(*), 1) AS pct_nota_baixa
+FROM entregue    AS e
+JOIN nota_pedido AS n ON n.pedido_id = e.pedido_id
+GROUP BY e.situacao
+ORDER BY e.situacao DESC</pre><button class="copy" type="button">copiar</button></div>
+      <div class="codewrap"><pre><span class="c">-- Concentração de vendedores.</span>
+<span class="c">-- Grão: um vendedor com venda válida, do maior para o menor.</span>
+<span class="c">-- vendedor_id desempata receitas iguais: sem ele, a ordem muda entre execuções.</span>
+WITH receita_vendedor AS (
+    <span class="c">-- Grão: um vendedor.</span>
+    SELECT i.vendedor_id, sum(i.preco) AS receita
+    FROM refined.itens_pedido AS i
+    JOIN refined.pedidos      AS p ON p.pedido_id = i.pedido_id
+    WHERE p.status NOT IN ('canceled', 'unavailable')
+    GROUP BY i.vendedor_id
+)
+SELECT
+    r.vendedor_id,
+    v.uf,
+    r.receita,
+    row_number() OVER (ORDER BY r.receita DESC, r.vendedor_id) AS posicao,
+    round(100.0 * sum(r.receita) OVER (ORDER BY r.receita DESC, r.vendedor_id)
+          / sum(r.receita) OVER (), 2)                         AS pct_acumulado
+FROM receita_vendedor      AS r
+JOIN refined.vendedores    AS v ON v.vendedor_id = r.vendedor_id
+ORDER BY posicao</pre><button class="copy" type="button">copiar</button></div>
+      <div class="codewrap"><pre><span class="c">-- Tempo de entrega por estado.</span>
+<span class="c">-- Grão: uma UF do cliente. Mesmo denominador do mart 03.</span>
+<span class="c">-- Parte de data_compra: o tempo que o cliente espera, não só o da transportadora.</span>
+SELECT
+    c.uf,
+    count(*)                                                       AS entregues,
+    round(avg(date_diff('day', p.data_compra, p.data_entrega)), 1) AS dias_medio,
+    median(date_diff('day', p.data_compra, p.data_entrega))        AS dias_mediana
+FROM refined.pedidos  AS p
+JOIN refined.clientes AS c ON c.cliente_id = p.cliente_id
+WHERE p.status = 'delivered'
+  AND p.data_entrega IS NOT NULL
+GROUP BY c.uf
+ORDER BY dias_medio</pre><button class="copy" type="button">copiar</button></div>
+      <p class="spec-foot">Resultados: 06 com 27 linhas (PB R$ 216,34, SP R$ 125,57) &middot; 07 com 4 (cartão 78,5%) &middot; 08 com 2 (no prazo 4,29 em 89.443 pedidos; atrasado 2,27 em 6.381, 62,4% de nota baixa) &middot; 09 com 3.053 (80% na posição 540) &middot; 10 com 27 (SP 8,7, RR 29,3).</p>
+    </details>
+
+    <p class="small">Três dos cinco marts do desafio vão para a tela hoje: o <code>06</code> (ticket por UF), o <code>07</code> (mix de pagamento) e o <code>09</code> (Pareto de vendedores). Os outros dois, <code>08</code> e <code>10</code>, ficam no banco, prontos para quem quiser uma segunda página.</p>
+  </section>
+
+  <!-- ============ 01 PONTO DE PARTIDA ============ -->
+  <section id="partida">
+    <h2>01 &middot; Antes de construir</h2>
+    <p class="h2big">Onde paramos</p>
+    <p>Todo número da tela de hoje sai pronto de um mart. Se um mart não existe, o painel não tem de onde ler &mdash; então a conferência começa pelo banco, não pelo navegador.</p>
+
+    <article class="step" data-id="a4-s0">
+      <div class="step-head">
+        <span class="step-n">4.0</span>
+        <div><p class="step-title">O pipeline do zero, mais uma vez</p><p class="step-sub">Três comandos, dez marts</p></div>
+      </div>
+      <div class="step-body">
+        <p>Nenhum <code>ui.py</code> de pé. Apague o <code>olist.duckdb</code> e rode:</p>
+        <div class="codewrap"><pre>uv run python -m pipeline.ingestao
+uv run python -m pipeline.transformacao
+uv run python -m pipeline.marts</pre><button class="copy" type="button">copiar</button></div>
+        <pre><span class="ok">&check;</span> marts.vendas_mensais           24 linhas
+<span class="ok">&check;</span> marts.top_categorias           74 linhas
+<span class="ok">&check;</span> marts.entrega_no_prazo          1 linha
+<span class="ok">&check;</span> marts.nota_por_categoria       52 linhas
+<span class="ok">&check;</span> marts.recompra                  9 linhas
+<span class="ok">&check;</span> marts.ticket_medio_por_estado  27 linhas
+<span class="ok">&check;</span> marts.mix_pagamento            4 linhas
+<span class="ok">&check;</span> marts.nota_por_prazo           2 linhas
+<span class="ok">&check;</span> marts.vendedores_pareto     3.053 linhas
+<span class="ok">&check;</span> marts.tempo_entrega_por_estado 27 linhas
+  10 marts                    3.273 linhas</pre>
+        <div class="verify"><p class="vh">Confira</p><p>O painel de hoje precisa dos marts <code>01</code> a <code>07</code> e do <code>09</code>. Se o <code>06</code>, o <code>07</code> ou o <code>09</code> não saiu no desafio, use a resposta de referência da <a href="#correcao">correção</a> e siga: hoje ninguém fica parado por causa de SQL de casa. O <code>08</code> e o <code>10</code> podem faltar: o painel não os usa.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a4-s0"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 02 LEITURA ============ -->
+  <section id="leitura">
+    <h2>02 &middot; Fundamento</h2>
+    <p class="h2big">Quem lê, e em que ordem</p>
+    <p>Um dashboard não é um lugar onde se guardam gráficos. É uma resposta a uma pessoa específica, que vai olhar a tela por pouco tempo e sair dela com uma decisão. Antes de abrir qualquer ferramenta, três perguntas &mdash; as mesmas três que vieram antes de cada mart, agora para a tela:</p>
+    <div class="spec">
+      <p class="spec-h">As três perguntas antes de desenhar</p>
+      <ol class="body">
+        <li><strong>Quem lê?</strong> A diretoria da Olist, uma vez por semana, sem tempo. Não é o analista que vai abrir cada filtro: é quem precisa saber se a operação está bem.</li>
+        <li><strong>O que essa pessoa precisa saber primeiro?</strong> Se está tudo bem. Os sete cartões respondem isso &mdash; e por isso vêm em cima, antes de qualquer gráfico.</li>
+        <li><strong>Depois do primeiro olhar, o que ela pergunta?</strong> &ldquo;Está subindo ou caindo?&rdquo; (o faturamento no tempo), &ldquo;onde?&rdquo; (categoria, UF, forma de pagamento) e &ldquo;por quê?&rdquo; (nota, concentração). Essa é a ordem de cima para baixo.</li>
+      </ol>
+      <p class="spec-foot">O teste é o dos cinco segundos: mostre a tela a alguém por cinco segundos e esconda. Se a pessoa não sabe dizer se a Olist vai bem, o layout falhou &mdash; não importa quão bonitos sejam os gráficos.</p>
+    </div>
+
+    <h3>A tela se lê em Z</h3>
+    <p>Quem lê da esquerda para a direita olha primeiro o canto de cima à esquerda, corre a linha de cima, desce na diagonal e corre a de baixo. É por isso que o canto superior esquerdo é o lugar mais caro da tela, e o inferior direito o mais barato. O rascunho do dashboard, que já estava nos <a href="indicadores.html#layout">indicadores da turma</a>, segue essa ordem em quatro faixas:</p>
+
+    <div class="fig er-fig">
+      <div class="fig-scroll">
+      <svg viewBox="0 0 720 486" role="img" aria-label="Rascunho do dashboard numa grade de 12 colunas. No topo, título à esquerda e filtro de período à direita. Faixa 1: sete cartões de número. Faixa 2: faturamento mensal ocupando as 12 colunas. Faixa 3: receita por categoria, mix de pagamento e ticket por UF, quatro colunas cada. Faixa 4: clientes por UF, nota por categoria e concentração de vendedores.">
+        <g font-family="Archivo, sans-serif">
+          <rect x="6" y="6" width="708" height="474" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+          <!-- colunas da grade -->
+          <g fill="var(--accent)" opacity=".07">
+            <rect x="30" y="14" width="44" height="458"/><rect x="86" y="14" width="44" height="458"/><rect x="142" y="14" width="44" height="458"/><rect x="198" y="14" width="44" height="458"/>
+            <rect x="254" y="14" width="44" height="458"/><rect x="310" y="14" width="44" height="458"/><rect x="366" y="14" width="44" height="458"/><rect x="422" y="14" width="44" height="458"/>
+            <rect x="478" y="14" width="44" height="458"/><rect x="534" y="14" width="44" height="458"/><rect x="590" y="14" width="44" height="458"/><rect x="646" y="14" width="44" height="458"/>
+          </g>
+          <!-- cabeçalho -->
+          <text x="30" y="44" font-size="17" font-weight="700" fill="var(--ink)">Olist &#183; visão da operação</text>
+          <rect x="478" y="24" width="212" height="28" rx="6" fill="var(--sunken)" stroke="var(--line)"/>
+          <text x="490" y="42" font-size="11" fill="var(--ink-3)">Período &#183; jan/2017 a ago/2018 &#9662;</text>
+
+          <!-- faixa 1: cartões -->
+          <g>
+            <rect x="30"  y="68" width="84" height="56" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="38"  y="86" font-size="9.5" fill="var(--ink-3)">Ticket médio</text><text x="38"  y="110" font-size="13" font-weight="700" fill="var(--ink)" font-family="JetBrains Mono, monospace">R$ 137,42</text>
+            <rect x="126" y="68" width="84" height="56" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="134" y="86" font-size="9.5" fill="var(--ink-3)">Cancelados</text><text x="134" y="110" font-size="13" font-weight="700" fill="var(--ink)" font-family="JetBrains Mono, monospace">0,63%</text>
+            <rect x="222" y="68" width="84" height="56" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="230" y="86" font-size="9.5" fill="var(--ink-3)">Peso do frete</text><text x="230" y="110" font-size="13" font-weight="700" fill="var(--ink)" font-family="JetBrains Mono, monospace">14,2%</text>
+            <rect x="318" y="68" width="84" height="56" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="326" y="86" font-size="9.5" fill="var(--ink-3)">Recompra</text><text x="326" y="110" font-size="13" font-weight="700" fill="var(--ink)" font-family="JetBrains Mono, monospace">3,04%</text>
+            <rect x="414" y="68" width="84" height="56" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="422" y="86" font-size="9.5" fill="var(--ink-3)">No prazo</text><text x="422" y="110" font-size="13" font-weight="700" fill="var(--ink)" font-family="JetBrains Mono, monospace">93,2%</text>
+            <rect x="510" y="68" width="84" height="56" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="518" y="86" font-size="9.5" fill="var(--ink-3)">Dias até entregar</text><text x="518" y="110" font-size="13" font-weight="700" fill="var(--ink)" font-family="JetBrains Mono, monospace">12,5</text>
+            <rect x="606" y="68" width="84" height="56" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="614" y="86" font-size="9.5" fill="var(--ink-3)">Nota média</text><text x="614" y="110" font-size="13" font-weight="700" fill="var(--ink)" font-family="JetBrains Mono, monospace">4,09</text>
+          </g>
+
+          <!-- faixa 2: faturamento -->
+          <rect x="30" y="138" width="660" height="110" rx="6" fill="var(--paper)" stroke="var(--line)"/>
+          <text x="40" y="156" font-size="11" font-weight="600" fill="var(--ink-2)">01 &#183; Faturamento mensal &#183; linha</text>
+          <polyline fill="none" stroke="var(--accent)" stroke-width="2" points="52,232 84,226 116,218 148,219 180,208 212,210 244,204 276,200 308,196 340,192 372,160 404,186 436,180 468,178 500,172 532,174 564,170 596,176 628,173 660,175"/>
+          <circle cx="372" cy="160" r="3.5" fill="var(--amber)"/>
+          <text x="380" y="164" font-size="10" fill="var(--amber)">nov/2017</text>
+
+          <!-- faixa 3 -->
+          <g>
+            <rect x="30"  y="262" width="212" height="96" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="40"  y="280" font-size="11" font-weight="600" fill="var(--ink-2)">02 &#183; Receita por categoria</text>
+            <rect x="40" y="290" width="150" height="8" rx="2" fill="var(--accent)"/><rect x="40" y="304" width="143" height="8" rx="2" fill="var(--line)"/><rect x="40" y="318" width="124" height="8" rx="2" fill="var(--line)"/><rect x="40" y="332" width="100" height="8" rx="2" fill="var(--line)"/>
+            <rect x="254" y="262" width="212" height="96" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="264" y="280" font-size="11" font-weight="600" fill="var(--ink-2)">07 &#183; Mix de pagamento</text>
+            <rect x="264" y="290" width="160" height="8" rx="2" fill="var(--accent)"/><rect x="264" y="304" width="37" height="8" rx="2" fill="var(--line)"/><rect x="264" y="318" width="6" height="8" rx="2" fill="var(--line)"/><rect x="264" y="332" width="4" height="8" rx="2" fill="var(--line)"/>
+            <rect x="478" y="262" width="212" height="96" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="488" y="280" font-size="11" font-weight="600" fill="var(--ink-2)">06 &#183; Ticket por UF</text>
+            <rect x="488" y="290" width="160" height="8" rx="2" fill="var(--line)"/><rect x="488" y="304" width="140" height="8" rx="2" fill="var(--line)"/><rect x="488" y="318" width="120" height="8" rx="2" fill="var(--line)"/><rect x="488" y="332" width="93" height="8" rx="2" fill="var(--line)"/>
+          </g>
+
+          <!-- faixa 4 -->
+          <g>
+            <rect x="30"  y="372" width="212" height="96" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="40"  y="390" font-size="11" font-weight="600" fill="var(--ink-2)">12 &#183; Clientes por UF</text>
+            <rect x="40" y="400" width="160" height="8" rx="2" fill="var(--line)"/><rect x="40" y="414" width="49" height="8" rx="2" fill="var(--line)"/><rect x="40" y="428" width="45" height="8" rx="2" fill="var(--line)"/><rect x="40" y="442" width="21" height="8" rx="2" fill="var(--line)"/>
+            <rect x="254" y="372" width="212" height="96" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="264" y="390" font-size="11" font-weight="600" fill="var(--ink-2)">04 &#183; Nota &#183; 10 piores</text>
+            <circle cx="380" cy="404" r="3.5" fill="var(--danger)"/><circle cx="392" cy="418" r="3.5" fill="var(--ink-3)"/><circle cx="398" cy="432" r="3.5" fill="var(--ink-3)"/><circle cx="402" cy="446" r="3.5" fill="var(--ink-3)"/>
+            <rect x="478" y="372" width="212" height="96" rx="6" fill="var(--paper)" stroke="var(--line)"/><text x="488" y="390" font-size="11" font-weight="600" fill="var(--ink-2)">09 &#183; Vendedores &#183; Pareto</text>
+            <path d="M 490 456 C 510 410, 540 404, 680 400" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <line x1="490" y1="414" x2="680" y2="414" stroke="var(--amber)" stroke-dasharray="3 3"/><text x="682" y="426" font-size="9" text-anchor="end" fill="var(--amber)">80%</text>
+          </g>
+
+          <!-- ordem de leitura -->
+          <g font-size="10" font-weight="700" text-anchor="middle">
+            <circle cx="18" cy="96"  r="8" fill="var(--amber)"/><text x="18" y="100" fill="#fff">1</text>
+            <circle cx="18" cy="193" r="8" fill="var(--amber)"/><text x="18" y="197" fill="#fff">2</text>
+            <circle cx="18" cy="310" r="8" fill="var(--amber)"/><text x="18" y="314" fill="#fff">3</text>
+            <circle cx="18" cy="420" r="8" fill="var(--amber)"/><text x="18" y="424" fill="#fff">4</text>
+          </g>
+        </g>
+      </svg>
+      </div>
+      <p class="fig-cap">As faixas verdes ao fundo são as 12 colunas da grade. 1: está tudo bem? &middot; 2: está subindo? &middot; 3: onde? &middot; 4: por quê? Os números dos títulos são os marts de onde cada caixa lê.</p>
+    </div>
+
+    <h3>Cinco regras de layout que valem em qualquer ferramenta</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Regra</th><th>No painel da Olist</th></tr></thead>
+        <tbody>
+          <tr><td><b>Grade de 12 colunas</b></td><td>Doze divide em 1, 2, 3, 4 e 6 &mdash; qualquer faixa cabe. O faturamento ocupa as 12; as faixas de baixo, 4 + 4 + 4. Tudo alinhado na mesma borda: o olho percebe desalinhamento de 4 pixels.</td></tr>
+          <tr><td><b>Mais importante, maior e mais acima</b></td><td>O faturamento ganha a largura inteira porque tempo precisa de espaço horizontal &mdash; 24 meses espremidos em 4 colunas viram um risco.</td></tr>
+          <tr><td><b>Agrupe pelo assunto</b></td><td>Nos cartões, os quatro de venda (ticket, cancelados, frete, recompra) e depois os três de entrega e satisfação. A vizinhança diz que as coisas têm a ver.</td></tr>
+          <tr><td><b>Uma cor, e o destaque com motivo</b></td><td>Todas as barras na mesma cor. Cor diferente só no que o título comenta: novembro de 2017 na linha, a pior categoria na nota. Se tudo tem cor, nada tem destaque.</td></tr>
+          <tr><td><b>Unidade e definição escritas</b></td><td>&ldquo;Cancelados&rdquo; é pouco: &ldquo;Cancelados &middot; % de todos os pedidos&rdquo;. A definição fechada da aula 3 vai para o rótulo do cartão &mdash; senão a reunião discute o número de novo.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 03 RASCUNHO ============ -->
+  <section id="rascunho">
+    <h2>03 &middot; Antes do código</h2>
+    <p class="h2big">O rascunho, no Figma ou no Canva</p>
+    <p>Mudar uma caixa de lugar num rascunho custa um arrastar de mouse. No código, custa reescrever o layout, rodar de novo e conferir tudo. Por isso o desenho vem primeiro &mdash; e é ele, escrito em palavras, que vira a spec do painel na <a href="#painel">seção 07</a>. Qualquer uma das duas ferramentas serve, e papel também.</p>
+
+    <div class="tools">
+      <div class="tool">
+        <p class="vs-h">Figma</p>
+        <p>Ferramenta de quem desenha interface. Tem plano gratuito, roda no navegador. Quatro recursos fazem o rascunho de hoje:</p>
+        <ul class="small">
+          <li><strong>Frame</strong> (<kbd>F</kbd>) no tamanho <em>Desktop</em>, 1440 &times; 1024: a tela.</li>
+          <li><strong>Grade de layout</strong> no frame: 12 colunas, margem 48, espaço entre colunas 24.</li>
+          <li><strong>Auto layout</strong> (<kbd>Shift</kbd>+<kbd>A</kbd>) na linha de cartões: os sete se distribuem sozinhos.</li>
+          <li><strong>Componente</strong> (<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>K</kbd>) para o cartão: desenhe um, use sete cópias. Mudou a fonte num, mudou nos sete.</li>
+        </ul>
+      </div>
+      <div class="tool">
+        <p class="vs-h">Canva</p>
+        <p>Ferramenta de quem faz apresentação. Mais rápida para começar, menos precisa para alinhar. Também gratuita no navegador:</p>
+        <ul class="small">
+          <li>Comece de um <strong>design personalizado</strong> de 1440 &times; 1024 px, ou de um modelo buscando &ldquo;dashboard&rdquo; &mdash; e apague o que não for usar.</li>
+          <li>Ligue as <strong>réguas e guias</strong> e crie colunas pelas guias: é a grade.</li>
+          <li><strong>Elementos &rarr; Gráficos</strong> aceita dado digitado: dá para colar os números reais do mart, não um gráfico de enfeite.</li>
+          <li>Agrupe cada cartão (<kbd>Ctrl</kbd>+<kbd>G</kbd>) e duplique (<kbd>Ctrl</kbd>+<kbd>D</kbd>).</li>
+        </ul>
+      </div>
+    </div>
+
+    <article class="step" data-id="a4-s1">
+      <div class="step-head">
+        <span class="step-n">4.1</span>
+        <div><p class="step-title">Desenhar a tela</p><p class="step-sub">Dez minutos, com os números de verdade</p></div>
+      </div>
+      <div class="step-body">
+        <p>Parta do <a href="#leitura">rascunho da seção 02</a> e mude o que você discordar &mdash; ele é um ponto de partida, não a resposta. Três regras para os dez minutos:</p>
+        <ol class="body">
+          <li><strong>Números reais, nunca &ldquo;1.234&rdquo;.</strong> Escreva <code>R$ 13.494.400,74</code> onde vai a receita. Número de enfeite esconde o problema de layout: o que cabia com quatro dígitos não cabe com onze. Os valores estão no <a href="#referencia">anexo A1</a>.</li>
+          <li><strong>Cada caixa diz de que mart lê.</strong> Um número no título, como no rascunho: <code>02 &middot; Receita por categoria</code>. Caixa sem mart é número que ninguém sabe calcular.</li>
+          <li><strong>Escreva o título que responde.</strong> Embaixo de cada caixa, numa linha: qual a pergunta, e qual a resposta que o gráfico mostra hoje. Se você não consegue escrever a resposta, o gráfico não tem por que estar na tela.</li>
+        </ol>
+        <p>Exporte como PNG e salve no projeto, em <code>design/rascunho.png</code>. Ele é artefato, como a spec: fica versionado no git ao lado do código que nasceu dele.</p>
+        <div class="verify"><p class="vh">Confira</p><p>O teste dos cinco segundos com o colega do lado: mostre o rascunho, esconda, pergunte se a Olist vai bem. Depois, conte as caixas: catorze no rascunho de referência, sete cartões e sete gráficos &mdash; os 14 indicadores da turma. Se o seu passou disso, alguma caixa está sobrando.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a4-s1"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <div class="note"><b>Figma e Canva não são ferramentas de dashboard.</b> Nenhum dos dois lê o banco: o desenho fica congelado com os números que você digitou. Mas o desenho não se perde quando o painel fica pronto. Quem usa Power BI costuma exportar o fundo da página do Figma &mdash; cartões, faixas, títulos &mdash; como imagem, e pôr os gráficos vivos por cima. O rascunho vira a moldura.</div>
+  </section>
+
+  <!-- ============ 04 GRÁFICOS ============ -->
+  <section id="graficos">
+    <h2>04 &middot; Fundamento</h2>
+    <p class="h2big">Um gráfico por pergunta</p>
+    <p>A forma do gráfico sai da pergunta, não do gosto. São poucas formas, e cada uma tem uma armadilha que o dado da Olist já armou:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>A pergunta</th><th>A forma</th><th>A armadilha nos marts</th></tr></thead>
+        <tbody>
+          <tr><td>Como está agora?</td><td><b>Cartão</b>: número grande, rótulo com a definição</td><td>Cartão sem unidade. &ldquo;3,04&rdquo; é recompra em %, não nota.</td></tr>
+          <tr><td>Como mudou no tempo?</td><td><b>Linha</b>, com o tempo no eixo horizontal</td><td>Novembro de 2016 não existe no mart 01, e a linha liga outubro a dezembro sem avisar. As pontas têm 2 pedidos (set/2016) e 1 (set/2018): parecem quedas, e são só o começo e o fim do dado.</td></tr>
+          <tr><td>Quem é maior?</td><td><b>Barras horizontais</b>, ordenadas pelo valor</td><td>Em ordem alfabética, ninguém acha o maior. E 74 categorias não cabem: top 10, e o título diz que é top 10.</td></tr>
+          <tr><td>Como o todo se divide?</td><td><b>Barras</b>, ou pizza só com poucas fatias</td><td>O mix tem 4 formas e uma delas é 78,5%: a pizza passa. As 74 categorias em pizza, não.</td></tr>
+          <tr><td>Quanto está concentrado?</td><td><b>Curva acumulada</b> com a linha de 80%</td><td>3.053 vendedores em barras é uma mancha. A curva mostra que a linha de 80% cruza na posição 540.</td></tr>
+          <tr><td>Quem é pior, de perto?</td><td><b>Pontos</b> em vez de barras</td><td>Barra começa no zero, sempre: o comprimento é o valor. As notas vão de 3,62 a 4,46, e em barras parecem iguais. Para ampliar a diferença, troque a barra por ponto e corte o eixo &mdash; nunca corte o eixo de uma barra.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Fora da lista, de propósito: gráfico 3D (a perspectiva muda o tamanho do que está na frente), dois eixos verticais no mesmo gráfico (a escala de cada um é escolhida por quem desenha, e o cruzamento das linhas não quer dizer nada) e velocímetro (um cartão diz o mesmo em um décimo do espaço).</p>
+  </section>
+
+  <!-- ============ 05 MARTS ============ -->
+  <section id="marts">
+    <h2>05 &middot; SQL</h2>
+    <p class="h2big">Os dois marts que faltam</p>
+    <p>Os <a href="indicadores.html#os-14">indicadores da turma</a> deixaram anotado: cinco dos sete cartões e um dos gráficos não saem de nenhum mart da aula 3. A regra do curso não muda na última aula &mdash; número novo na tela exige um <code>.sql</code> novo em <code>marts</code> &mdash;, então antes do painel vêm dois arquivos.</p>
+
+    <article class="step" data-id="a4-m1">
+      <div class="step-head">
+        <span class="step-n">4.2</span>
+        <div><p class="step-title">11_kpis.sql e 12_clientes_por_uf.sql</p><p class="step-sub">CTEs de uma linha &middot; grão: a operação inteira, e uma UF</p></div>
+      </div>
+      <div class="step-body">
+        <p>O <strong>mart 11</strong> junta numa linha só os cartões que vêm de tabelas diferentes: ticket e frete de <code>itens_pedido</code>, cancelamento e prazo de <code>pedidos</code>, nota de <code>avaliacoes</code>. Cada um numa CTE com uma linha, e o <code>SELECT</code> final junta as CTEs com vírgula, sem <code>ON</code>. Um <code>JOIN</code> sem condição cruza cada linha de um lado com cada linha do outro &mdash; e é por isso que só é seguro aqui: 1 &times; 1 &times; 1 = 1. Se uma CTE voltar com duas linhas, o mart dobra calado. É o grão de novo, na forma mais curta.</p>
+        <p class="cmdlabel">Colunas do mart 11</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Coluna</th><th>Definição</th><th style="text-align:right">Valor</th></tr></thead>
+            <tbody>
+              <tr><td class="term">ticket_medio</td><td>Receita por pedido válido somada primeiro, média depois. Duas casas.</td><td class="num">137,42</td></tr>
+              <tr><td class="term">ticket_mediana</td><td>A mediana da mesma receita por pedido</td><td class="num">86,90</td></tr>
+              <tr><td class="term">pct_frete</td><td><code>sum(frete) / (sum(preco) + sum(frete))</code>, pedidos válidos, em %, uma casa</td><td class="num">14,2</td></tr>
+              <tr><td class="term">pct_cancelados</td><td><code>canceled</code> sobre <em>todos</em> os pedidos, em %, duas casas</td><td class="num">0,63</td></tr>
+              <tr><td class="term">dias_entrega</td><td><code>date_diff('day', data_compra, data_entrega)</code>, média, mesmo denominador do mart 03, uma casa</td><td class="num">12,5</td></tr>
+              <tr><td class="term">dias_entrega_mediana</td><td>A mediana da mesma conta</td><td class="num">10</td></tr>
+              <tr><td class="term">nota_media</td><td>Média de <code>nota</code> em todas as avaliações, duas casas</td><td class="num">4,09</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>O <strong>mart 12</strong> é curto: pessoas distintas por UF, em <code>refined.clientes</code>. Colunas <code>uf</code> e <code>clientes</code>.</p>
+        <div class="verify"><p class="vh">Critérios</p><ul>
+          <li>Mart 11: <strong>1 linha</strong>, com os sete valores da tabela.</li>
+          <li>Mart 12: <strong>27 linhas</strong>. SP 40.302, RJ 12.384, MG 11.259.</li>
+          <li>A soma de <code>clientes</code> do 12 dá <strong>96.136</strong>, não 96.096. São 39 pessoas com pedidos em mais de uma UF &mdash; uma delas em três. Elas contam em cada UF, o que está certo para a pergunta &ldquo;quantas pessoas compram de lá&rdquo; e errado para qualquer total. Escreva no comentário do arquivo, como no mart 02.</li>
+        </ul></div>
+        <div class="note"><b>Se o ticket deu R$ 120,38</b>, você tirou a média do preço do <em>item</em>, não do pedido: é o desenho da <a href="aula-3.html#grao">seção 02 da aula 3</a>. <b>Se o frete deu 16,6%</b>, o denominador ficou só com o preço: frete sobre o que o cliente pagou em item é <code>preco + frete</code>.</div>
+        <details class="spec spec-det">
+          <summary class="spec-h">Resposta de referência<span class="spec-cue"></span></summary>
+          <div class="codewrap"><pre><span class="c">-- Os cartões do dashboard que não saem dos marts 03 e 05.</span>
+<span class="c">-- Grão: a operação inteira, uma linha. Cada CTE também tem uma linha só,</span>
+<span class="c">-- e é isso que torna seguro juntá-las sem ON.</span>
+WITH receita_pedido AS (
+    <span class="c">-- Grão: um pedido válido com item.</span>
+    SELECT p.pedido_id, sum(i.preco) AS receita, sum(i.frete) AS frete
+    FROM refined.pedidos      AS p
+    JOIN refined.itens_pedido AS i ON i.pedido_id = p.pedido_id
+    WHERE p.status NOT IN ('canceled', 'unavailable')
+    GROUP BY p.pedido_id
+),
+venda AS (
+    SELECT
+        round(avg(receita), 2)                                     AS ticket_medio,
+        round(median(receita), 2)                                  AS ticket_mediana,
+        round(100.0 * sum(frete) / (sum(receita) + sum(frete)), 1) AS pct_frete
+    FROM receita_pedido
+),
+cancelamento AS (
+    SELECT round(100.0 * count(*) FILTER (WHERE status = 'canceled') / count(*), 2) AS pct_cancelados
+    FROM refined.pedidos
+),
+entrega AS (
+    SELECT
+        round(avg(date_diff('day', data_compra, data_entrega)), 1) AS dias_entrega,
+        median(date_diff('day', data_compra, data_entrega))        AS dias_entrega_mediana
+    FROM refined.pedidos
+    WHERE status = 'delivered'
+      AND data_entrega IS NOT NULL
+),
+satisfacao AS (
+    SELECT round(avg(nota), 2) AS nota_media
+    FROM refined.avaliacoes
+)
+SELECT *
+FROM venda, cancelamento, entrega, satisfacao</pre><button class="copy" type="button">copiar</button></div>
+          <div class="codewrap"><pre><span class="c">-- Quantas pessoas compram de cada UF?</span>
+<span class="c">-- Grão: uma UF. A coluna clientes não soma: 39 pessoas aparecem em mais de uma UF.</span>
+SELECT
+    uf,
+    count(DISTINCT cliente_unico_id) AS clientes
+FROM refined.clientes
+GROUP BY uf
+ORDER BY clientes DESC</pre><button class="copy" type="button">copiar</button></div>
+          <p class="spec-foot"><code>count(*) FILTER (WHERE ...)</code> é o <code>sum(CASE WHEN ... THEN 1 ELSE 0 END)</code> do mart 03, escrito mais curto. Os dois fazem a mesma coisa; use o que você lê melhor. E a nota sai das avaliações direto, sem passar por pedido: a pergunta do cartão é &ldquo;que nota os clientes dão&rdquo;, e não há <code>JOIN</code> para multiplicar nada.</p>
+        </details>
+        <p>Rode o executor de novo: <code>uv run python -m pipeline.marts</code> termina com <strong>12 marts</strong>.</p>
+        <label class="mark"><input type="checkbox" id="chk-a4-m1"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 06 FERRAMENTAS ============ -->
+  <section id="ferramentas">
+    <h2>06 &middot; Panorama</h2>
+    <p class="h2big">Power BI, Tableau, Python e HTML</p>
+    <p>Os mesmos doze marts alimentam qualquer ferramenta. O curso monta o painel em Python porque ele fica em texto, no git, e pode ser testado &mdash; mas no mercado você vai encontrar as quatro, e a diferença entre elas é menor do que parece. Todas leem uma tabela pronta e desenham. E todas têm um lugar onde a regra de negócio tenta escapar do SQL:</p>
+
+    <div class="tools">
+      <div class="tool">
+        <p class="vs-h">Power BI</p>
+        <p>Da Microsoft, o mais comum em empresa no Brasil. O Desktop é gratuito e só roda no Windows; publicar para outras pessoas pede licença. Lê CSV, Parquet, Excel e bancos. O arquivo <code>.pbix</code> é binário: o git guarda, mas não mostra o que mudou.</p>
+        <p class="tent"><b>A tentação</b> &middot; a <em>medida DAX</em>. Uma fórmula como <code>Ticket = DIVIDE(SUM(...), DISTINCTCOUNT(...))</code> recalcula o ticket dentro da ferramenta &mdash; e agora ele existe em dois lugares.</p>
+      </div>
+      <div class="tool">
+        <p class="vs-h">Tableau</p>
+        <p>Da Salesforce, forte em análise visual. O Tableau Public é gratuito, roda no Windows e no Mac &mdash; mas salva só na nuvem, em público. Para o dado da Olist, que já é público, serve. O <code>.twb</code> é XML: dá para ler a diferença no git, com esforço.</p>
+        <p class="tent"><b>A tentação</b> &middot; o <em>campo calculado</em>. Mesma coisa que a medida DAX, com outra sintaxe.</p>
+      </div>
+      <div class="tool">
+        <p class="vs-h">Python &middot; Streamlit</p>
+        <p>Um script vira página no navegador, com <code>uv run streamlit run app.py</code>. Gratuito, em qualquer sistema, todo em texto: o git mostra cada linha que mudou, e o pytest testa. Compartilhar pede um servidor de pé.</p>
+        <p class="tent"><b>A tentação</b> &middot; o <code>df.groupby()</code>. Uma linha de pandas e a agregação saiu do SQL. É a mais fácil de escrever e a mais fácil de pegar: procure por ela.</p>
+      </div>
+      <div class="tool">
+        <p class="vs-h">HTML</p>
+        <p>Um arquivo que abre em qualquer navegador, sem servidor nem instalação &mdash; este guia é um. Vai por e-mail, por GitHub Pages, por pendrive. Em troca, não fala com o banco: os números ficam congelados no dia em que o arquivo foi gerado.</p>
+        <p class="tent"><b>A tentação</b> &middot; o <code>reduce()</code> no JavaScript da página, somando o que devia vir somado.</p>
+      </div>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>Power BI</th><th>Tableau</th><th>Streamlit</th><th>HTML</th></tr></thead>
+        <tbody>
+          <tr><td><b>Custo para começar</b></td><td>Grátis (Desktop)</td><td>Grátis (Public)</td><td>Grátis</td><td>Grátis</td></tr>
+          <tr><td><b>Sistema</b></td><td>Só Windows</td><td>Windows e Mac</td><td>Qualquer um</td><td>Qualquer navegador</td></tr>
+          <tr><td><b>Como lê os marts</b></td><td>CSV exportado</td><td>CSV exportado</td><td>Direto do DuckDB</td><td>Gerado por Python</td></tr>
+          <tr><td><b>Diferença no git</b></td><td>Não (binário)</td><td>Difícil (XML)</td><td>Sim</td><td>Sim, mas extensa</td></tr>
+          <tr><td><b>Testável com pytest</b></td><td>Não</td><td>Não</td><td>Sim</td><td>O gerador, sim</td></tr>
+          <tr><td><b>Quem abre</b></td><td>Quem tem a licença</td><td>Qualquer um, em público</td><td>Quem alcança o servidor</td><td>Qualquer um com o arquivo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>A demonstração: os marts no Power BI e no Tableau</h3>
+    <p>Cinco minutos, na tela do instrutor. Para levar um mart a qualquer uma das duas, exporte como CSV &mdash; no <code>ui.py</code>, numa pasta <code>export/</code> que você cria antes:</p>
+    <div class="codewrap"><pre>COPY marts.vendas_mensais           TO 'export/vendas_mensais.csv'          (HEADER);
+COPY marts.ticket_medio_por_estado  TO 'export/ticket_medio_por_estado.csv' (HEADER);
+COPY marts.kpis                     TO 'export/kpis.csv'                    (HEADER);</pre><button class="copy" type="button">copiar</button></div>
+    <p>E as duas armadilhas que a demonstração vai mostrar, porque nenhuma das duas dá erro:</p>
+    <div class="versus">
+      <div class="vs-card bad">
+        <p class="vs-h">O ponto que virou milhar</p>
+        <p class="vs-flow">ticket_medio &middot; 137.42 &rarr; 13.742</p>
+        <p>O DuckDB grava o decimal com ponto. O Power BI em português lê o ponto como separador de milhar, e o ticket de R$ 137,42 vira R$ 13.742. Na etapa de transformação, troque o tipo da coluna <em>usando a localidade</em> Inglês (Estados Unidos). No Tableau, confira o primeiro valor antes de arrastar qualquer coisa.</p>
+      </div>
+      <div class="vs-card bad">
+        <p class="vs-h">A soma que ninguém pediu</p>
+        <p class="vs-flow">ticket_medio do mart 06 num cartão &middot; R$ 4.426,65</p>
+        <p>Arraste uma coluna para um cartão e as duas ferramentas somam, por padrão. Os 27 tickets por UF somados dão R$ 4.426,65; trocando para média, R$ 163,95 &mdash; e nenhum dos dois é o ticket da Olist, que é R$ 137,42, do mart 11. Média de médias não é média. O cartão lê o mart certo, com agregação <em>não resumir</em>.</p>
+      </div>
+    </div>
+    <div class="note"><b>A regra, em qualquer ferramenta.</b> Se para mostrar um número você precisou escrever uma fórmula na ferramenta, falta um mart. A exceção é a agregação trivial sobre o grão certo &mdash; somar a <code>receita</code> do mart 01 para o total do período &mdash;, e mesmo ela tem que bater com um mart.</div>
+  </section>
+
+  <!-- ============ 07 PAINEL ============ -->
+  <section id="painel">
+    <h2>07 &middot; Passo a passo</h2>
+    <p class="h2big">O painel em Python</p>
+    <p>O painel tem duas partes, e elas ficam em arquivos separados. O <code>painel.py</code> lê os marts, formata número e monta cada gráfico &mdash; sem nada de Streamlit dentro. O <code>app.py</code> só arruma na tela o que o <code>painel.py</code> entrega. Assim o mesmo <code>painel.py</code> serve o Streamlit e o HTML &mdash; e as funções de formato, que não dependem de nada, podem ser testadas sozinhas (é o teste unitário da <a href="#testes">seção 09</a>).</p>
+
+    <article class="step" data-id="a4-s2">
+      <div class="step-head">
+        <span class="step-n">4.3</span>
+        <div><p class="step-title">A spec do painel</p><p class="step-sub">O rascunho escrito em palavras; a IA escreve o código</p></div>
+      </div>
+      <div class="step-body">
+        <p>Primeiro as bibliotecas. O <code>plotly</code> desenha os gráficos e é o que permite reaproveitá-los no HTML:</p>
+        <div class="codewrap"><pre>uv add streamlit plotly</pre><button class="copy" type="button">copiar</button></div>
+        <p>A spec vem quase pronta. A parte que é <em>sua</em> é a seção 3, o layout: ela descreve o rascunho de referência da <a href="#leitura">seção 02</a>. Se o seu rascunho do passo 4.1 ficou diferente, reescreva a seção 3 a partir dele, faixa por faixa, antes de colar.</p>
+        <p class="cmdlabel">Cole no Claude Code, Codex ou Copilot</p>
+        <div class="codewrap"><pre>CONTEXTO
+Estou construindo um pipeline de dados em Python sobre o dataset público da
+Olist. Trabalho com spec-driven development: a spec abaixo é a fonte da
+verdade e o código é consequência dela. Não acrescente requisito que não
+esteja escrito aqui. Se algo estiver ambíguo, pergunte antes de escrever código.
+
+STACK
+- Python 3.13, uv, DuckDB (olist.duckdb na raiz do projeto)
+- streamlit e plotly (plotly.express), já instalados com uv add
+
+O QUE JÁ EXISTE (use, não reimplemente)
+O schema marts, com doze tabelas, criado por pipeline/marts.py:
+  vendas_mensais, top_categorias, entrega_no_prazo, nota_por_categoria,
+  recompra, ticket_medio_por_estado, mix_pagamento, nota_por_prazo,
+  vendedores_pareto, tempo_entrega_por_estado, kpis, clientes_por_uf.
+O rascunho da tela em design/rascunho.png.
+
+ARTEFATOS A PRODUZIR
+painel.py, na raiz: leitura, formatação e gráficos. Não importa streamlit.
+app.py, na raiz: a página. Executável com:
+  uv run streamlit run app.py
+
+SPEC
+1. LEITURA (painel.py)
+   ler(marts) -&gt; dict nome -&gt; DataFrame. Para cada nome, só
+   SELECT * FROM marts.&lt;nome&gt;. Nenhuma outra SQL.
+   Conexão com duckdb.connect("olist.duckdb", read_only=True), aberta e
+   fechada dentro de ler(). Motivo: conexão aberta segura o arquivo, e o
+   pipeline.marts não consegue gravar com o painel de pé.
+
+2. NENHUM CÁLCULO
+   Proibido em painel.py e app.py: groupby, sum, mean, count, merge, pivot,
+   e qualquer conta entre colunas. Permitido: ordenar, filtrar linhas,
+   head(n), renomear coluna e formatar texto.
+   Motivo: número novo na tela exige um .sql novo em marts. Se faltar
+   algum número, pare e diga qual mart está faltando.
+
+3. LAYOUT (app.py) — de cima para baixo, layout="wide"
+   Cabeçalho: título "Olist · visão da operação" à esquerda; à direita,
+     filtro de período (seção 5).
+   Faixa 1: sete cartões (st.metric), nesta ordem, cada rótulo com a
+     definição curta:
+     Ticket médio (kpis.ticket_medio, reais)
+     Cancelados · % de todos os pedidos (kpis.pct_cancelados, 2 casas)
+     Peso do frete (kpis.pct_frete, 1 casa)
+     Recompra (100 - recompra.pct_clientes da linha pedidos_por_cliente = 1,
+       2 casas) -- esta é a única conta permitida, e só porque o mart 05
+       guarda o complemento; se preferir, crie a coluna no mart.
+     No prazo (entrega_no_prazo.pct_no_prazo, 1 casa)
+     Dias até entregar (kpis.dias_entrega, 1 casa)
+     Nota média (kpis.nota_media, 2 casas)
+   Faixa 2, largura inteira: faturamento mensal, linha com marcadores.
+   Faixa 3, três colunas iguais: receita por categoria (top 10, barras
+     horizontais, maior em cima); mix de pagamento (barras por pct_valor);
+     ticket médio por UF (barras horizontais, maior em cima).
+   Faixa 4, três colunas iguais: clientes por UF (barras horizontais,
+     maior em cima); nota por categoria (as 10 primeiras por posicao_pior,
+     pontos, pior em cima); concentração de vendedores (linha de pct_acumulado por
+     posicao, com linha horizontal tracejada em 80).
+   Cada gráfico: título com o número do mart ("01 · Faturamento mensal"),
+   uma cor só, eixo com unidade. width="stretch" (use_container_width
+   está descontinuado).
+
+4. FORMATO (painel.py), funções puras, sem streamlit e sem banco
+   reais(valor, casas=2)  -&gt; "R$ 1.003.862,14"
+   pct(valor, casas=1)    -&gt; "93,2%"
+   numero(valor, casas=0) -&gt; "96.470"
+   Milhar com ponto, decimal com vírgula, sempre. Não use locale do sistema.
+   Motivo: o resultado não pode depender da máquina de quem roda.
+   Uma função por gráfico, recebendo o DataFrame e devolvendo a figura
+   plotly. Motivo: o relatório HTML reaproveita as mesmas funções.
+
+5. FILTRO DE PERÍODO
+   st.select_slider com os meses de vendas_mensais, padrão de jan/2017 a
+   ago/2018. Recorta só as linhas do gráfico de faturamento. Os cartões e
+   os outros gráficos não mudam, e a página diz isso embaixo do filtro:
+   "os cartões valem para o período inteiro".
+   Motivo: recortar linha é SELECT; recalcular cartão por período seria
+   regra de negócio fora do SQL.
+
+6. CACHE E ERRO
+   Leitura com st.cache_data. Um botão "Recarregar dados" limpa o cache.
+   Sem olist.duckdb, ou faltando qualquer mart da lista do item 3: st.error
+   dizendo quais e o comando "uv run python -m pipeline.marts", e st.stop().
+
+CRITÉRIOS DE ACEITE
+- Os sete cartões mostram: R$ 137,42 · 0,63% · 14,2% · 3,04% · 93,2% ·
+  12,5 · 4,09.
+- O faturamento abre com 20 meses (jan/2017 a ago/2018) e, com o filtro
+  aberto até as pontas, mostra os 24.
+- Top 10 de categorias com health_beauty em cima; nota com office_furniture
+  em cima; ticket por UF com PB em cima e SP embaixo.
+- Uma busca por "groupby", ".sum(", ".mean(" e "merge" em painel.py e
+  app.py não encontra nada.
+- Com o painel de pé, uv run python -m pipeline.marts roda sem erro de lock.
+
+ENTREGA
+1. A spec como docstring no topo de painel.py, com o motivo de cada regra.
+2. O código, comentado só onde a decisão não é óbvia.
+3. Uma lista final do que você assumiu e que não estava na spec.</pre><button class="copy" type="button">copiar</button></div>
+        <div class="note"><b>A recompra é a exceção que a spec confessa.</b> O mart 05 guarda quem comprou <em>uma</em> vez (96,96%), e o cartão quer o resto (3,04%). Uma subtração na tela é pouco &mdash; mas é exatamente assim que a regra começa a escapar. A spec deixa a saída escrita: crie a coluna no mart. Se fizer isso, tire a exceção da spec.</div>
+        <label class="mark"><input type="checkbox" id="chk-a4-s2"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <article class="step" data-id="a4-s3">
+      <div class="step-head">
+        <span class="step-n">4.4</span>
+        <div><p class="step-title">Subir e conferir na tela</p><p class="step-sub">Os critérios de aceite, um por um</p></div>
+      </div>
+      <div class="step-body">
+        <div class="codewrap"><pre>uv run streamlit run app.py</pre><button class="copy" type="button">copiar</button></div>
+        <p>O navegador abre em <code>http://localhost:8501</code>. Antes de achar bonito, confira: os sete cartões contra o <a href="#referencia">anexo A1</a>, o filtro abrindo em 20 meses, a ordem das barras. Depois, a busca do quarto critério:</p>
+        <p class="cmdlabel">Windows (PowerShell)</p>
+        <div class="codewrap"><pre>Select-String -Path painel.py, app.py -Pattern "groupby", "\.sum\(", "\.mean\(", "merge"</pre><button class="copy" type="button">copiar</button></div>
+        <p class="cmdlabel">macOS, Linux ou Git Bash</p>
+        <div class="codewrap"><pre>grep -nE "groupby|\.sum\(|\.mean\(|merge" painel.py app.py</pre><button class="copy" type="button">copiar</button></div>
+        <div class="verify"><p class="vh">Confira</p><p>A busca não devolve nada. E o quinto critério: com o painel aberto, num segundo terminal, <code>uv run python -m pipeline.marts</code> termina sem <em>Could not set lock</em>. Clique em <strong>Recarregar dados</strong> e o painel continua igual &mdash; o banco foi recriado e os números são os mesmos.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a4-s3"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 08 HTML ============ -->
+  <section id="html">
+    <h2>08 &middot; Passo a passo</h2>
+    <p class="h2big">O mesmo painel num arquivo</p>
+    <p>O Streamlit precisa de um servidor de pé e de alguém que saiba rodá-lo. A diretoria não tem nenhum dos dois. Para ela, o painel vai por e-mail, num arquivo &mdash; e como os gráficos já moram em funções do <code>painel.py</code>, gerar esse arquivo é um script curto que não desenha nada de novo.</p>
+
+    <article class="step" data-id="a4-s4">
+      <div class="step-head">
+        <span class="step-n">4.5</span>
+        <div><p class="step-title">relatorio.py</p><p class="step-sub">Encanamento: a spec vem pronta</p></div>
+      </div>
+      <div class="step-body">
+        <p class="cmdlabel">Cole no Claude Code, Codex ou Copilot</p>
+        <div class="codewrap"><pre>Leia a docstring de painel.py: é a spec do painel e continua valendo.
+
+ARTEFATO A PRODUZIR
+relatorio.py, na raiz, executável com:
+  uv run python relatorio.py
+
+SPEC
+1. Lê os marts com painel.ler(), formata com painel.reais/pct/numero e
+   monta os gráficos com as mesmas funções de painel.py. Não importa
+   streamlit. Não desenha nenhum gráfico que não esteja em painel.py.
+2. Escreve relatorio.html na raiz: um arquivo só, com as mesmas quatro
+   faixas do app.py, na mesma ordem. Cartões em HTML simples, numa grade.
+   Gráficos com figura.to_html(full_html=False); a biblioteca do plotly
+   vem do CDN uma vez só, no primeiro gráfico (include_plotlyjs="cdn"),
+   e nos outros include_plotlyjs=False. Cada gráfico com div_id fixo
+   ("g01", "g02"...). Motivo: sem ele o plotly sorteia um id novo a cada
+   execução, e o arquivo muda sem o dado mudar.
+3. Sem filtro: o faturamento mostra o mesmo período padrão do app.py,
+   jan/2017 a ago/2018, e o título diz o período.
+4. Rodapé com a data e a hora em que o arquivo foi gerado:
+   "Dados de 25/10/2026 14:03". Motivo: o arquivo não fala com o banco;
+   quem lê precisa saber de quando é o número.
+5. Imprime o caminho do arquivo e o tamanho em KB. stdout em utf-8.
+
+CRITÉRIOS DE ACEITE
+- Abrir relatorio.html com dois cliques mostra os sete cartões com os
+  mesmos valores do app.py.
+- O arquivo tem menos de 200 KB.
+- Rodar duas vezes muda só a data do rodapé.</pre><button class="copy" type="button">copiar</button></div>
+        <div class="verify"><p class="vh">Confira</p><p>Abra o arquivo no navegador, sem Streamlit nenhum de pé. Os cartões batem com os do painel. Abra também o <code>relatorio.html</code> num editor de texto e procure pelos números: <code>137,42</code> está lá, escrito &mdash; é isso que &ldquo;congelado&rdquo; quer dizer.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a4-s4"> Marcar como feito</label>
+      </div>
+    </article>
+    <p class="small">O CDN do plotly exige internet para abrir os gráficos. Para um arquivo que abre até offline, troque por <code>include_plotlyjs=True</code> no primeiro gráfico: a biblioteca vai inteira para dentro do arquivo, e ele passa de uns 100&nbsp;KB para uns 5&nbsp;MB.</p>
+  </section>
+
+  <!-- ============ 09 TESTES ============ -->
+  <section id="testes">
+    <h2>09 &middot; Conceito</h2>
+    <p class="h2big">Por que testar código Python</p>
+    <p>Desde a aula 1, cada etapa imprime o que fez, e você confere o número com o olho. Funciona enquanto alguém olha. Um <strong>teste</strong> é essa conferência escrita em código: uma função que roda um pedaço do projeto e verifica se uma condição continua verdadeira. Roda em segundos, toda vez que algo muda, e avisa sozinha quando a condição quebra &mdash; mesmo que ninguém esteja olhando.</p>
+    <p>Em Python, a ferramenta mais comum é o <strong>pytest</strong>. Ele procura arquivos que começam com <code>test_</code>, normalmente numa pasta <code>test/</code> na raiz do projeto, roda cada função que começa com <code>test_</code> e mostra quais passaram e quais falharam. Por que vale o trabalho:</p>
+    <ul>
+      <li><strong>Mudar sem medo.</strong> Trocar um <code>JOIN</code>, renomear uma coluna, pedir para a IA reescrever uma função: os testes dizem em segundos se algo que funcionava parou de funcionar. Sem eles, a única forma de saber é alguém reclamar do número.</li>
+      <li><strong>Pegar o erro calado.</strong> O erro mais caro de um pipeline não é o que quebra com mensagem na tela; é o que roda e entrega o número errado. Teste é o que transforma esse erro calado num erro barulhento.</li>
+      <li><strong>Conferir o código da IA.</strong> A IA escreve código que roda quase sempre. Se ele faz o que a spec pediu é outra pergunta &mdash; e o teste é a resposta que não depende de você ler cada linha.</li>
+      <li><strong>Documentar o que o código promete.</strong> <code>test_cancelado_fica_fora_da_receita</code> diz, numa frase que roda, uma regra que senão estaria só na cabeça de quem escreveu.</li>
+      <li><strong>Rodar sozinho.</strong> Em empresa, os testes rodam a cada <code>git push</code>, num servidor de integração contínua (o GitHub Actions faz isso de graça). Código que quebra um teste não entra.</li>
+    </ul>
+    <h3>Teste unitário não é teste de qualidade de dados</h3>
+    <p>Os dois nomes têm &ldquo;teste&rdquo;, os dois podem rodar com SQL, e é fácil achar que um substitui o outro. Não substitui: eles respondem perguntas diferentes. O <strong>teste unitário</strong> pergunta se o <em>código</em> faz o que a regra manda. O <strong>teste de qualidade de dados</strong> pergunta se o <em>dado</em> que chegou hoje está saudável. Um código perfeito processa sem reclamar um arquivo quebrado; um dado perfeito passa por um código errado e sai errado.</p>
+
+    <div class="versus">
+      <div class="vs-card good">
+        <p class="vs-h">Teste unitário &middot; testa o código</p>
+        <p class="vs-flow">dado inventado &middot; antes do código entrar &middot; pytest</p>
+        <p>Pega um pedaço do projeto isolado &mdash; uma função do <code>painel.py</code>, o <code>.sql</code> de um mart &mdash; e roda sobre uma entrada que <em>você</em> inventa. Como a entrada é sua, a resposta esperada vem da conta: com um pedido cancelado de R$&nbsp;99 na entrada, a receita não pode ter esses R$&nbsp;99.</p>
+        <p>Não usa o banco do projeto. Roda na sua máquina e no <code>git push</code>, toda vez que o <em>código</em> muda. Falhou: o código não sobe.</p>
+      </div>
+      <div class="vs-card good">
+        <p class="vs-h">Qualidade de dados &middot; testa o dado</p>
+        <p class="vs-flow">dado real &middot; a cada execução do pipeline &middot; dbt, Soda</p>
+        <p>Olha o dado de verdade, depois que o pipeline gravou: a chave não repete, o status está na lista conhecida, a receita por mês bate com a receita por categoria. Não existe resposta esperada, porque a entrada não é sua &mdash; existem regras que nunca podem ser quebradas.</p>
+        <p>Roda todo dia, toda vez que o <em>dado</em> chega, mesmo sem ninguém ter mexido no código. Falhou: o dashboard não atualiza.</p>
+      </div>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>Teste unitário</th><th>Teste de qualidade de dados</th></tr></thead>
+        <tbody>
+          <tr><td><b>Pergunta</b></td><td>O código faz o que a regra manda?</td><td>O dado de hoje está saudável?</td></tr>
+          <tr><td><b>Entrada</b></td><td>Inventada, poucas linhas, escolhidas a dedo</td><td>A real, todas as linhas</td></tr>
+          <tr><td><b>Resposta esperada</b></td><td>Conhecida: sai da conta sobre a entrada</td><td>Desconhecida: só regras (não vazio, chave única, domínio)</td></tr>
+          <tr><td><b>Roda quando</b></td><td>O código muda</td><td>O dado chega</td></tr>
+          <tr><td><b>Se falhar</b></td><td>O código novo não entra</td><td>O número de hoje não vai para a tela</td></tr>
+          <tr><td><b>Onde mora</b></td><td><code>test/</code>, com pytest</td><td>No pipeline, depois de gravar: dbt, Great Expectations, Soda</td></tr>
+          <tr><td><b>Coverage</b></td><td>Faz sentido: mede linhas de código</td><td>Não se aplica: não há código sendo exercitado</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note"><b>Um exemplo em que só um dos dois pega.</b> O mart 01 tira os pedidos com <code>status NOT IN ('canceled', 'unavailable')</code>, e um teste unitário prova que esse filtro funciona: o pedido cancelado inventado fica fora. Agora imagine que amanhã o sistema da loja começa a gravar <code>'Canceled'</code>, com maiúscula. O código não mudou, então o teste unitário continua verde &mdash; e todo cancelado passa a entrar na receita. Quem pega é o teste de qualidade de dados: &ldquo;<code>status</code> só pode ter os valores conhecidos&rdquo; quebra no primeiro <code>'Canceled'</code>. Um pipeline sério tem os dois.</div>
+
+    <h3>Qualidade de dados: regras, não números</h3>
+    <p>Neste curso a gente sabe que <code>refined.pedidos</code> tem 99.441 linhas e que a receita é R$&nbsp;13.494.400,74 porque o dado da Olist está congelado desde 2018. Num ambiente real, entra pedido novo todo dia. Um teste que diz &ldquo;a receita tem que ser 13.494.400,74&rdquo; quebra amanhã de manhã sem que nada esteja errado &mdash; e um teste que quebra todo dia logo para de ser lido.</p>
+    <p>Teste de qualidade de dados confere <strong>regras que valem com qualquer dado</strong>. Você não sabe quanto vai dar; sabe o que nunca pode acontecer:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>A regra</th><th>No pipeline da Olist</th><th>O que ela pega</th></tr></thead>
+        <tbody>
+          <tr><td><b>Não vazio</b></td><td>Todo mart tem pelo menos uma linha.</td><td>O <code>JOIN</code> que não casou, o filtro com <code>'Delivered'</code> maiúsculo.</td></tr>
+          <tr><td><b>Chave única</b></td><td>Em <code>refined.pedidos</code>, <code>count(*)</code> igual a <code>count(DISTINCT pedido_id)</code>. No mart 06, uma linha por UF.</td><td>Duplicata que entrou na transformação; um <code>GROUP BY</code> com uma coluna a mais, que quebra o grão.</td></tr>
+          <tr><td><b>Sem nulo onde não pode</b></td><td><code>pedido_id</code>, <code>status</code> e <code>data_compra</code> sempre preenchidos.</td><td>Conversão de tipo que falhou e virou nulo calado.</td></tr>
+          <tr><td><b>Dentro do domínio</b></td><td>Percentuais entre 0 e 100; nota entre 1 e 5; <code>status</code> dentro da lista conhecida.</td><td>Divisão com o denominador errado; um status novo que ninguém tratou.</td></tr>
+          <tr><td><b>As partes somam o todo</b></td><td>No mart 03, <code>no_prazo + atrasados = entregues</code>.</td><td>O <code>ELSE</code> que engoliu o nulo; uma linha que caiu fora dos dois <code>CASE</code>.</td></tr>
+          <tr><td><b>Dois caminhos concordam</b></td><td>A receita do mart 01 é igual à do mart 02. Os <code>entregues</code> do mart 03 são iguais à soma do mart 10.</td><td>O <code>JOIN</code> que perde linha (o <code>LEFT JOIN</code> trocado) ou que multiplica (itens com pagamentos).</td></tr>
+          <tr><td><b>Nada some sem aviso</b></td><td>As linhas de <code>refined.pedidos</code> são as mesmas de <code>raw.pedidos</code>.</td><td>A transformação que descartou linha sem a spec mandar.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Repare que nenhuma dessas regras tem um número de resultado escrito. Elas continuam valendo no dia em que entrar um mês novo de vendas &mdash; e quebram justamente no dia em que um <code>JOIN</code> perde ou multiplica linha. A consulta do <a href="aula-3.html#rodar">passo 3.8 da aula 3</a>, receita por mês contra receita por categoria, é desse tipo: ela não sabe quanto deu, só sabe que os dois têm que concordar.</p>
+
+
+    <h3>Onde a qualidade de dados roda</h3>
+    <p>As mesmas regras têm nome nas ferramentas de dados. No <strong>dbt</strong>, quatro testes vêm prontos: <code>not_null</code>, <code>unique</code>, <code>accepted_values</code> e <code>relationships</code> (toda FK encontra a sua PK). Bibliotecas como <strong>Great Expectations</strong> e <strong>Soda</strong> fazem o mesmo para qualquer banco. E o lugar deles é sempre o mesmo: depois que o pipeline grava e <em>antes</em> de o dashboard mostrar. Se uma regra quebra, o painel continua com o número de ontem em vez de mostrar um número errado hoje.</p>
+    <div class="note"><b>Teste e critério de aceite são a mesma ideia.</b> Toda spec do curso terminou em critérios de aceite. Os que dizem um número (&ldquo;1.550.922 registros&rdquo;) servem para conferir este dado congelado. Os que dizem uma regra viram teste num pipeline de verdade: &ldquo;rodar duas vezes imprime a mesma coisa&rdquo; é teste unitário do código; &ldquo;<code>no_prazo + atrasados = entregues</code>&rdquo; é teste de qualidade do dado.</div>
+
+    <h3>O que é coverage</h3>
+    <p>Volta para o teste unitário, porque coverage é uma métrica dele: mede código, não dado. <strong>Coverage</strong> (cobertura) é o percentual das linhas do seu código que rodaram pelo menos uma vez enquanto os testes rodavam. Em Python, quem mede é o <code>pytest-cov</code>: ele roda os testes, anota cada linha executada e, no fim, mostra uma tabela por arquivo com o percentual e as linhas que ficaram de fora. O formato é este &mdash; os números do seu projeto serão outros:</p>
+    <pre>Name                         Stmts   Miss  Cover   Missing
+----------------------------------------------------------
+pipeline/db.py                  12      0   100%
+pipeline/marts.py               61     18    70%   48-55, 92-101
+painel.py                       84     40    52%   110-149
+----------------------------------------------------------
+TOTAL                          ...                64%</pre>
+    <p>A coluna mais útil é a última. <code>Missing</code> diz exatamente quais linhas nenhum teste executou &mdash; quase sempre os caminhos de erro, os que só rodam no dia em que algo dá errado. É o mapa do que ainda não foi testado.</p>
+    <div class="versus">
+      <div class="vs-card good">
+        <p class="vs-h">O que o coverage mede</p>
+        <p>Que a linha rodou. Se uma linha nunca rodou num teste, você não tem nenhuma evidência de que ela funciona &mdash; e 0% num arquivo é um aviso que não dá para ignorar.</p>
+      </div>
+      <div class="vs-card bad">
+        <p class="vs-h">O que ele não mede</p>
+        <p>Que a linha está certa. Um teste que chama a função e não confere nada com <code>assert</code> sobe o coverage e não prova coisa nenhuma. É o jeito mais rápido de enganar a métrica &mdash; e é o que uma IA faz quando a única ordem é &ldquo;chegue a 60%&rdquo;.</p>
+      </div>
+    </div>
+    <p><strong>Por que 60% e não 100%.</strong> Os primeiros 60% são as regras do pipeline: ler, converter, deduplicar, gravar, formatar. O resto é cada vez mais caro e diz cada vez menos &mdash; mensagens de erro, ramos que só existem por segurança. Uma meta alcançável que sobe com o tempo vale mais que 100% conseguido com teste sem <code>assert</code>. Por isso a spec abaixo pede o número <em>e</em> proíbe os atalhos.</p>
+
+    <article class="step" data-id="a4-t1">
+      <div class="step-head">
+        <span class="step-n">4.6</span>
+        <div><p class="step-title">A spec dos testes</p><p class="step-sub">A IA lê o repositório e escreve os testes até 60% de coverage</p></div>
+      </div>
+      <div class="step-body">
+        <p>Primeiro as duas ferramentas, como dependência de desenvolvimento &mdash; quem só roda o painel não precisa delas:</p>
+        <div class="codewrap"><pre>uv add --dev pytest pytest-cov</pre><button class="copy" type="button">copiar</button></div>
+        <p class="cmdlabel">Cole no Claude Code, Codex ou Copilot</p>
+        <div class="codewrap"><pre>CONTEXTO
+Estou construindo um pipeline de dados em Python sobre o dataset público da
+Olist. Trabalho com spec-driven development: a spec abaixo é a fonte da
+verdade e o código é consequência dela. Não acrescente requisito que não
+esteja escrito aqui. Se algo estiver ambíguo, pergunte antes de escrever código.
+
+STACK
+- Python 3.13, uv, DuckDB
+- pytest e pytest-cov, já instalados com uv add --dev
+
+O QUE JÁ EXISTE (leia tudo antes de escrever qualquer teste)
+pipeline/db.py, pipeline/ingestao.py, pipeline/transformacao.py,
+pipeline/marts.py, painel.py, relatorio.py, app.py e sql/marts/*.sql.
+Cada módulo tem a sua spec na docstring do topo, com critérios de aceite.
+
+ARTEFATOS A PRODUZIR
+Pasta test/ na raiz, com um arquivo por módulo: test_db.py,
+test_ingestao.py, test_transformacao.py, test_marts.py, test_painel.py,
+test_relatorio.py. Executável com:
+  uv run pytest --cov
+Configuração no pyproject.toml:
+  [tool.pytest.ini_options]
+  testpaths = ["test"]
+  pythonpath = ["."]
+  [tool.coverage.run]
+  source = ["."]
+  omit = ["test/*", "app.py", "ui.py", ".venv/*"]
+  [tool.coverage.report]
+  fail_under = 60
+  show_missing = true
+
+SPEC
+1. META
+   60% de coverage de linhas no TOTAL do código Python do projeto:
+   pipeline/, painel.py e relatorio.py. A meta é do total, não de cada
+   arquivo. Arquivo que nenhum teste importa conta como 0%, e é isso que
+   o source = ["."] garante.
+   Ficam fora da medição: app.py, a tela do Streamlit, conferida no
+   navegador no passo 4.4; e ui.py, que só abre a interface do DuckDB.
+   Motivo: testar layout por coverage não prova nada.
+
+2. NUNCA O BANCO NEM OS DADOS DO PROJETO
+   Nenhum teste abre olist.duckdb nem lê os arquivos de raw/.
+   Cada teste usa tmp_path: um DuckDB novo dentro dele e, quando precisar
+   de CSV, arquivos .csv.gz pequenos escritos pelo próprio teste. Para o
+   código encontrar esses arquivos, use monkeypatch.chdir(tmp_path) ou
+   monkeypatch.setattr na constante de caminho do módulo.
+   Motivo: o teste tem que rodar em qualquer máquina, sem o pipeline ter
+   rodado, e não pode alterar o banco de ninguém.
+   São testes unitários do código. Testes de qualidade sobre o dado real
+   (chave única, domínio, totais que batem) ficam fora deste pedido.
+
+3. DADO INVENTADO, RESULTADO DA REGRA
+   Toda entrada é inventada pelo teste: poucas linhas, cada uma com um
+   comentário dizendo por que está ali (pedido com dois itens, pedido
+   cancelado, entrega às 15h do dia previsto, data nula, linha duplicada).
+   O valor esperado sai da conta feita sobre essa entrada, nunca de um
+   número medido no dado da Olist (99.441, 13.494.400,74, 93,2...).
+   Motivo: o dado real muda todo dia; a regra não.
+
+4. O QUE TESTAR
+   Os critérios de aceite das docstrings são a lista de partida: cada
+   critério que descreve uma regra vira pelo menos um teste. Em especial:
+   - ingestão: o CSV vira tabela com as mesmas linhas; arquivo faltando
+     encerra com SystemExit.
+   - transformação: duplicata exata sai; datas viram TIMESTAMP e dinheiro
+     DECIMAL; valor que não converte encerra com SystemExit, sem virar nulo.
+   - marts: arquivo sem prefixo NN_ para antes de executar; mart vazio
+     encerra e deixa o schema marts como estava; arquivo apagado faz o
+     mart sumir na execução seguinte.
+   - sql/marts/01 e 03, rodados sobre tabelas inventadas: pedido com dois
+     itens conta uma vez; cancelado fica fora da receita; entrega no dia
+     previsto, à tarde, está no prazo.
+   - painel: reais, pct e numero com entradas inventadas; cada função de
+     gráfico devolve uma figura com tantos pontos quantas linhas tem o
+     DataFrame inventado.
+   - relatorio: gera o arquivo dentro de tmp_path; rodar duas vezes muda
+     só o rodapé.
+   Caminho de erro que encerra com sys.exit: pytest.raises(SystemExit).
+
+5. ESTILO
+   pytest puro: funções test_* com assert. Fixtures, só tmp_path e
+   monkeypatch. DuckDB de verdade, nunca mock do banco.
+   O nome do teste é a frase que ele prova:
+     test_cancelado_fica_fora_da_receita
+   Proibido: teste sem assert, skip, xfail, try/except em volta do assert,
+   pytest.approx em dinheiro. Motivo: cada um sobe o coverage sem provar
+   nada.
+
+6. NÃO ALTERE O CÓDIGO DO PROJETO
+   Nenhum arquivo muda fora de test/ e do pyproject.toml. Se uma parte só
+   for testável mudando o código, não mude: liste na entrega, com o motivo.
+
+CRITÉRIOS DE ACEITE
+- uv run pytest --cov termina sem falha, com TOTAL de 60% ou mais.
+- Com olist.duckdb renomeado, o resultado é o mesmo.
+- Rodar duas vezes seguidas imprime a mesma coisa.
+- Uma busca por 99441 e 13494400 dentro de test/ não encontra nada.
+- git status mostra mudança só em test/ e no pyproject.toml.
+
+ENTREGA
+1. Os arquivos de teste.
+2. A saída de uv run pytest --cov, com a tabela por arquivo.
+3. As linhas que ficaram sem teste (coluna Missing) e por que não valeram
+   o esforço agora.
+4. Uma lista final do que você assumiu e que não estava na spec.</pre><button class="copy" type="button">copiar</button></div>
+        <p>Depois que a IA terminar, rode você mesmo:</p>
+        <div class="codewrap"><pre>uv run pytest --cov</pre><button class="copy" type="button">copiar</button></div>
+        <div class="verify"><p class="vh">Confira</p><p>Os cinco critérios de aceite, um por um. Depois, abra dois testes ao acaso e leia: o dado inventado tem o comentário dizendo por que cada linha está ali? O <code>assert</code> confere uma conta que você faria de cabeça sobre aquela entrada? Se a resposta for não, o coverage subiu e a confiança não &mdash; peça a correção citando o item 3 ou o 5 da spec.</p></div>
+        <div class="note"><b>A coluna Missing é a lição de casa.</b> Leia o que ficou de fora. Se for mensagem de erro, tudo bem. Se for a linha que deduplica ou a que filtra pedido válido, a meta de 60% foi batida no lugar errado.</div>
+        <label class="mark"><input type="checkbox" id="chk-a4-t1"> Marcar como feito</label>
+      </div>
+    </article>
+
+  </section>
+
+
+  <!-- ============ 10 DESAFIO ============ -->
+  <section id="desafio">
+    <h2>10 &middot; Para casa</h2>
+    <p class="h2big">O desafio final: o seu pipeline, do zero</p>
+    <p>Quatro aulas construindo um pipeline sobre um dado que alguém escolheu para você. O desafio final é fazer tudo de novo com um dado que <strong>você</strong> escolhe, do arquivo de origem até os indicadores, com Python, SQL, IA e git &mdash; do jeito que fizemos com a Olist. O passo que não foi mostrado é o mais difícil de todos: decidir sozinho quais perguntas o dado responde.</p>
+
+    <h3>Os requisitos do projeto</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Requisito</th><th>Como fica</th></tr></thead>
+        <tbody>
+          <tr><td><b>Fonte escolhida por você</b></td><td>Um dataset do Kaggle ou uma API pública, sobre um tema que você conhece. A Olist também vale, desde que feita de outro jeito: outras perguntas, outros indicadores e outras transformações &mdash; não o pipeline do curso copiado. Se for Kaggle, a licença precisa permitir uso público, porque o repositório é público.</td></tr>
+          <tr><td><b>Duas tabelas ou mais</b></td><td>Ligadas por uma chave, para existir pelo menos um <code>JOIN</code>. Não há mínimo de linhas.</td></tr>
+          <tr><td><b>Três camadas</b></td><td>Dado bruto, dado transformado e indicadores, cada camada separada da outra. Os nomes são seus: <code>raw</code>, <code>refined</code> e <code>marts</code> no curso; <code>bronze</code>, <code>silver</code> e <code>gold</code> ou qualquer outro serve, desde que a separação exista. Na camada bruta, nada é alterado.</td></tr>
+          <tr><td><b>Testes unitários</b></td><td>Testes com <code>pytest</code>, rodando com dado inventado e sem abrir o banco do projeto, como no passo 4.6.</td></tr>
+          <tr><td><b>Repositório público no GitHub pessoal</b></td><td>Na sua conta, não em conta de empresa nem em fork do repositório do curso.</td></tr>
+          <tr><td><b>Histórico de commits</b></td><td>O projeto construído aos poucos, com um commit por etapa e mensagem dizendo o que mudou &mdash; não o projeto inteiro em um commit só. O histórico é lido junto com o código: ele mostra a ordem em que as coisas aconteceram.</td></tr>
+          <tr><td><b>Dashboard</b> &middot; opcional</td><td>Se fizer, ele lê só da camada de indicadores, sem nenhum cálculo na tela, como o painel da seção 07.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note"><b>A IA entra em todas as etapas, e você confere todas.</b> O README termina com uma seção curta: em que etapa a IA errou ou assumiu algo que você não pediu, e como você descobriu &mdash; quase sempre contando linhas antes e depois. Um projeto em que a IA não errou nenhuma vez é um projeto em que ninguém conferiu.</div>
+
+    <h3>O README</h3>
+    <p>É a primeira coisa que a correção abre: a fonte do dado (link e, se for Kaggle, a licença); o que é uma linha de cada tabela; as três camadas e os indicadores que saem delas; como rodar do zero, em comandos, incluindo os testes; e a seção sobre a IA. Quem clona o repositório tem que chegar aos indicadores só lendo o README.</p>
+
+    <p class="small" style="margin-top:14px"><strong>Entrega:</strong> o link do repositório, pela forma combinada na aula. Projeto incompleto também se entrega: uma etapa travada com a dúvida escrita no README vale mais que um projeto inteiro copiado.</p>
+    <p class="small" style="margin-top:14px">O critério principal é o do curso inteiro: cada indicador tem um arquivo <code>.sql</code> de onde saiu, cada decisão sobre o dado tem um motivo escrito, e o histórico do git conta a ordem em que as coisas aconteceram.</p>
+  </section>
+
+  <!-- ============ ANEXOS ============ -->
+  <section id="referencia">
+    <h2>A1 &middot; Anexo</h2>
+    <p class="h2big">Números da tela</p>
+    <p>Medidos nos arquivos do curso, com a spec de referência da aula 2 e as respostas de referência das aulas 3 e 4. É o que o painel, o HTML e qualquer outra ferramenta têm que mostrar.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Na tela</th><th>Mart &middot; coluna</th><th style="text-align:right">Valor</th></tr></thead>
+        <tbody>
+          <tr><td>Ticket médio</td><td class="term">kpis.ticket_medio</td><td class="num nw">R$ 137,42</td></tr>
+          <tr><td>Cancelados</td><td class="term">kpis.pct_cancelados</td><td class="num">0,63%</td></tr>
+          <tr><td>Peso do frete</td><td class="term">kpis.pct_frete</td><td class="num">14,2%</td></tr>
+          <tr><td>Recompra</td><td class="term">100 &minus; recompra.pct_clientes (1 pedido)</td><td class="num">3,04%</td></tr>
+          <tr><td>No prazo</td><td class="term">entrega_no_prazo.pct_no_prazo</td><td class="num">93,2%</td></tr>
+          <tr><td>Dias até entregar</td><td class="term">kpis.dias_entrega</td><td class="num">12,5</td></tr>
+          <tr><td>Nota média</td><td class="term">kpis.nota_media</td><td class="num">4,09</td></tr>
+          <tr><td>Faturamento, período padrão</td><td class="term">vendas_mensais</td><td class="num nw">20 meses &middot; R$ 13.449.529,68</td></tr>
+          <tr><td>Faturamento, período inteiro</td><td class="term">vendas_mensais</td><td class="num nw">24 meses &middot; R$ 13.494.400,74</td></tr>
+          <tr><td>Maior mês</td><td class="term">vendas_mensais</td><td class="num nw">nov/2017 &middot; R$ 1.003.862,14</td></tr>
+          <tr><td>Maior categoria</td><td class="term">top_categorias</td><td class="num nw">health_beauty &middot; R$ 1.255.695,13</td></tr>
+          <tr><td>Cartão de crédito</td><td class="term">mix_pagamento</td><td class="num">78,5% do valor</td></tr>
+          <tr><td>Ticket por UF</td><td class="term">ticket_medio_por_estado</td><td class="num nw">PB R$ 216,34 &middot; SP R$ 125,57</td></tr>
+          <tr><td>Clientes por UF</td><td class="term">clientes_por_uf</td><td class="num nw">SP 40.302 &middot; RJ 12.384 &middot; MG 11.259</td></tr>
+          <tr><td>Pior nota</td><td class="term">nota_por_categoria</td><td class="num nw">office_furniture &middot; 3,62</td></tr>
+          <tr><td>80% da receita</td><td class="term">vendedores_pareto</td><td class="num nw">540 de 3.053 vendedores</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>As diferenças que têm nome</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th style="text-align:right">Certo</th><th style="text-align:right">Errado</th><th>Por quê</th></tr></thead>
+        <tbody>
+          <tr><td class="num">137,42</td><td class="num">120,38</td><td>Média do preço do item, não da receita do pedido</td></tr>
+          <tr><td class="num">137,42</td><td class="num">163,95</td><td>Média dos 27 tickets por UF: média de médias</td></tr>
+          <tr><td class="num">137,42</td><td class="num">4.426,65</td><td>Soma dos 27 tickets por UF: a agregação padrão do Power BI e do Tableau</td></tr>
+          <tr><td class="num">137,42</td><td class="num">13.742</td><td>CSV com ponto lido em português: o ponto virou milhar</td></tr>
+          <tr><td class="num">14,2%</td><td class="num">16,6%</td><td>Frete sobre o preço, sem o frete no denominador</td></tr>
+          <tr><td class="num">96.096</td><td class="num">96.136</td><td>Soma do mart 12: 39 pessoas aparecem em mais de uma UF</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="erros">
+    <h2>A2 &middot; Anexo</h2>
+    <p class="h2big">Quando quebrar</p>
+
+    <details>
+      <summary>IO Error: Could not set lock on file, com o painel de pé</summary>
+      <p>O painel está segurando uma conexão aberta &mdash; quase sempre uma conexão guardada em <code>st.cache_resource</code> ou numa variável global. A spec manda abrir e fechar dentro de <code>ler()</code>: mostre o item 1 da spec para a IA e peça a correção. O <code>ui.py</code> de pé causa o mesmo erro, como nas outras aulas.</p>
+    </details>
+
+    <details>
+      <summary>O painel mostra o número antigo depois de rodar o pipeline</summary>
+      <p>É o <code>st.cache_data</code> fazendo o trabalho dele: guardou a leitura anterior. Clique em <strong>Recarregar dados</strong>. Se o botão não existe, a spec não foi seguida &mdash; o item 6 pede.</p>
+    </details>
+
+    <details>
+      <summary>Required test coverage of 60% not reached</summary>
+      <p>Os testes passaram, mas cobrem menos de 60% das linhas. Não baixe a meta no <code>pyproject.toml</code>: leia a coluna <code>Missing</code>, escolha as linhas que são regra de negócio e peça à IA testes para elas, citando a spec do passo 4.6. Se o que falta é só mensagem de erro, a meta está no lugar certo e o teste vem depois.</p>
+    </details>
+
+    <details>
+      <summary>pytest diz &ldquo;no tests ran&rdquo;</summary>
+      <p>Rode da raiz do projeto, onde está o <code>pyproject.toml</code>. E o nome do arquivo e de cada função tem que começar com <code>test_</code> &mdash; <code>testes_marts.py</code> ou <code>def teste_receita()</code> são ignorados em silêncio.</p>
+    </details>
+
+    <details>
+      <summary>Port 8501 is already in use</summary>
+      <p>Outro Streamlit está de pé, talvez num terminal esquecido. Feche-o com <code>Ctrl+C</code>, ou suba este em outra porta: <code>uv run streamlit run app.py --server.port 8502</code>.</p>
+    </details>
+
+    <details>
+      <summary>As barras saem em ordem alfabética</summary>
+      <p>O plotly ordena o eixo de categorias sozinho. A ordem tem que vir do mart (<code>ORDER BY receita DESC</code>) e ser mantida no gráfico, com <code>categoryorder</code> no eixo. Nas barras horizontais, o primeiro da lista fica embaixo por padrão: para o maior ficar em cima, a ordem do eixo é a inversa da do DataFrame.</p>
+    </details>
+
+    <details>
+      <summary>Aviso: use_container_width is deprecated</summary>
+      <p>O Streamlit trocou o nome do parâmetro. <code>use_container_width=True</code> vira <code>width="stretch"</code>. Não quebra nada hoje, mas a spec pede o nome novo.</p>
+    </details>
+
+    <details>
+      <summary>No Power BI, o ticket aparece como 13.742</summary>
+      <p>O CSV tem ponto decimal e o Power BI em português leu o ponto como milhar. Em <em>Transformar dados</em>, clique com o botão direito na coluna, <em>Alterar tipo &rarr; Usando a localidade</em>, tipo <em>Número decimal</em>, localidade <em>Inglês (Estados Unidos)</em>.</p>
+    </details>
+
+    <details>
+      <summary>Quebrei tudo e não sei onde</summary>
+      <p>Apague o <code>olist.duckdb</code> e rode tudo na ordem. Os <code>.sql</code> e o painel estão em arquivo; o banco é descartável.</p>
+      <div class="codewrap"><pre>uv run python -m pipeline.ingestao
+uv run python -m pipeline.transformacao
+uv run python -m pipeline.marts</pre><button class="copy" type="button">copiar</button></div>
+    </details>
+  </section>
+
+  <footer>
+    Curso Olist &middot; Aula 4 de 4 &middot; dados públicos da Olist Store (Kaggle, CC BY-NC-SA 4.0).<br>
+    Seu progresso fica salvo neste navegador. &middot; <a href="index.html">Todas as aulas</a> &middot; <a href="aula-1.html">Aula 1</a> &middot; <a href="aula-2.html">Aula 2</a> &middot; <a href="aula-3.html">Aula 3</a>
+  </footer>
+
+</div>
+</main>
+</div>
+
+<script>
+(function(){
+  // Só os passos visíveis contam no progresso: as etapas ainda não liberadas
+  // ficam dentro de uma div [hidden], e contá-las deixaria a barra travada.
+  var steps = Array.prototype.slice.call(document.querySelectorAll(".step"))
+    .filter(function(s){ return !s.closest("[hidden]"); });
+  var fill = document.getElementById("fill");
+  var pct = document.getElementById("pct");
+  var KEY = "olist-progresso";
+
+  function load(){
+    try { return JSON.parse(localStorage.getItem(KEY) || "{}"); }
+    catch(e){ return {}; }
+  }
+  function save(state){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  }
+  function paint(){
+    var done = 0;
+    steps.forEach(function(s){
+      var box = s.querySelector("input[type=checkbox]");
+      if (box.checked){ done++; s.classList.add("done"); }
+      else { s.classList.remove("done"); }
+    });
+    pct.textContent = done + "/" + steps.length;
+    fill.style.width = (steps.length ? (done / steps.length * 100) : 0) + "%";
+  }
+
+  var state = load();
+  steps.forEach(function(s){
+    var id = s.getAttribute("data-id");
+    var box = s.querySelector("input[type=checkbox]");
+    box.checked = !!state[id];
+    box.addEventListener("change", function(){
+      state[id] = box.checked;
+      save(state);
+      paint();
+    });
+  });
+  paint();
+
+  document.getElementById("reset").addEventListener("click", function(){
+    state = {};
+    save(state);
+    steps.forEach(function(s){ s.querySelector("input[type=checkbox]").checked = false; });
+    paint();
+  });
+
+  // copiar
+  document.querySelectorAll(".copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      var txt = pre.innerText.split("\n").filter(function(l){ return l.trim().indexOf("#") !== 0; }).join("\n").trim();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(txt).then(function(){
+          btn.textContent = "copiado";
+          setTimeout(function(){ btn.textContent = "copiar"; }, 1600);
+        });
+      }
+    });
+  });
+
+  // tema
+  var TKEY = "olist-tema";
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem(TKEY);
+    if (saved) root.setAttribute("data-theme", saved);
+  } catch(e){}
+  document.getElementById("theme").addEventListener("click", function(){
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem(TKEY, next); } catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

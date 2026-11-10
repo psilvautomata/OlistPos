@@ -1,0 +1,49 @@
+name: "Desafio 2 — A spec da tabela mais difícil"
+description: Entrega da spec de raw.geolocalizacao (aula 2, transformação).
+title: "[Desafio 2] <seu nome>"
+labels: ["desafio-2"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A spec de `raw.geolocalizacao`, no formato da spec que você escreveu em aula: cada decisão com o seu motivo, e cada motivo apoiado num número que você contou no banco.
+        Só a spec: nada de código, nada gravado no banco. Enunciado no [guia da aula 2](https://ckoliveiraa.github.io/pipeline-olist/aula-2.html#desafio).
+
+        > ⚠️ Este repositório é público: a sua entrega fica visível para a turma. É de propósito — as specs vão para a tela lado a lado na correção.
+
+  - type: input
+    id: nome
+    attributes:
+      label: Nome
+      description: Como você quer ser chamado na correção.
+    validations:
+      required: true
+
+  - type: textarea
+    id: spec
+    attributes:
+      label: specs/geolocalizacao.md
+      description: Cole o conteúdo do arquivo inteiro.
+      render: markdown
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: regras
+    attributes:
+      label: Conferência antes de enviar
+      options:
+        - label: Cada decisão tem o seu motivo.
+          required: true
+        - label: Cada motivo se apoia num número que eu contei no banco.
+          required: true
+        - label: Não escrevi código nem gravei nada no banco.
+          required: true
+
+  - type: textarea
+    id: duvidas
+    attributes:
+      label: Onde travou / dúvidas (opcional)
+      description: Traga quebrado se não saiu — a dúvida de um é a da turma inteira.
+    validations:
+      required: false

@@ -1,0 +1,91 @@
+name: "Desafio 3 — Os marts 06 a 10"
+description: Entrega dos cinco marts do desafio (aula 3, SQL).
+title: "[Desafio 3] <seu nome>"
+labels: ["desafio-3"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Cinco arquivos `.sql` que o `pipeline.marts` transforma em tabela, do `06` ao `10`. Enunciado e números para conferir no [guia da aula 3](https://ckoliveiraa.github.io/pipeline-olist/aula-3.html#desafio).
+        Cole cada arquivo inteiro, com os comentários de grão. Se um não saiu, cole o que tem e escreva onde travou: mart quebrado com a dúvida escrita conta.
+
+        > ⚠️ Este repositório é público: a sua entrega fica visível para a turma. É de propósito — os arquivos vão para a tela lado a lado na correção.
+
+  - type: input
+    id: nome
+    attributes:
+      label: Nome
+      description: Como você quer ser chamado na correção.
+    validations:
+      required: true
+
+  - type: textarea
+    id: sql06
+    attributes:
+      label: sql/marts/06_ticket_medio_por_estado.sql
+      render: sql
+    validations:
+      required: true
+
+  - type: textarea
+    id: sql07
+    attributes:
+      label: sql/marts/07_mix_pagamento.sql
+      render: sql
+    validations:
+      required: true
+
+  - type: textarea
+    id: sql08
+    attributes:
+      label: sql/marts/08_nota_por_prazo.sql
+      render: sql
+    validations:
+      required: true
+
+  - type: textarea
+    id: sql09
+    attributes:
+      label: sql/marts/09_vendedores_pareto.sql
+      render: sql
+    validations:
+      required: true
+
+  - type: textarea
+    id: sql10
+    attributes:
+      label: sql/marts/10_tempo_entrega_por_estado.sql
+      render: sql
+    validations:
+      required: true
+
+  - type: textarea
+    id: saida
+    attributes:
+      label: Saída do pipeline.marts
+      description: O que aparece na tela ao rodar `uv run python -m pipeline.marts`, com os dez marts.
+      render: text
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: regras
+    attributes:
+      label: Conferência antes de enviar
+      options:
+        - label: A primeira linha de cada arquivo diz o grão do resultado, e cada CTE diz o seu.
+          required: true
+        - label: Os marts 06 e 10 têm 27 linhas; a soma de pedidos do 06 dá 98.199 e a de entregues do 10 dá 96.470.
+          required: true
+        - label: O 07 explica, no comentário, por que a soma de valor passa da receita do mart 01.
+          required: true
+        - label: Os arquivos rodam pelo pipeline.marts, não só no notebook.
+          required: true
+
+  - type: textarea
+    id: duvidas
+    attributes:
+      label: Onde travou / dúvidas (opcional)
+      description: Traga quebrado se não saiu — a dúvida de um é a da turma inteira.
+    validations:
+      required: false

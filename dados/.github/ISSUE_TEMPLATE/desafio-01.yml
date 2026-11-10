@@ -1,0 +1,70 @@
+name: "Desafio 1 — O que esse dado é capaz de responder"
+description: Entrega dos dez indicadores da aula 1 (ingestão).
+title: "[Desafio 1] <seu nome>"
+labels: ["desafio-1"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Dez indicadores que o dado em `raw` permite calcular — e, para cada um, de que tabelas e colunas ele sai.
+        Nada de SQL: o desafio é de leitura, não de código. Enunciado completo no [guia do curso](https://ckoliveiraa.github.io/pipeline-olist/aula-1.html#desafios).
+
+        > ⚠️ Este repositório é público: a sua entrega fica visível para a turma. É de propósito — vamos ler em voz alta na correção.
+
+  - type: input
+    id: nome
+    attributes:
+      label: Nome
+      description: Como você quer ser chamado na correção.
+    validations:
+      required: true
+
+  - type: textarea
+    id: indicadores
+    attributes:
+      label: Os dez indicadores
+      description: |
+        Uma linha por indicador, no formato `Indicador — tabela (coluna) + tabela (coluna) — o que mede`.
+        Marque com `?` no começo da linha os que você não tem certeza se dão.
+      placeholder: |
+        1. Ticket médio por pedido — itens_pedido (preco) + pedidos (order_id) — mede quanto vale uma venda típica
+        2. ...
+        3. ...
+        4. ...
+        5. ...
+        6. ...
+        7. ...
+        8. ...
+        9. ...
+        10. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: nao-da
+    attributes:
+      label: O que o dado NÃO sustenta (opcional)
+      description: Algum indicador que você quis e descobriu que não sai daqui? Diga qual e por quê — isso vale tanto quanto os dez.
+      placeholder: "Margem de lucro — não existe custo do produto em nenhuma tabela, só preço de venda e frete."
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: regras
+    attributes:
+      label: Conferência antes de enviar
+      options:
+        - label: Só entrou indicador que o dado sustenta.
+          required: true
+        - label: Cada indicador diz a tabela e a coluna de onde sai.
+          required: true
+        - label: Pelo menos três indicadores cruzam duas tabelas ou mais.
+          required: true
+
+  - type: textarea
+    id: duvidas
+    attributes:
+      label: Onde travou / dúvidas (opcional)
+      description: Traga quebrado se não saiu — erro na tela é a parte mais útil da correção.
+    validations:
+      required: false

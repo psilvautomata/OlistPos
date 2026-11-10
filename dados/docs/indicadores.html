@@ -1,0 +1,1129 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Indicadores da Turma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#eef1ee;
+  --surface:#f7f9f7;
+  --sunken:#e4e9e5;
+  --ink:#10171a;
+  --ink-2:#39474a;
+  --ink-3:#6b7b7c;
+  --line:#cdd6cf;
+  --accent:#1a6b52;
+  --accent-soft:#dcebe3;
+  --amber:#a86e05;
+  --amber-soft:#f6ebd2;
+  --danger:#9b3a25;
+  --code-bg:#12191c;
+  --code-ink:#dce7e0;
+  --shadow:0 1px 2px rgba(16,23,26,.06),0 8px 24px -16px rgba(16,23,26,.3);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d1214;
+    --surface:#141c1f;
+    --sunken:#1b2529;
+    --ink:#e7eee9;
+    --ink-2:#b2c0ba;
+    --ink-3:#7d8d88;
+    --line:#2a383c;
+    --accent:#4fbf94;
+    --accent-soft:#12302a;
+    --amber:#e0a800;
+    --amber-soft:#2e2510;
+    --danger:#e0805f;
+    --code-bg:#080d0f;
+    --code-ink:#cfded6;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d1214;
+  --surface:#141c1f;
+  --sunken:#1b2529;
+  --ink:#e7eee9;
+  --ink-2:#b2c0ba;
+  --ink-3:#7d8d88;
+  --line:#2a383c;
+  --accent:#4fbf94;
+  --accent-soft:#12302a;
+  --amber:#e0a800;
+  --amber-soft:#2e2510;
+  --danger:#e0805f;
+  --code-bg:#080d0f;
+  --code-ink:#cfded6;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.ui{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+a{color:var(--accent)}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;
+  grid-template-columns:262px minmax(0,1fr);
+  gap:44px;
+  max-width:1180px;
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:0 72px;
+}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+}
+
+/* ---------- sidebar ---------- */
+.side{
+  position:sticky;
+  top:0;
+  align-self:start;
+  max-height:100vh;
+  overflow-y:auto;
+  padding-block:28px 32px;
+  font-family:Archivo,sans-serif;
+  font-size:13.5px;
+}
+@media (max-width:900px){
+  .side{position:static;max-height:none;border-bottom:1px solid var(--line);margin-bottom:8px}
+}
+.side .brand{
+  font-weight:700;letter-spacing:-.01em;font-size:15px;color:var(--ink);
+  display:flex;align-items:center;gap:8px;margin-bottom:18px;
+}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--amber);flex:none}
+.prog-wrap{margin-bottom:20px}
+.prog-label{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px;
+}
+.prog-label b{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums}
+.prog-track{height:4px;background:var(--sunken);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:var(--accent);transition:width .35s ease}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+nav a{
+  display:flex;gap:9px;align-items:baseline;
+  text-decoration:none;color:var(--ink-2);
+  padding:5px 8px;border-radius:5px;line-height:1.35;
+}
+nav a:hover{background:var(--sunken);color:var(--ink)}
+nav a .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);flex:none;width:18px}
+.side-foot{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);display:flex;gap:8px}
+.tbtn{
+  font-family:Archivo,sans-serif;font-size:12px;
+  background:var(--surface);color:var(--ink-2);
+  border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;
+}
+.tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+
+/* ---------- main ---------- */
+main{padding-block:28px 0;min-width:0}
+.wrap{max-width:68ch}
+
+/* hero */
+.eyebrow{
+  font-family:Archivo,sans-serif;font-size:11.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin:0 0 14px;
+}
+h1{
+  font-size:clamp(34px,5.2vw,50px);font-weight:700;letter-spacing:-.025em;
+  line-height:1.04;margin:0 0 18px;text-wrap:balance;
+}
+.lede{font-size:20px;line-height:1.55;color:var(--ink-2);margin:0 0 26px;text-wrap:pretty}
+.facts{
+  display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:10px;
+  background:var(--surface);overflow:hidden;margin-bottom:40px;
+}
+.fact{flex:1 1 130px;padding:13px 16px;border-right:1px solid var(--line)}
+.fact:last-child{border-right:0}
+@media (max-width:560px){.fact{flex:1 1 50%;border-bottom:1px solid var(--line)}}
+.fact dt{
+  font-family:Archivo,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 3px;
+}
+.fact dd{margin:0;font-family:Archivo,sans-serif;font-weight:600;font-size:15px;color:var(--ink)}
+
+/* sections */
+section{padding-block:34px 0;scroll-margin-top:16px}
+h2{
+  font-size:13px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 6px;
+}
+.h2big{
+  font-family:Archivo,sans-serif;font-size:clamp(24px,3.4vw,31px);font-weight:700;
+  letter-spacing:-.02em;line-height:1.15;margin:0 0 16px;color:var(--ink);text-wrap:balance;
+}
+h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol.body{padding-left:20px;margin:0 0 15px}
+li{margin-bottom:6px}
+strong{font-weight:600}
+.small{font-size:15px;color:var(--ink-2)}
+
+/* pipeline diagram */
+.pipe{
+  display:flex;flex-direction:column;gap:0;margin:0 0 12px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:20px;box-shadow:var(--shadow);
+}
+.layer{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
+@media (max-width:520px){.layer{grid-template-columns:minmax(0,1fr);gap:4px}}
+.layer .tag{
+  font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  padding:5px 8px;border-radius:5px;text-align:center;
+  background:var(--sunken);color:var(--ink-2);
+}
+.layer.l-raw .tag{background:var(--sunken);color:var(--ink-2)}
+.layer.l-ref .tag{background:var(--amber-soft);color:var(--amber)}
+.layer.l-mart .tag{background:var(--accent-soft);color:var(--accent)}
+.layer .desc{font-size:15px;color:var(--ink-2)}
+.layer .desc b{color:var(--ink);font-family:Archivo,sans-serif;font-weight:600}
+.arrow{
+  display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;
+  padding:7px 0;align-items:center;
+}
+@media (max-width:520px){.arrow{grid-template-columns:minmax(0,1fr)}.arrow .stem{display:none}}
+.arrow .stem{display:flex;justify-content:center;color:var(--ink-3);font-size:14px;line-height:1}
+.arrow .what{
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);
+}
+.arrow .what em{font-style:normal;color:var(--accent);font-weight:600}
+
+/* steps */
+.step{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:22px;margin-bottom:16px;box-shadow:var(--shadow);
+}
+.step.done{border-color:var(--accent);background:var(--surface)}
+.step-head{display:flex;gap:13px;align-items:flex-start;margin-bottom:4px}
+.step-n{
+  font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  background:var(--amber-soft);color:var(--amber);
+  border-radius:6px;padding:4px 8px;flex:none;margin-top:3px;
+}
+.step.done .step-n{background:var(--accent-soft);color:var(--accent)}
+.step-title{font-family:Archivo,sans-serif;font-weight:600;font-size:20px;letter-spacing:-.01em;margin:0;line-height:1.25}
+.step-sub{font-size:14.5px;color:var(--ink-3);margin:2px 0 0;font-family:Archivo,sans-serif}
+.step-body{margin-top:14px}
+.step-body > :last-child{margin-bottom:0}
+
+/* figura / diagrama */
+.fig{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:22px 20px 16px;margin:0 0 14px;box-shadow:var(--shadow);
+}
+.fig svg{display:block;width:100%;height:auto}
+.fig-scroll{overflow-x:auto;padding-bottom:4px}
+.fig-scroll svg{min-width:660px}
+.fig-cap{
+  font-size:13.5px;color:var(--ink-3);margin:14px 0 0;text-align:center;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* duas colunas comparativas */
+.versus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 16px}
+@media (max-width:620px){.versus{grid-template-columns:minmax(0,1fr)}}
+.vs-card{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:18px 20px;
+}
+.vs-card.bad{border-color:var(--danger)}
+.vs-card.good{border-color:var(--accent)}
+.vs-h{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;margin:0 0 10px;
+}
+.vs-card.bad .vs-h{color:var(--danger)}
+.vs-card.good .vs-h{color:var(--accent)}
+.vs-flow{
+  font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-2);
+  margin:0 0 12px;line-height:1.9;
+}
+.vs-card p{font-size:15px;color:var(--ink-2)}
+.vs-card p:last-child{margin-bottom:0}
+
+/* spec */
+.spec{
+  border:1px solid var(--line);border-radius:12px;background:var(--sunken);
+  padding:20px 22px;margin-bottom:16px;
+}
+.spec-h{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--amber);margin:0 0 10px;
+}
+.spec ol{margin-bottom:0}
+.spec li{margin-bottom:10px;font-size:15.5px}
+.spec li:last-child{margin-bottom:0}
+.spec-foot{
+  font-size:14.5px;color:var(--ink-3);margin:14px 0 0;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* spec colapsavel */
+details.spec-det{padding:0;margin-bottom:16px}
+details.spec-det > summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
+  margin:0;padding:16px 22px;
+}
+details.spec-det > summary::-webkit-details-marker{display:none}
+details.spec-det > summary::before{
+  content:"";width:0;height:0;flex:none;
+  border-left:5px solid currentColor;border-top:4px solid transparent;
+  border-bottom:4px solid transparent;transition:transform .15s ease;
+}
+details.spec-det[open] > summary::before{transform:rotate(90deg)}
+details.spec-det > summary:hover{background:var(--line);border-radius:12px}
+details.spec-det[open] > summary:hover{border-radius:12px 12px 0 0}
+.spec-cue{
+  margin-left:auto;font-size:10px;letter-spacing:.09em;color:var(--ink-3);
+}
+.spec-cue::after{content:"abrir"}
+details.spec-det[open] .spec-cue::after{content:"fechar"}
+details.spec-det > :not(summary){margin-left:22px;margin-right:22px}
+details.spec-det > :last-child{margin-bottom:20px}
+
+/* code */
+pre{
+  background:var(--code-bg);color:var(--code-ink);
+  border-radius:8px;padding:13px 15px;overflow-x:auto;
+  font-size:13.5px;line-height:1.6;margin:0 0 14px;
+}
+pre .c{color:#7d8d88}
+pre .ok{color:#4fbf94}
+code:not(pre code){
+  background:var(--sunken);border-radius:4px;padding:1px 5px;font-size:.87em;color:var(--ink);
+}
+.cmdlabel{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 6px;
+}
+.codewrap{position:relative}
+.copy{
+  position:absolute;top:8px;right:8px;
+  font-family:Archivo,sans-serif;font-size:11px;letter-spacing:.04em;
+  background:rgba(255,255,255,.08);color:#cfded6;
+  border:1px solid rgba(255,255,255,.16);border-radius:5px;padding:3px 8px;cursor:pointer;
+}
+.copy:hover{background:rgba(255,255,255,.16)}
+
+/* verify block */
+.verify{
+  border-left:3px solid var(--accent);background:var(--accent-soft);
+  border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 14px;
+}
+.verify .vh{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 6px;
+}
+.verify p,.verify ul{margin-bottom:0;font-size:15px}
+.note{
+  border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 14px;font-size:15px;
+}
+.note b{font-family:Archivo,sans-serif}
+.note > :last-child{margin-bottom:0}
+
+/* checkbox */
+.mark{
+  display:flex;align-items:center;gap:9px;margin-top:16px;padding-top:14px;
+  border-top:1px solid var(--line);
+  font-family:Archivo,sans-serif;font-size:14px;color:var(--ink-3);cursor:pointer;user-select:none;
+}
+.mark input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex:none}
+.step.done .mark{color:var(--accent);font-weight:600}
+
+/* aulas */
+.aulas{display:flex;flex-direction:column;gap:12px;margin-bottom:8px}
+.aula{
+  display:grid;grid-template-columns:62px minmax(0,1fr);gap:16px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:18px 20px;
+}
+@media (max-width:560px){.aula{grid-template-columns:minmax(0,1fr);gap:8px}}
+.aula .when{
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);
+  border-right:1px solid var(--line);padding-right:12px;
+}
+@media (max-width:560px){.aula .when{border-right:0;padding-right:0}}
+.aula .when b{display:block;font-size:22px;color:var(--amber);line-height:1.1;font-weight:600}
+.aula h3{margin:0 0 6px;font-size:18px}
+.aula p{font-size:15px;margin-bottom:10px;color:var(--ink-2)}
+.chal{
+  font-size:14.5px;background:var(--sunken);border-radius:7px;padding:9px 12px;color:var(--ink-2);
+}
+.chal b{font-family:Archivo,sans-serif;color:var(--ink);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+
+/* desafios */
+[hidden]{display:none!important}
+.embreve{
+  border:1px dashed var(--line);border-radius:12px;background:var(--sunken);
+  padding:16px 20px;margin:0 0 16px;font-size:15px;color:var(--ink-3);
+}
+.embreve b{font-family:Archivo,sans-serif;color:var(--ink-2)}
+.desafios{display:flex;flex-direction:column;gap:12px}
+.desafio{
+  display:grid;grid-template-columns:76px minmax(0,1fr);gap:18px;
+  border:1px solid var(--line);border-left:3px solid var(--amber);
+  border-radius:0 12px 12px 0;background:var(--surface);padding:18px 20px;
+}
+@media (max-width:560px){.desafio{grid-template-columns:minmax(0,1fr);gap:6px}}
+.desafio .de-n{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.desafio .de-n b{display:block;font-size:21px;color:var(--amber);line-height:1.1;letter-spacing:0}
+.desafio h3{margin:0 0 6px;font-size:17px}
+.desafio p{font-size:15.5px;margin-bottom:0;color:var(--ink-2)}
+.desafio p + p{margin-top:8px}
+.desafio .entrega-ex{
+  font-size:13px;color:var(--ink-3);margin-top:8px;
+}
+.desafio .entrega-ex code{font-size:12.5px;line-height:1.7}
+.desafio .entrega{
+  font-family:Archivo,sans-serif;font-size:13px;color:var(--ink-3);
+  margin-top:9px;padding-top:9px;border-top:1px solid var(--line);
+}
+
+/* clock bar */
+.clock{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:6px 0 14px;font-family:Archivo,sans-serif;font-size:11px}
+.clock span{display:flex;align-items:center;justify-content:center;color:#fff;white-space:nowrap;overflow:hidden}
+.c1{background:var(--ink-3)}
+.c2{background:var(--accent)}
+.c3{background:var(--amber)}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:0 0 16px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--line)}
+tbody tr:last-child td{border-bottom:0}
+th{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);background:var(--sunken);
+}
+td.num{text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+td.term{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink);white-space:nowrap}
+
+details{border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:12px 16px;margin-bottom:9px}
+summary{font-family:Archivo,sans-serif;font-weight:600;font-size:16px;cursor:pointer;color:var(--ink)}
+summary::marker{color:var(--ink-3)}
+details[open] summary{margin-bottom:9px}
+details p:last-child{margin-bottom:0}
+
+footer{
+  margin-top:48px;padding-top:20px;border-top:1px solid var(--line);
+  font-family:Archivo,sans-serif;font-size:13px;color:var(--ink-3);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- página de indicadores ---------- */
+.solo{max-width:880px;margin:0 auto;padding:0 16px 72px}
+.solo main{padding-top:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 0 28px;font-family:Archivo,sans-serif;font-size:14px}
+.top a{color:var(--ink-3);text-decoration:none}
+.top a:hover{color:var(--ink)}
+.top span{display:flex;align-items:center;gap:14px}
+.legend{list-style:none;padding:0;margin:0 0 8px;font-size:15px;color:var(--ink-2)}
+.legend li{margin-bottom:8px}
+.tag{
+  display:inline-block;font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;
+  padding:2px 8px;border-radius:99px;margin-right:6px;white-space:nowrap;
+}
+.t-texto{background:var(--sunken);color:var(--ink-2)}
+.t-tipo{background:var(--amber-soft);color:var(--amber)}
+.t-arm{background:transparent;color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger)}
+.t-mart{background:var(--accent-soft);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 18px}
+.chip{
+  font-family:Archivo,sans-serif;font-size:13px;cursor:pointer;
+  background:var(--surface);color:var(--ink-2);border:1px solid var(--line);border-radius:99px;padding:5px 12px;
+}
+.chip:hover{border-color:var(--ink-3);color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.inds{display:flex;flex-direction:column;gap:10px}
+.ind{
+  display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:16px 20px;
+}
+@media (max-width:560px){.ind{grid-template-columns:minmax(0,1fr);gap:6px}}
+.cnt b{display:block;font-family:"JetBrains Mono",monospace;font-size:26px;line-height:1.1;color:var(--amber);font-weight:600}
+.cnt .bar{display:block;height:4px;background:var(--sunken);border-radius:99px;margin-top:8px;overflow:hidden}
+.cnt .bar i{display:block;height:100%;background:var(--amber)}
+@media (max-width:560px){.cnt{display:flex;align-items:center;gap:10px}.cnt .bar{flex:1;margin-top:0}}
+.ind h3{margin:0 0 4px;font-size:17.5px}
+.ind p{font-size:15px;color:var(--ink-2);margin-bottom:8px}
+.ind .src{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-3);margin-bottom:8px}
+.ind .meta{margin:8px 0 0;font-size:13px;display:flex;flex-wrap:wrap;align-items:center;row-gap:6px}
+.refs{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3)}
+.meta .refs{margin-left:auto}
+.refs a{color:var(--ink-3);text-decoration:none;margin-left:4px}
+.refs a:hover{color:var(--accent);text-decoration:underline}
+.traps li{margin-bottom:12px}
+.cities code{display:inline-block;margin:0 4px 6px 0}
+
+/* abas */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 0 8px;overflow-x:auto}
+.tab{
+  font-family:Archivo,sans-serif;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;
+  background:none;border:0;border-bottom:2px solid transparent;color:var(--ink-3);padding:10px 14px;margin-bottom:-1px;
+}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--amber)}
+.tab .tn{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);margin-left:6px}
+/* rascunho do dashboard */
+.wire{border:1px dashed var(--ink-3);border-radius:12px;padding:14px;background:var(--sunken);margin-bottom:10px}
+.w-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;margin-bottom:8px}
+.w-kpi{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.w-kpi span{display:block;font-family:Archivo,sans-serif;font-size:11px;color:var(--ink-3)}
+.w-kpi b{font-family:"JetBrains Mono",monospace;font-size:15px;color:var(--ink)}
+.w-charts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:640px){.w-charts{grid-template-columns:minmax(0,1fr)}}
+.w-chart{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:74px;display:flex;flex-direction:column;justify-content:space-between}
+.w-wide{grid-column:1 / -1}
+.w-chart span{font-family:Archivo,sans-serif;font-size:13px;font-weight:600;color:var(--ink-2)}
+.w-chart i{font-style:normal;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3)}
+/* fichas */
+.fichas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+@media (max-width:680px){.fichas{grid-template-columns:minmax(0,1fr)}}
+.ficha{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:16px 18px}
+.f-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
+.f-head h4{margin:0;font-size:16px;line-height:1.3}
+.f-val{font-family:"JetBrains Mono",monospace;font-size:15px;font-weight:600;color:var(--accent);white-space:nowrap}
+.ficha p{font-size:14.5px;color:var(--ink-2);margin-bottom:6px}
+.ficha .f-sql{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3)}
+.ficha .f-meta{display:flex;flex-wrap:wrap;gap:4px 10px;font-family:Archivo,sans-serif;font-size:12px;color:var(--ink-3)}
+.ficha .f-note{margin:8px 0 0;padding-top:8px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<div class="solo">
+<header class="top">
+  <a href="index.html">&larr; Todas as aulas</a>
+  <span>
+    <a href="aula-2.html">Aula 2</a>
+    <button class="tbtn" id="theme" type="button">Tema</button>
+  </span>
+</header>
+
+<main>
+  <p class="eyebrow">Desafio 1 &middot; consolidação da turma</p>
+  <h1>O que o dado da Olist responde</h1>
+  <p class="lede">Vinte entregas, 186 linhas, e quase tudo cabe em 26 ideias. Esta é a lista de todas elas, juntando quem chegou ao mesmo indicador por caminhos diferentes, ordenada por quantas pessoas pensaram em cada uma.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Entregas</dt><dd class="mono">20</dd></div>
+    <div class="fact"><dt>Indicadores distintos</dt><dd class="mono">26</dd></div>
+    <div class="fact"><dt>Mais citado</dt><dd>Mix de pagamento</dd></div>
+    <div class="fact"><dt>Viram mart</dt><dd class="mono">5 + 5</dd></div>
+  </dl>
+
+  <div class="tabs" role="tablist" aria-label="Visões dos indicadores">
+    <button class="tab" id="t-turma" role="tab" aria-selected="true" aria-controls="p-turma" type="button">Os 26 da turma<span class="tn">26</span></button>
+    <button class="tab" id="t-dash" role="tab" aria-selected="false" aria-controls="p-dash" type="button">O dashboard da aula 4<span class="tn">14</span></button>
+  </div>
+
+  <div class="tabpanel" id="p-turma" role="tabpanel" aria-labelledby="t-turma">
+  <section id="legenda">
+    <h2>Como ler</h2>
+    <p class="small">O número à esquerda é quantas entregas trouxeram o indicador, com qualquer nome. A coluna indicada é o caminho mais curto no schema <code>raw</code>. As etiquetas dizem o que falta para calcular:</p>
+    <ul class="legend">
+      <li><span class="tag t-texto">só contagem</span> sai de <code>raw</code> como está: <code>count</code> e <code>GROUP BY</code> em coluna de texto.</li>
+      <li><span class="tag t-tipo">aula 2</span> precisa de data como data, dinheiro como número, ou de uma decisão sobre nulo.</li>
+      <li><span class="tag t-arm">armadilha</span> calcula sem erro e devolve número errado se a chave ou o caminho estiver errado.</li>
+      <li><span class="tag t-mart">mart</span> vira arquivo <code>.sql</code> na aula 3 (marts 01 a 05) ou no desafio 3 (06 a 10).</li>
+    </ul>
+  </section>
+
+  <section id="lista">
+    <h2>Os 26 indicadores</h2>
+    <div class="chips" role="group" aria-label="Filtrar por tema">
+      <button class="chip on" data-f="todos" type="button">Todos</button>
+      <button class="chip" data-f="vendas" type="button">Vendas</button>
+      <button class="chip" data-f="logistica" type="button">Logística</button>
+      <button class="chip" data-f="pagamento" type="button">Pagamento</button>
+      <button class="chip" data-f="satisfacao" type="button">Satisfação</button>
+      <button class="chip" data-f="pessoas" type="button">Clientes e vendedores</button>
+      <button class="chip" data-f="catalogo" type="button">Catálogo</button>
+    </div>
+
+    <div class="inds">
+
+      <article class="ind" data-tema="pagamento">
+        <div class="cnt"><b>9</b><span class="bar"><i style="width:100%"></i></span></div>
+        <div>
+          <h3>Mix de formas de pagamento</h3>
+          <p class="src">pagamentos (payment_type, payment_value)</p>
+          <p>Contagem e valor por cartão, boleto, voucher e débito. As 3 linhas <code>not_defined</code> apareceram numa entrega como indicador próprio.</p>
+          <p class="meta"><span class="tag t-texto">só contagem</span><span class="tag t-tipo">aula 2</span> para o valor &middot; <span class="tag t-mart">desafio 3</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/4" target="_blank" rel="noopener">#4</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/5" target="_blank" rel="noopener">#5</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/7" target="_blank" rel="noopener">#7</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/12" target="_blank" rel="noopener">#12</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/13" target="_blank" rel="noopener">#13</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/16" target="_blank" rel="noopener">#16</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/18" target="_blank" rel="noopener">#18</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/21" target="_blank" rel="noopener">#21</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="vendas">
+        <div class="cnt"><b>8</b><span class="bar"><i style="width:89%"></i></span></div>
+        <div>
+          <h3>Ticket médio por pedido</h3>
+          <p class="src">itens_pedido (order_id, price, freight_value)</p>
+          <p>O mais citado de vendas, e o que tem mais versões: só <code>price</code>, <code>price + freight_value</code>, ou média de <code>payment_value</code>. Dão números diferentes, e todos são defensáveis &mdash; desde que digam qual é. Média direto em <code>pagamentos</code> é média por <em>pagamento</em> (103.886), não por pedido.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-arm">armadilha</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/4" target="_blank" rel="noopener">#4</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/6" target="_blank" rel="noopener">#6</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/10" target="_blank" rel="noopener">#10</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/12" target="_blank" rel="noopener">#12</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/17" target="_blank" rel="noopener">#17</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/22" target="_blank" rel="noopener">#22</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="vendas">
+        <div class="cnt"><b>8</b><span class="bar"><i style="width:89%"></i></span></div>
+        <div>
+          <h3>Receita por categoria de produto</h3>
+          <p class="src">itens_pedido (product_id, price) + produtos (product_category_name) + traducao_categorias</p>
+          <p>610 produtos não têm categoria, e 2 categorias (<code>pc_gamer</code>, <code>portateis_cozinha_e_preparadores_de_alimentos</code>) não têm tradução. Um <code>JOIN</code> comum faz essas vendas sumirem do ranking.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-arm">armadilha</span><span class="tag t-mart">mart 02</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/4" target="_blank" rel="noopener">#4</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/9" target="_blank" rel="noopener">#9</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/10" target="_blank" rel="noopener">#10</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/13" target="_blank" rel="noopener">#13</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/15" target="_blank" rel="noopener">#15</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/16" target="_blank" rel="noopener">#16</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/20" target="_blank" rel="noopener">#20</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/22" target="_blank" rel="noopener">#22</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="vendas">
+        <div class="cnt"><b>8</b><span class="bar"><i style="width:89%"></i></span></div>
+        <div>
+          <h3>Pedidos por status e taxa de cancelamento</h3>
+          <p class="src">pedidos (order_status)</p>
+          <p>O indicador mais simples da lista: um <code>GROUP BY</code> numa coluna de texto. 625 cancelados e 609 indisponíveis em 99.441. O status está em <code>pedidos</code>, não em <code>itens_pedido</code>.</p>
+          <p class="meta"><span class="tag t-texto">só contagem</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/4" target="_blank" rel="noopener">#4</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/5" target="_blank" rel="noopener">#5</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/13" target="_blank" rel="noopener">#13</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/15" target="_blank" rel="noopener">#15</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/16" target="_blank" rel="noopener">#16</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/17" target="_blank" rel="noopener">#17</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/21" target="_blank" rel="noopener">#21</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="satisfacao">
+        <div class="cnt"><b>8</b><span class="bar"><i style="width:89%"></i></span></div>
+        <div>
+          <h3>Nota média e distribuição das notas</h3>
+          <p class="src">avaliacoes (review_score)</p>
+          <p>Inclui a variação "% de clientes satisfeitos" (nota 4 ou 5). Antes de tirar média, uma decisão: há <code>review_id</code> repetido e pedido com mais de uma avaliação.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-arm">armadilha</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/6" target="_blank" rel="noopener">#6</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/7" target="_blank" rel="noopener">#7</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/9" target="_blank" rel="noopener">#9</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/12" target="_blank" rel="noopener">#12</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/13" target="_blank" rel="noopener">#13</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/17" target="_blank" rel="noopener">#17</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/20" target="_blank" rel="noopener">#20</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/21" target="_blank" rel="noopener">#21</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="logistica">
+        <div class="cnt"><b>8</b><span class="bar"><i style="width:89%"></i></span></div>
+        <div>
+          <h3>Frete médio e peso do frete na venda</h3>
+          <p class="src">itens_pedido (freight_value, price) [+ clientes ou vendedores para o estado]</p>
+          <p>Frete médio geral, por estado do cliente, por estado do vendedor, ou como fração do valor (<code>freight_value / (price + freight_value)</code>). 383 itens têm frete zero.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/3" target="_blank" rel="noopener">#3</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/4" target="_blank" rel="noopener">#4</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/7" target="_blank" rel="noopener">#7</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/12" target="_blank" rel="noopener">#12</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/14" target="_blank" rel="noopener">#14</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/20" target="_blank" rel="noopener">#20</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="pessoas">
+        <div class="cnt"><b>8</b><span class="bar"><i style="width:89%"></i></span></div>
+        <div>
+          <h3>Clientes por estado e por cidade</h3>
+          <p class="src">clientes (customer_unique_id, customer_state, customer_city)</p>
+          <p>Contar linhas de <code>clientes</code> dá 99.441, que é o número de <em>pedidos</em>. Pessoas são 96.096: <code>count(DISTINCT customer_unique_id)</code>. Só uma entrega contou do jeito certo.</p>
+          <p class="meta"><span class="tag t-texto">só contagem</span><span class="tag t-arm">armadilha</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/7" target="_blank" rel="noopener">#7</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/9" target="_blank" rel="noopener">#9</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/10" target="_blank" rel="noopener">#10</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/12" target="_blank" rel="noopener">#12</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/14" target="_blank" rel="noopener">#14</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/16" target="_blank" rel="noopener">#16</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/18" target="_blank" rel="noopener">#18</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/21" target="_blank" rel="noopener">#21</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="vendas">
+        <div class="cnt"><b>7</b><span class="bar"><i style="width:78%"></i></span></div>
+        <div>
+          <h3>Vendas por mês e por ano</h3>
+          <p class="src">pedidos (order_purchase_timestamp) + itens_pedido (price)</p>
+          <p>Sazonalidade, mês recorde, crescimento sobre o ano anterior. Em <code>raw</code> a data é texto, e <code>date_trunc</code> não roda &mdash; é o indicador que mais depende da aula 2. São 25 meses, de set/2016 a out/2018, com as pontas quase vazias.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-mart">mart 01</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/4" target="_blank" rel="noopener">#4</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/5" target="_blank" rel="noopener">#5</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/10" target="_blank" rel="noopener">#10</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/13" target="_blank" rel="noopener">#13</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/16" target="_blank" rel="noopener">#16</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/17" target="_blank" rel="noopener">#17</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="vendas">
+        <div class="cnt"><b>7</b><span class="bar"><i style="width:78%"></i></span></div>
+        <div>
+          <h3>Receita e ranking por vendedor</h3>
+          <p class="src">itens_pedido (seller_id, price) + vendedores (seller_state)</p>
+          <p>Top vendedores, concentração (Pareto: que % dos vendedores faz 80% da receita) e receita por estado do vendedor. O vendedor está no <em>item</em>, não no pedido: um pedido pode ter mais de um.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-mart">desafio 3</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/3" target="_blank" rel="noopener">#3</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/9" target="_blank" rel="noopener">#9</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/12" target="_blank" rel="noopener">#12</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/13" target="_blank" rel="noopener">#13</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/16" target="_blank" rel="noopener">#16</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/21" target="_blank" rel="noopener">#21</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="vendas">
+        <div class="cnt"><b>6</b><span class="bar"><i style="width:67%"></i></span></div>
+        <div>
+          <h3>Vendas e ticket por estado ou cidade do cliente</h3>
+          <p class="src">itens_pedido (order_id, price) + pedidos (order_id, customer_id) + clientes (customer_id, customer_state)</p>
+          <p>O valor está em <code>itens_pedido</code>, o estado em <code>clientes</code>, e os dois só se encontram passando por <code>pedidos</code>. É o mart 06, no desafio da aula 3.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-mart">desafio 3</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/5" target="_blank" rel="noopener">#5</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/7" target="_blank" rel="noopener">#7</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/12" target="_blank" rel="noopener">#12</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/20" target="_blank" rel="noopener">#20</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/22" target="_blank" rel="noopener">#22</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="logistica">
+        <div class="cnt"><b>6</b><span class="bar"><i style="width:67%"></i></span></div>
+        <div>
+          <h3>Entrega no prazo e taxa de atraso</h3>
+          <p class="src">pedidos (order_status, order_delivered_customer_date, order_estimated_delivery_date)</p>
+          <p>Comparação de duas datas, então só existe depois da aula 2. Decisão obrigatória: o denominador é só <code>delivered</code>? E os 8 entregues sem data de entrega?</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-arm">armadilha</span><span class="tag t-mart">mart 03</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/3" target="_blank" rel="noopener">#3</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/4" target="_blank" rel="noopener">#4</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/13" target="_blank" rel="noopener">#13</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/17" target="_blank" rel="noopener">#17</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="pessoas">
+        <div class="cnt"><b>6</b><span class="bar"><i style="width:67%"></i></span></div>
+        <div>
+          <h3>Recompra e frequência de compra</h3>
+          <p class="src">clientes (customer_unique_id) + pedidos (customer_id, order_purchase_timestamp)</p>
+          <p>A armadilha mais cara da lista. Com <code>customer_id</code>, todo cliente tem exatamente um pedido e a recompra dá zero. Três entregas acertaram, usando <code>customer_unique_id</code>; duas agruparam por <code>customer_id</code>, e uma não disse a coluna.</p>
+          <p class="meta"><span class="tag t-arm">armadilha</span><span class="tag t-mart">mart 05</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/3" target="_blank" rel="noopener">#3</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/13" target="_blank" rel="noopener">#13</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/17" target="_blank" rel="noopener">#17</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/20" target="_blank" rel="noopener">#20</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="logistica">
+        <div class="cnt"><b>5</b><span class="bar"><i style="width:56%"></i></span></div>
+        <div>
+          <h3>Tempo médio de entrega</h3>
+          <p class="src">pedidos (order_purchase_timestamp, order_delivered_customer_date) [+ clientes (customer_state)]</p>
+          <p>Geral ou por estado. Uma entrega mediu do envio à entrega (<code>order_delivered_carrier_date</code>), e é outra pergunta: tempo da transportadora, não da loja. Pedido sem data de entrega fica fora da média, não entra como zero.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-mart">desafio 3</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/3" target="_blank" rel="noopener">#3</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/13" target="_blank" rel="noopener">#13</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/20" target="_blank" rel="noopener">#20</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="satisfacao">
+        <div class="cnt"><b>5</b><span class="bar"><i style="width:56%"></i></span></div>
+        <div>
+          <h3>Nota média por categoria</h3>
+          <p class="src">avaliacoes (order_id, review_score) + itens_pedido (order_id, product_id) + produtos (product_category_name)</p>
+          <p>A avaliação é do pedido, a categoria é do item. Um pedido com três itens conta a nota três vezes, a menos que você decida o contrário. É a decisão central do mart 04.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-arm">armadilha</span><span class="tag t-mart">mart 04</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/3" target="_blank" rel="noopener">#3</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/9" target="_blank" rel="noopener">#9</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/20" target="_blank" rel="noopener">#20</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="pagamento">
+        <div class="cnt"><b>4</b><span class="bar"><i style="width:44%"></i></span></div>
+        <div>
+          <h3>Parcelamento médio e valor da parcela</h3>
+          <p class="src">pagamentos (payment_type, payment_installments, payment_value)</p>
+          <p>Por forma de pagamento ou por categoria do produto. Só cartão de crédito parcela; 2 pagamentos têm 0 parcelas.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/3" target="_blank" rel="noopener">#3</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/4" target="_blank" rel="noopener">#4</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/14" target="_blank" rel="noopener">#14</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="vendas">
+        <div class="cnt"><b>4</b><span class="bar"><i style="width:44%"></i></span></div>
+        <div>
+          <h3>Itens por pedido</h3>
+          <p class="src">itens_pedido (order_id, order_item_id)</p>
+          <p>Tamanho médio da cesta. Os 775 pedidos sem nenhum item são a decisão: ficam fora, ou entram com zero?</p>
+          <p class="meta"><span class="tag t-texto">só contagem</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/6" target="_blank" rel="noopener">#6</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/15" target="_blank" rel="noopener">#15</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/17" target="_blank" rel="noopener">#17</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/20" target="_blank" rel="noopener">#20</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="pessoas">
+        <div class="cnt"><b>4</b><span class="bar"><i style="width:44%"></i></span></div>
+        <div>
+          <h3>Base de vendedores: por estado e ativos</h3>
+          <p class="src">vendedores (seller_id, seller_state) [+ itens_pedido + pedidos para "ativo no mês"]</p>
+          <p>Contar por estado é só contagem; "vendedor ativo no mês" precisa da data do pedido.</p>
+          <p class="meta"><span class="tag t-texto">só contagem</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/5" target="_blank" rel="noopener">#5</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/9" target="_blank" rel="noopener">#9</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/10" target="_blank" rel="noopener">#10</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/17" target="_blank" rel="noopener">#17</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="catalogo">
+        <div class="cnt"><b>4</b><span class="bar"><i style="width:44%"></i></span></div>
+        <div>
+          <h3>Perfil do catálogo</h3>
+          <p class="src">produtos (product_category_name, product_photos_qty, product_weight_g, product_description_lenght)</p>
+          <p>Produtos por categoria, peso médio, fotos, tamanho da descrição. Mede o que está <em>cadastrado</em>, não o que vendeu. E sim, <code>lenght</code> está escrito errado no dado original.</p>
+          <p class="meta"><span class="tag t-texto">só contagem</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/5" target="_blank" rel="noopener">#5</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/6" target="_blank" rel="noopener">#6</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/9" target="_blank" rel="noopener">#9</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/14" target="_blank" rel="noopener">#14</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="satisfacao">
+        <div class="cnt"><b>4</b><span class="bar"><i style="width:44%"></i></span></div>
+        <div>
+          <h3>Nota por vendedor ou por produto</h3>
+          <p class="src">avaliacoes (order_id, review_score) + itens_pedido (order_id, seller_id, product_id)</p>
+          <p><code>avaliacoes</code> não tem <code>product_id</code> nem <code>seller_id</code>: o caminho passa obrigatoriamente por <code>itens_pedido</code>. Uma entrega buscou <code>avaliacoes.product_id</code>, que não existe.</p>
+          <p class="meta"><span class="tag t-arm">armadilha</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/14" target="_blank" rel="noopener">#14</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/16" target="_blank" rel="noopener">#16</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/20" target="_blank" rel="noopener">#20</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="satisfacao">
+        <div class="cnt"><b>3</b><span class="bar"><i style="width:33%"></i></span></div>
+        <div>
+          <h3>Nota dos pedidos atrasados</h3>
+          <p class="src">pedidos (order_delivered_customer_date, order_estimated_delivery_date) + avaliacoes (review_score)</p>
+          <p>Todas as três entregas marcaram com <code>?</code>. Dá, sim &mdash; e é o indicador que mais conta uma história: junta logística e satisfação numa pergunta só.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-mart">desafio 3</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/4" target="_blank" rel="noopener">#4</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/13" target="_blank" rel="noopener">#13</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="vendas">
+        <div class="cnt"><b>3</b><span class="bar"><i style="width:33%"></i></span></div>
+        <div>
+          <h3>Faturamento total (GMV)</h3>
+          <p class="src">itens_pedido (price) ou pagamentos (payment_value)</p>
+          <p>As duas fontes dão números diferentes: R$ 13,59 milhões somando <code>price</code>, R$ 16,01 milhões somando <code>payment_value</code>, que inclui o frete e os juros do parcelamento. Decida também se pedido cancelado conta.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-arm">armadilha</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/7" target="_blank" rel="noopener">#7</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/10" target="_blank" rel="noopener">#10</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/17" target="_blank" rel="noopener">#17</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="satisfacao">
+        <div class="cnt"><b>2</b><span class="bar"><i style="width:22%"></i></span></div>
+        <div>
+          <h3>Nota média por estado do cliente</h3>
+          <p class="src">avaliacoes (order_id, review_score) + pedidos (order_id, customer_id) + clientes (customer_state)</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/4" target="_blank" rel="noopener">#4</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/5" target="_blank" rel="noopener">#5</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="logistica">
+        <div class="cnt"><b>2</b><span class="bar"><i style="width:22%"></i></span></div>
+        <div>
+          <h3>Tempo até a aprovação do pagamento</h3>
+          <p class="src">pedidos (order_purchase_timestamp, order_approved_at) [+ pagamentos (payment_type)]</p>
+          <p>Boleto contra cartão é a comparação interessante. 160 pedidos nunca foram aprovados.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/3" target="_blank" rel="noopener">#3</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/14" target="_blank" rel="noopener">#14</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="satisfacao">
+        <div class="cnt"><b>2</b><span class="bar"><i style="width:22%"></i></span></div>
+        <div>
+          <h3>Avaliações com comentário escrito</h3>
+          <p class="src">avaliacoes (review_comment_message)</p>
+          <p>58.247 das 99.224 avaliações não têm comentário. Atenção: 27 têm comentário feito só de espaço.</p>
+          <p class="meta"><span class="tag t-texto">só contagem</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/14" target="_blank" rel="noopener">#14</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/15" target="_blank" rel="noopener">#15</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="vendas">
+        <div class="cnt"><b>2</b><span class="bar"><i style="width:22%"></i></span></div>
+        <div>
+          <h3>Produtos mais vendidos</h3>
+          <p class="src">itens_pedido (product_id, order_id)</p>
+          <p class="meta"><span class="tag t-texto">só contagem</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/12" target="_blank" rel="noopener">#12</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/16" target="_blank" rel="noopener">#16</a></span></p>
+        </div>
+      </article>
+
+      <article class="ind" data-tema="logistica">
+        <div class="cnt"><b>1</b><span class="bar"><i style="width:11%"></i></span></div>
+        <div>
+          <h3>Tempo de despacho do vendedor</h3>
+          <p class="src">pedidos (order_approved_at, order_delivered_carrier_date) + itens_pedido (seller_id)</p>
+          <p>Só uma entrega pensou nele, e é dos mais úteis para o negócio. Cuidado: em 166 pedidos a data de envio é anterior à de compra.</p>
+          <p class="meta"><span class="tag t-tipo">aula 2</span><span class="tag t-arm">armadilha</span><span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/14" target="_blank" rel="noopener">#14</a></span></p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="marts">
+    <h2>Da lista para a aula 3</h2>
+    <p class="h2big">Os marts saíram daqui</p>
+    <p>Os cinco marts da aula 3 são os indicadores de vendas, logística, satisfação e clientes mais citados que <em>dependem</em> da transformação, um degrau de SQL por arquivo. Os outros cinco ficam para o desafio, cada um com um passo que a aula não mostrou. Status ficou de fora porque já sai de <code>raw</code> com um <code>GROUP BY</code>: não ensina nada novo.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Arquivo</th><th>Indicador da turma</th><th style="text-align:right">Entregas</th><th>Técnica nova</th></tr></thead>
+        <tbody>
+          <tr><td class="term">01_vendas_mensais</td><td>Vendas por mês e por ano</td><td class="num">7</td><td><code>GROUP BY</code>, <code>date_trunc</code></td></tr>
+          <tr><td class="term">02_top_categorias</td><td>Receita por categoria</td><td class="num">8</td><td><code>JOIN</code> com a tradução</td></tr>
+          <tr><td class="term">03_entrega_no_prazo</td><td>Entrega no prazo e atraso</td><td class="num">6</td><td><code>CASE WHEN</code> + datas</td></tr>
+          <tr><td class="term">04_nota_por_categoria</td><td>Nota média por categoria</td><td class="num">5</td><td>CTE + window function</td></tr>
+          <tr><td class="term">05_recompra</td><td>Recompra e frequência de compra</td><td class="num">6</td><td>GROUP BY em dois andares + janela sobre o agregado</td></tr>
+          <tr><td class="term">06_ticket_medio_por_estado</td><td>Vendas e ticket por estado do cliente</td><td class="num">6</td><td>desafio 3: o grão muda duas vezes</td></tr>
+          <tr><td class="term">07_mix_pagamento</td><td>Mix de formas de pagamento</td><td class="num">9</td><td>desafio 3: tabela 1 : N com o pedido</td></tr>
+          <tr><td class="term">08_nota_por_prazo</td><td>Nota dos pedidos atrasados</td><td class="num">3</td><td>desafio 3: CTE do mart 04 + <code>CASE</code> do mart 03</td></tr>
+          <tr><td class="term">09_vendedores_pareto</td><td>Receita e ranking por vendedor</td><td class="num">7</td><td>desafio 3: janela com <code>ORDER BY</code>, acumulado</td></tr>
+          <tr><td class="term">10_tempo_entrega_por_estado</td><td>Tempo médio de entrega</td><td class="num">5</td><td>desafio 3: <code>date_diff</code> e <code>median</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="nao-da">
+    <h2>A outra pilha</h2>
+    <p class="h2big">O que o dado não sustenta</p>
+    <p>Poucas entregas preencheram este campo, e foram as que mais aprenderam com o exercício. O que a turma identificou, corretamente:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Indicador</th><th>Por que não sai daqui</th></tr></thead>
+        <tbody>
+          <tr><td><b>Margem de lucro</b></td><td>Só existe preço de venda e frete. Não há custo do produto, imposto, comissão da plataforma nem custo logístico. <span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a></span></td></tr>
+          <tr><td><b>Custo de aquisição e conversão</b></td><td>Não há visitas, tráfego, campanha nem origem do cliente. O dado só conhece quem já comprou. <span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a></span></td></tr>
+          <tr><td><b>Giro de estoque</b></td><td>Não há nenhuma tabela de estoque. <span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/11" target="_blank" rel="noopener">#11</a></span></td></tr>
+          <tr><td><b>Motivo do cancelamento</b></td><td>Existe o status <code>canceled</code>, mas não o porquê: falta de estoque, desistência, fraude, preço. <span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/19" target="_blank" rel="noopener">#19</a></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>E o contrário: o que foi para esta pilha, mas dá.</b> Clientes por estado, pedidos por região e ranking de clientes apareceram como "não sustenta" em duas entregas (<span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/5" target="_blank" rel="noopener">#5</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/6" target="_blank" rel="noopener">#6</a></span>). Todos saem de <code>clientes</code> + <code>pedidos</code> &mdash; com <code>customer_unique_id</code> para contar pessoas. Vale a pena ver isso junto na correção: errar para o lado da cautela também é errar.</div>
+  </section>
+
+  <section id="armadilhas">
+    <h2>O que a correção precisa mostrar</h2>
+    <p class="h2big">Seis armadilhas que apareceram nas entregas</p>
+    <ol class="body traps">
+      <li><strong><code>customer_id</code> não é o cliente.</strong> Um novo para cada pedido: 99.441 <code>customer_id</code> para 96.096 pessoas. Contar clientes ou recompra por ele dá número errado sem erro na tela.</li>
+      <li><strong><code>avaliacoes</code> não tem produto nem vendedor.</strong> A avaliação é do pedido. Nota por produto, por categoria ou por vendedor passa obrigatoriamente por <code>itens_pedido</code> &mdash; e passa a contar a nota uma vez por item.</li>
+      <li><strong>Média em <code>pagamentos</code> é média por pagamento.</strong> São 103.886 pagamentos para 99.440 pedidos: um pedido pago com cartão e voucher conta duas vezes. Ticket médio exige somar por pedido antes de tirar a média.</li>
+      <li><strong>Estado não se busca em <code>geolocalizacao</code>.</strong> Duas entregas filtraram SP por lá. Ela não se liga a pedido nenhum. Estado do cliente está em <code>clientes.customer_state</code>.</li>
+      <li><strong>Cada coluna mora numa tabela só.</strong> <code>order_status</code> é de <code>pedidos</code>, não de <code>itens_pedido</code>; <code>price</code> é de <code>itens_pedido</code>, não de <code>produtos</code>. Errar a tabela de origem é errar o <code>JOIN</code> inteiro na aula 3.</li>
+      <li><strong>Consulta não é indicador.</strong> <code>SELECT * LIMIT 10</code> e <code>SELECT DISTINCT cidade</code> exploram o dado, mas não respondem pergunta nenhuma. Indicador tem nome, fórmula e uma frase dizendo o que mede.</li>
+    </ol>
+  </section>
+
+  <section id="bonus">
+    <h2>Achado de bônus</h2>
+    <p class="h2big">As cidades dos vendedores</p>
+    <p>Uma entrega listou <code>SELECT DISTINCT seller_city FROM raw.vendedores</code> inteiro <span class="refs"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/8" target="_blank" rel="noopener">#8</a></span>. Não é indicador, mas é o melhor material para a aula 2 que apareceu em todas as entregas. São Paulo, por exemplo, vem escrita de onze jeitos:</p>
+    <p class="cities"><code>sao paulo</code> <code>são paulo</code> <code>sao paulo sp</code> <code>sao paulo - sp</code> <code>sao paulo / sao paulo</code> <code>sp / sp</code> <code>sao pauo</code> <code>sao paluo</code> <code>sao paulop</code> <code>sao  paulo</code> <code>sp</code></p>
+    <p>E no meio da coluna de cidade: <code>04482255</code> (um CEP) e <code>vendas@creditparts.com.br</code> (um e-mail). Agrupar receita por cidade do vendedor sem tratar isso divide São Paulo em onze linhas. É o tipo de problema que nenhum <code>DESCRIBE</code> mostra &mdash; só olhar o dado.</p>
+  </section>
+
+  </div>
+
+  <div class="tabpanel" id="p-dash" role="tabpanel" aria-labelledby="t-dash" hidden>
+
+  <section id="dash">
+    <h2>Aula 4 &middot; O dashboard</h2>
+    <p class="h2big">Os 14 que vão para a tela</p>
+    <p>Todo indicador citado por <strong>cinco entregas ou mais</strong> entra no dashboard da aula 4. São 14: sete viram cartão de número, sete viram gráfico. Para cada um, abaixo, a definição fechada, a tabela de <code>refined</code> de onde ele sai, o mart que o alimenta e o valor de referência &mdash; o número que o seu dashboard tem que mostrar.</p>
+    <div class="note"><b>Definição fechada não é detalhe.</b> "Ticket médio" apareceu em três versões nas entregas, e as três dão números diferentes. Sem uma definição escrita, dois dashboards honestos mostram dois números para a mesma pergunta &mdash; e a reunião vira uma discussão sobre de quem está certo.</div>
+  </section>
+
+  <section id="regras-dash">
+    <h2>Valem para todos</h2>
+    <p class="h2big">Quatro decisões tomadas uma vez</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Termo</th><th>Quer dizer, no dashboard inteiro</th></tr></thead>
+        <tbody>
+          <tr><td><b>Pedido válido</b></td><td><code>status</code> diferente de <code>canceled</code> e <code>unavailable</code>. Pedido que não aconteceu não vende, não entrega e não entra em receita.</td></tr>
+          <tr><td><b>Receita</b></td><td><code>sum(preco)</code> de <code>itens_pedido</code>, sem frete. Frete é custo de entrega, não venda.</td></tr>
+          <tr><td><b>Cliente</b></td><td><code>cliente_unico_id</code>, a pessoa. Nunca <code>cliente_id</code>, que muda a cada pedido.</td></tr>
+          <tr><td><b>Mês</b></td><td>O mês de <code>data_compra</code>. Não o da aprovação, não o da entrega.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">E a regra da aula 4 continua de pé: o <code>app.py</code> não calcula nada. Cada número abaixo sai pronto de um mart; o dashboard só faz <code>SELECT</code>.</p>
+  </section>
+
+  <section id="layout">
+    <h2>Rascunho</h2>
+    <p class="h2big">Como a tela se organiza</p>
+    <div class="wire" aria-label="Rascunho do layout do dashboard">
+      <div class="w-kpis">
+        <div class="w-kpi"><span>Ticket médio</span><b>R$ 137,42</b></div>
+        <div class="w-kpi"><span>Cancelados</span><b>0,63%</b></div>
+        <div class="w-kpi"><span>No prazo</span><b>93,2%</b></div>
+        <div class="w-kpi"><span>Dias até entregar</span><b>12,5</b></div>
+        <div class="w-kpi"><span>Nota média</span><b>4,09</b></div>
+        <div class="w-kpi"><span>Recompra</span><b>3,04%</b></div>
+        <div class="w-kpi"><span>Peso do frete</span><b>14,2%</b></div>
+      </div>
+      <div class="w-charts">
+        <div class="w-chart w-wide"><span>01 &middot; Faturamento mensal</span><i>linha</i></div>
+        <div class="w-chart"><span>02 &middot; Receita por categoria</span><i>barras, top 10</i></div>
+        <div class="w-chart"><span>07 &middot; Mix de pagamento</span><i>barras</i></div>
+        <div class="w-chart"><span>06 &middot; Ticket por UF</span><i>barras</i></div>
+        <div class="w-chart"><span>Clientes por UF</span><i>barras</i></div>
+        <div class="w-chart"><span>04 &middot; Nota por categoria</span><i>barras, piores 10</i></div>
+        <div class="w-chart"><span>09 &middot; Concentração de vendedores</span><i>curva de Pareto</i></div>
+      </div>
+    </div>
+    <p class="small">Os números com prefixo são os marts da aula 3 e do desafio 3. Os sem prefixo pedem um mart novo na aula 4.</p>
+  </section>
+
+  <section id="os-14">
+    <h2>Ficha de cada um</h2>
+    <p class="h2big">Definição, fonte e valor de referência</p>
+
+    <h3>Cartões de número</h3>
+    <div class="fichas">
+
+      <article class="ficha">
+        <div class="f-head"><h4>Ticket médio por pedido</h4><span class="f-val">R$ 137,42</span></div>
+        <p class="f-def">Receita de cada pedido válido somada primeiro, média depois.</p>
+        <p class="f-sql">avg(sum(preco) por pedido_id) &middot; pedidos válidos</p>
+        <p class="f-meta"><span>8 entregas</span><span>refined.itens_pedido + pedidos</span><span class="tag t-mart">marts.kpis &middot; novo</span></p>
+        <p class="f-note">A mediana é R$ 86,90. Uma média 58% acima da mediana diz que poucos pedidos caros puxam o número para cima &mdash; vale mostrar as duas.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Taxa de cancelamento</h4><span class="f-val">0,63%</span></div>
+        <p class="f-def">Pedidos com <code>status = 'canceled'</code> sobre todos os pedidos.</p>
+        <p class="f-sql">count(canceled) / count(*) &middot; refined.pedidos</p>
+        <p class="f-meta"><span>8 entregas</span><span>refined.pedidos</span><span class="tag t-mart">marts.kpis &middot; novo</span></p>
+        <p class="f-note">Somando <code>unavailable</code>, os pedidos que não aconteceram são 1,24%. Decida qual dos dois o cartão mostra, e escreva no título.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Entrega no prazo</h4><span class="f-val">93,2%</span></div>
+        <p class="f-def">Entre os pedidos <code>delivered</code> com data de entrega, os que chegaram até o dia previsto.</p>
+        <p class="f-sql">data_entrega::DATE &lt;= data_entrega_prevista &middot; 96.470 pedidos</p>
+        <p class="f-meta"><span>6 entregas</span><span>refined.pedidos</span><span class="tag t-mart">mart 03</span></p>
+        <p class="f-note">Os 8 pedidos <code>delivered</code> sem data ficam fora do denominador: não dá para dizer se chegaram no prazo.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Tempo médio de entrega</h4><span class="f-val">12,5 dias</span></div>
+        <p class="f-def">Dias corridos entre <code>data_compra</code> e <code>data_entrega</code>, nos pedidos entregues.</p>
+        <p class="f-sql">avg(date_diff('day', data_compra, data_entrega))</p>
+        <p class="f-meta"><span>5 entregas</span><span>refined.pedidos</span><span class="tag t-mart">marts.kpis &middot; novo</span></p>
+        <p class="f-note">Mediana de 10 dias. Por UF vai de 8,7 (SP) a 29,3 (RR): bom candidato a um filtro de estado.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Nota média</h4><span class="f-val">4,09</span></div>
+        <p class="f-def">Média de <code>nota</code> em todas as avaliações.</p>
+        <p class="f-sql">avg(nota) &middot; refined.avaliacoes</p>
+        <p class="f-meta"><span>8 entregas</span><span>refined.avaliacoes</span><span class="tag t-mart">marts.kpis &middot; novo</span></p>
+        <p class="f-note">77,1% das notas são 4 ou 5; 14,7% são 1 ou 2; só 8,2% são 3. A média de 4,09 esconde que o cliente quase sempre gosta muito ou detesta.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Taxa de recompra</h4><span class="f-val">3,04%</span></div>
+        <p class="f-def">Pessoas com mais de um pedido válido, sobre as pessoas com pedido válido.</p>
+        <p class="f-sql">100 &minus; pct_clientes da linha de 1 pedido &middot; 94.990 pessoas</p>
+        <p class="f-meta"><span>6 entregas</span><span>refined.clientes + pedidos</span><span class="tag t-mart">mart 05</span></p>
+        <p class="f-note">2.888 pessoas. Contando também os pedidos cancelados e indisponíveis, daria 3,12% (2.997 de 96.096). Com <code>cliente_id</code> no lugar de <code>cliente_unico_id</code> o cartão mostraria 0%, sem erro nenhum.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Peso do frete</h4><span class="f-val">14,2%</span></div>
+        <p class="f-def">Quanto do valor pago em itens é frete, nos pedidos válidos.</p>
+        <p class="f-sql">sum(frete) / (sum(preco) + sum(frete))</p>
+        <p class="f-meta"><span>8 entregas</span><span>refined.itens_pedido</span><span class="tag t-mart">marts.kpis &middot; novo</span></p>
+        <p class="f-note">O frete médio por item é R$ 19,99.</p>
+      </article>
+    </div>
+
+    <h3>Gráficos</h3>
+    <div class="fichas">
+
+      <article class="ficha">
+        <div class="f-head"><h4>Faturamento mensal</h4><span class="f-val">R$ 13,49 mi</span></div>
+        <p class="f-def">Receita dos pedidos válidos por mês de compra. Linha.</p>
+        <p class="f-sql">date_trunc('month', data_compra), sum(preco)</p>
+        <p class="f-meta"><span>7 entregas</span><span>refined.pedidos + itens_pedido</span><span class="tag t-mart">mart 01</span></p>
+        <p class="f-note">24 meses com venda válida. O pico é novembro de 2017, com R$ 1.003.862,14 em 7.421 pedidos &mdash; a Black Friday. O total no período é R$ 13.494.400,74.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Receita por categoria</h4><span class="f-val">74 categorias</span></div>
+        <p class="f-def">Receita dos pedidos válidos por categoria traduzida. Barras, top 10.</p>
+        <p class="f-sql">coalesce(categoria_en, categoria, 'sem_categoria')</p>
+        <p class="f-meta"><span>8 entregas</span><span>itens_pedido + produtos + traducao_categorias</span><span class="tag t-mart">mart 02</span></p>
+        <p class="f-note">Lideram <code>health_beauty</code> (R$ 1.255.695,13), <code>watches_gifts</code> (R$ 1.198.185,21) e <code>bed_bath_table</code> (R$ 1.035.964,06). O <code>coalesce</code> é o que impede as 2 categorias sem tradução e os 610 produtos sem categoria de sumirem.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Mix de pagamento</h4><span class="f-val">78,5% cartão</span></div>
+        <p class="f-def">Valor pago por forma de pagamento nos pedidos válidos, sobre o total pago. Barras.</p>
+        <p class="f-sql">sum(valor) por tipo &middot; pagamentos + pedidos</p>
+        <p class="f-meta"><span>9 entregas</span><span>refined.pagamentos + pedidos</span><span class="tag t-mart">mart 07 &middot; desafio 3</span></p>
+        <p class="f-note">Cartão de crédito 78,5%, boleto 18,0%, voucher 2,2%, débito 1,3%. Os 3 <code>not_defined</code> são de pedidos cancelados e saem com o filtro. Sobre todos os pedidos, o cartão daria 78,3%.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Ticket médio por UF</h4><span class="f-val">R$ 125 a 216</span></div>
+        <p class="f-def">A mesma conta do ticket médio, agrupada pela UF do cliente. Barras.</p>
+        <p class="f-sql">itens_pedido &rarr; pedidos &rarr; clientes, por uf</p>
+        <p class="f-meta"><span>6 entregas</span><span>itens_pedido + pedidos + clientes</span><span class="tag t-mart">mart 06 &middot; desafio 3</span></p>
+        <p class="f-note">Maior na PB (R$ 216,34, 531 pedidos), menor em SP (R$ 125,57, 41.125 pedidos). Os estados que menos compram são os que pagam o pedido mais caro.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Clientes por UF</h4><span class="f-val">96.096 pessoas</span></div>
+        <p class="f-def">Pessoas distintas por UF. Barras.</p>
+        <p class="f-sql">count(DISTINCT cliente_unico_id) por uf</p>
+        <p class="f-meta"><span>8 entregas</span><span>refined.clientes</span><span class="tag t-mart">marts.clientes_por_uf &middot; novo</span></p>
+        <p class="f-note">27 UFs. SP 40.302, RJ 12.384, MG 11.259.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Nota por categoria</h4><span class="f-val">3,62 a 4,46</span></div>
+        <p class="f-def">Nota média dos pedidos que contêm cada categoria. Barras, as 10 piores.</p>
+        <p class="f-sql">1 nota por pedido (média, se tiver mais de uma) &times; 1 vez por categoria no pedido</p>
+        <p class="f-meta"><span>5 entregas</span><span>avaliacoes + itens_pedido + produtos</span><span class="tag t-mart">mart 04</span></p>
+        <p class="f-note">Só categorias com 100 pedidos ou mais: 52. Pior <code>office_furniture</code> (3,62), melhor <code>books_general_interest</code> (4,46). Sem o corte de 100, o ranking vira um sorteio entre categorias com três pedidos.</p>
+      </article>
+
+      <article class="ficha">
+        <div class="f-head"><h4>Concentração de vendedores</h4><span class="f-val">17,7%</span></div>
+        <p class="f-def">Que fração dos vendedores faz 80% da receita. Curva de Pareto: receita acumulada por vendedor, do maior para o menor.</p>
+        <p class="f-sql">sum(receita) OVER (ORDER BY receita DESC) / total</p>
+        <p class="f-meta"><span>7 entregas</span><span>refined.itens_pedido + pedidos</span><span class="tag t-mart">mart 09 &middot; desafio 3</span></p>
+        <p class="f-note">540 dos 3.053 vendedores com venda válida fazem 80% da receita.</p>
+      </article>
+    </div>
+
+    <div class="note"><b>Dois marts novos na aula 4:</b> <code>kpis</code> (uma linha com os cinco cartões que não saem dos marts 03 e 05) e <code>clientes_por_uf</code>. O resto já existe quando a aula 4 começa: são os marts 01 a 05 da aula 3 e os marts 06, 07 e 09 do desafio 3.</div>
+    <p class="small">Valores medidos nos arquivos do curso com a spec de referência da aula 2. Se o seu dashboard mostrar outro número, ou a definição é outra, ou tem erro &mdash; e você precisa saber qual dos dois.</p>
+  </section>
+
+  </div>
+
+  <footer>
+    Fonte: 20 entregas do desafio 1, issues com a etiqueta <code>desafio-1</code> em <a href="https://github.com/ckoliveiraa/pipeline-olist/issues?q=label%3Adesafio-1" target="_blank" rel="noopener">ckoliveiraa/pipeline-olist</a>, até 11/10/2026 (a #2, de teste, ficou de fora). Os números <span class="refs">#n</span> são as issues. As contagens citadas foram medidas nos arquivos de <code>raw/</code>.
+  </footer>
+</main>
+</div>
+<script>
+(function(){
+  var chips = document.querySelectorAll(".chip");
+  var cards = document.querySelectorAll(".ind");
+  chips.forEach(function(c){
+    c.addEventListener("click", function(){
+      var f = c.getAttribute("data-f");
+      chips.forEach(function(x){ x.classList.toggle("on", x === c); });
+      cards.forEach(function(card){
+        card.hidden = !(f === "todos" || card.getAttribute("data-tema") === f);
+      });
+    });
+  });
+
+
+  // abas: #dash (ou qualquer âncora dentro do painel) abre o dashboard
+  var tabs = document.querySelectorAll(".tab");
+  function abrir(id, rolar){
+    tabs.forEach(function(t){
+      var on = t.id === id;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+    });
+    if (rolar) { try { history.replaceState(null, "", id === "t-dash" ? "#dash" : location.pathname); } catch(e){} }
+  }
+  tabs.forEach(function(t){ t.addEventListener("click", function(){ abrir(t.id, true); }); });
+  function pelaUrl(){
+    var alvo = location.hash ? document.querySelector(location.hash) : null;
+    if (alvo && alvo.closest("#p-dash")) abrir("t-dash", false);
+    else if (alvo) abrir("t-turma", false);
+  }
+  pelaUrl();
+  window.addEventListener("hashchange", pelaUrl);
+
+  // tema (mesma chave do guia)
+  var TKEY = "olist-tema";
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem(TKEY);
+    if (saved) root.setAttribute("data-theme", saved);
+  } catch(e){}
+  document.getElementById("theme").addEventListener("click", function(){
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem(TKEY, next); } catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

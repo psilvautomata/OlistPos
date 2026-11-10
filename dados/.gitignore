@@ -1,0 +1,20 @@
+# dados descompactados — o repo versiona só os .csv.gz
+raw/*.csv
+
+# banco gerado pelo pipeline
+*.duckdb
+*.duckdb.wal
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# sistema
+.DS_Store
+Thumbs.db
+
+# material interno do instrutor
+specs/

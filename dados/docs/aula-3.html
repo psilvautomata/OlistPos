@@ -1,0 +1,1489 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 3 · SQL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#eef1ee;
+  --surface:#f7f9f7;
+  --sunken:#e4e9e5;
+  --ink:#10171a;
+  --ink-2:#39474a;
+  --ink-3:#6b7b7c;
+  --line:#cdd6cf;
+  --accent:#1a6b52;
+  --accent-soft:#dcebe3;
+  --amber:#a86e05;
+  --amber-soft:#f6ebd2;
+  --danger:#9b3a25;
+  --code-bg:#12191c;
+  --code-ink:#dce7e0;
+  --shadow:0 1px 2px rgba(16,23,26,.06),0 8px 24px -16px rgba(16,23,26,.3);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d1214;
+    --surface:#141c1f;
+    --sunken:#1b2529;
+    --ink:#e7eee9;
+    --ink-2:#b2c0ba;
+    --ink-3:#7d8d88;
+    --line:#2a383c;
+    --accent:#4fbf94;
+    --accent-soft:#12302a;
+    --amber:#e0a800;
+    --amber-soft:#2e2510;
+    --danger:#e0805f;
+    --code-bg:#080d0f;
+    --code-ink:#cfded6;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d1214;
+  --surface:#141c1f;
+  --sunken:#1b2529;
+  --ink:#e7eee9;
+  --ink-2:#b2c0ba;
+  --ink-3:#7d8d88;
+  --line:#2a383c;
+  --accent:#4fbf94;
+  --accent-soft:#12302a;
+  --amber:#e0a800;
+  --amber-soft:#2e2510;
+  --danger:#e0805f;
+  --code-bg:#080d0f;
+  --code-ink:#cfded6;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.ui{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+a{color:var(--accent)}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;
+  grid-template-columns:262px minmax(0,1fr);
+  gap:44px;
+  max-width:1180px;
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:0 72px;
+}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+}
+
+/* ---------- sidebar ---------- */
+.side{
+  position:sticky;
+  top:0;
+  align-self:start;
+  max-height:100vh;
+  overflow-y:auto;
+  padding-block:28px 32px;
+  font-family:Archivo,sans-serif;
+  font-size:13.5px;
+}
+@media (max-width:900px){
+  .side{position:static;max-height:none;border-bottom:1px solid var(--line);margin-bottom:8px}
+}
+.side .brand{
+  font-weight:700;letter-spacing:-.01em;font-size:15px;color:var(--ink);
+  display:flex;align-items:center;gap:8px;margin-bottom:18px;
+}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--amber);flex:none}
+.prog-wrap{margin-bottom:20px}
+.prog-label{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px;
+}
+.prog-label b{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums}
+.prog-track{height:4px;background:var(--sunken);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:var(--accent);transition:width .35s ease}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+nav a{
+  display:flex;gap:9px;align-items:baseline;
+  text-decoration:none;color:var(--ink-2);
+  padding:5px 8px;border-radius:5px;line-height:1.35;
+}
+nav a:hover{background:var(--sunken);color:var(--ink)}
+nav a .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);flex:none;width:18px}
+.side-foot{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);display:flex;gap:8px}
+.tbtn{
+  font-family:Archivo,sans-serif;font-size:12px;
+  background:var(--surface);color:var(--ink-2);
+  border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;
+}
+.tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+
+/* ---------- main ---------- */
+main{padding-block:28px 0;min-width:0}
+.wrap{max-width:68ch}
+
+/* hero */
+.eyebrow{
+  font-family:Archivo,sans-serif;font-size:11.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin:0 0 14px;
+}
+h1{
+  font-size:clamp(34px,5.2vw,50px);font-weight:700;letter-spacing:-.025em;
+  line-height:1.04;margin:0 0 18px;text-wrap:balance;
+}
+.lede{font-size:20px;line-height:1.55;color:var(--ink-2);margin:0 0 26px;text-wrap:pretty}
+.facts{
+  display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:10px;
+  background:var(--surface);overflow:hidden;margin-bottom:40px;
+}
+.fact{flex:1 1 130px;padding:13px 16px;border-right:1px solid var(--line)}
+.fact:last-child{border-right:0}
+@media (max-width:560px){.fact{flex:1 1 50%;border-bottom:1px solid var(--line)}}
+.fact dt{
+  font-family:Archivo,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 3px;
+}
+.fact dd{margin:0;font-family:Archivo,sans-serif;font-weight:600;font-size:15px;color:var(--ink)}
+
+/* sections */
+section{padding-block:34px 0;scroll-margin-top:16px}
+h2{
+  font-size:13px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 6px;
+}
+.h2big{
+  font-family:Archivo,sans-serif;font-size:clamp(24px,3.4vw,31px);font-weight:700;
+  letter-spacing:-.02em;line-height:1.15;margin:0 0 16px;color:var(--ink);text-wrap:balance;
+}
+h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol.body{padding-left:20px;margin:0 0 15px}
+li{margin-bottom:6px}
+strong{font-weight:600}
+.small{font-size:15px;color:var(--ink-2)}
+
+/* pipeline diagram */
+.pipe{
+  display:flex;flex-direction:column;gap:0;margin:0 0 12px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:20px;box-shadow:var(--shadow);
+}
+.layer{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
+@media (max-width:520px){.layer{grid-template-columns:minmax(0,1fr);gap:4px}}
+.layer .tag{
+  font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  padding:5px 8px;border-radius:5px;text-align:center;
+  background:var(--sunken);color:var(--ink-2);
+}
+.layer.l-raw .tag{background:var(--sunken);color:var(--ink-2)}
+.layer.l-ref .tag{background:var(--amber-soft);color:var(--amber)}
+.layer.l-mart .tag{background:var(--accent-soft);color:var(--accent)}
+.layer .desc{font-size:15px;color:var(--ink-2)}
+.layer .desc b{color:var(--ink);font-family:Archivo,sans-serif;font-weight:600}
+.arrow{
+  display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;
+  padding:7px 0;align-items:center;
+}
+@media (max-width:520px){.arrow{grid-template-columns:minmax(0,1fr)}.arrow .stem{display:none}}
+.arrow .stem{display:flex;justify-content:center;color:var(--ink-3);font-size:14px;line-height:1}
+.arrow .what{
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);
+}
+.arrow .what em{font-style:normal;color:var(--accent);font-weight:600}
+
+/* steps */
+.step{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:22px;margin-bottom:16px;box-shadow:var(--shadow);
+}
+.step.done{border-color:var(--accent);background:var(--surface)}
+.step-head{display:flex;gap:13px;align-items:flex-start;margin-bottom:4px}
+.step-n{
+  font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  background:var(--amber-soft);color:var(--amber);
+  border-radius:6px;padding:4px 8px;flex:none;margin-top:3px;
+}
+.step.done .step-n{background:var(--accent-soft);color:var(--accent)}
+.step-title{font-family:Archivo,sans-serif;font-weight:600;font-size:20px;letter-spacing:-.01em;margin:0;line-height:1.25}
+.step-sub{font-size:14.5px;color:var(--ink-3);margin:2px 0 0;font-family:Archivo,sans-serif}
+.step-body{margin-top:14px}
+.step-body > :last-child{margin-bottom:0}
+
+/* figura / diagrama */
+.fig{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:22px 20px 16px;margin:0 0 14px;box-shadow:var(--shadow);
+}
+.fig svg{display:block;width:100%;height:auto}
+.fig-scroll{overflow-x:auto;padding-bottom:4px}
+.fig-scroll svg{min-width:660px}
+.er-scroll svg.er{min-width:780px}
+@media (min-width:901px){.er-fig{width:calc(100vw - 386px);max-width:834px}}
+td.nw{white-space:nowrap}
+.fig-cap{
+  font-size:13.5px;color:var(--ink-3);margin:14px 0 0;text-align:center;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* duas colunas comparativas */
+.versus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 16px}
+@media (max-width:620px){.versus{grid-template-columns:minmax(0,1fr)}}
+.vs-card{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:18px 20px;
+}
+.vs-card.bad{border-color:var(--danger)}
+.vs-card.good{border-color:var(--accent)}
+.vs-h{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;margin:0 0 10px;
+}
+.vs-card.bad .vs-h{color:var(--danger)}
+.vs-card.good .vs-h{color:var(--accent)}
+.vs-flow{
+  font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-2);
+  margin:0 0 12px;line-height:1.9;
+}
+.vs-card p{font-size:15px;color:var(--ink-2)}
+.vs-card p:last-child{margin-bottom:0}
+
+/* spec */
+.spec{
+  border:1px solid var(--line);border-radius:12px;background:var(--sunken);
+  padding:20px 22px;margin-bottom:16px;
+}
+.spec-h{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--amber);margin:0 0 10px;
+}
+.spec ol{margin-bottom:0}
+.spec li{margin-bottom:10px;font-size:15.5px}
+.spec li:last-child{margin-bottom:0}
+.spec-foot{
+  font-size:14.5px;color:var(--ink-3);margin:14px 0 0;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* spec colapsavel */
+details.spec-det{padding:0;margin-bottom:16px}
+details.spec-det > summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
+  margin:0;padding:16px 22px;
+}
+details.spec-det > summary::-webkit-details-marker{display:none}
+details.spec-det > summary::before{
+  content:"";width:0;height:0;flex:none;
+  border-left:5px solid currentColor;border-top:4px solid transparent;
+  border-bottom:4px solid transparent;transition:transform .15s ease;
+}
+details.spec-det[open] > summary::before{transform:rotate(90deg)}
+details.spec-det > summary:hover{background:var(--line);border-radius:12px}
+details.spec-det[open] > summary:hover{border-radius:12px 12px 0 0}
+.spec-cue{
+  margin-left:auto;font-size:10px;letter-spacing:.09em;color:var(--ink-3);
+}
+.spec-cue::after{content:"abrir"}
+details.spec-det[open] .spec-cue::after{content:"fechar"}
+details.spec-det > :not(summary){margin-left:22px;margin-right:22px}
+details.spec-det > :last-child{margin-bottom:20px}
+
+/* code */
+pre{
+  background:var(--code-bg);color:var(--code-ink);
+  border-radius:8px;padding:13px 15px;overflow-x:auto;
+  font-size:13.5px;line-height:1.6;margin:0 0 14px;
+}
+pre .c{color:#7d8d88}
+pre .ok{color:#4fbf94}
+code:not(pre code){
+  background:var(--sunken);border-radius:4px;padding:1px 5px;font-size:.87em;color:var(--ink);
+}
+.cmdlabel{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 6px;
+}
+.codewrap{position:relative}
+.copy{
+  position:absolute;top:8px;right:8px;
+  font-family:Archivo,sans-serif;font-size:11px;letter-spacing:.04em;
+  background:rgba(255,255,255,.08);color:#cfded6;
+  border:1px solid rgba(255,255,255,.16);border-radius:5px;padding:3px 8px;cursor:pointer;
+}
+.copy:hover{background:rgba(255,255,255,.16)}
+
+/* verify block */
+.verify{
+  border-left:3px solid var(--accent);background:var(--accent-soft);
+  border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 14px;
+}
+.verify .vh{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 6px;
+}
+.verify p,.verify ul{margin-bottom:0;font-size:15px}
+.note{
+  border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 14px;font-size:15px;
+}
+.note b{font-family:Archivo,sans-serif}
+.note > :last-child{margin-bottom:0}
+
+/* checkbox */
+.mark{
+  display:flex;align-items:center;gap:9px;margin-top:16px;padding-top:14px;
+  border-top:1px solid var(--line);
+  font-family:Archivo,sans-serif;font-size:14px;color:var(--ink-3);cursor:pointer;user-select:none;
+}
+.mark input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex:none}
+.step.done .mark{color:var(--accent);font-weight:600}
+
+/* aulas */
+.aulas{display:flex;flex-direction:column;gap:12px;margin-bottom:8px}
+.aula{
+  display:grid;grid-template-columns:62px minmax(0,1fr);gap:16px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:18px 20px;
+}
+@media (max-width:560px){.aula{grid-template-columns:minmax(0,1fr);gap:8px}}
+.aula .when{
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);
+  border-right:1px solid var(--line);padding-right:12px;
+}
+@media (max-width:560px){.aula .when{border-right:0;padding-right:0}}
+.aula .when b{display:block;font-size:22px;color:var(--amber);line-height:1.1;font-weight:600}
+.aula h3{margin:0 0 6px;font-size:18px}
+.aula p{font-size:15px;margin-bottom:10px;color:var(--ink-2)}
+.chal{
+  font-size:14.5px;background:var(--sunken);border-radius:7px;padding:9px 12px;color:var(--ink-2);
+}
+.chal b{font-family:Archivo,sans-serif;color:var(--ink);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+
+/* desafios */
+[hidden]{display:none!important}
+.embreve{
+  border:1px dashed var(--line);border-radius:12px;background:var(--sunken);
+  padding:16px 20px;margin:0 0 16px;font-size:15px;color:var(--ink-3);
+}
+.embreve b{font-family:Archivo,sans-serif;color:var(--ink-2)}
+.desafios{display:flex;flex-direction:column;gap:12px}
+.desafio{
+  display:grid;grid-template-columns:76px minmax(0,1fr);gap:18px;
+  border:1px solid var(--line);border-left:3px solid var(--amber);
+  border-radius:0 12px 12px 0;background:var(--surface);padding:18px 20px;
+}
+@media (max-width:560px){.desafio{grid-template-columns:minmax(0,1fr);gap:6px}}
+.desafio .de-n{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.desafio .de-n b{display:block;font-size:21px;color:var(--amber);line-height:1.1;letter-spacing:0}
+.desafio h3{margin:0 0 6px;font-size:17px}
+.desafio p{font-size:15.5px;margin-bottom:0;color:var(--ink-2)}
+.desafio p + p{margin-top:8px}
+.desafio .entrega-ex{
+  font-size:13px;color:var(--ink-3);margin-top:8px;
+}
+.desafio .entrega-ex code{font-size:12.5px;line-height:1.7}
+.desafio .entrega{
+  font-family:Archivo,sans-serif;font-size:13px;color:var(--ink-3);
+  margin-top:9px;padding-top:9px;border-top:1px solid var(--line);
+}
+
+/* clock bar */
+.clock{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:6px 0 14px;font-family:Archivo,sans-serif;font-size:11px}
+.clock span{display:flex;align-items:center;justify-content:center;color:#fff;white-space:nowrap;overflow:hidden}
+.c1{background:var(--ink-3)}
+.c2{background:var(--accent)}
+.c3{background:var(--amber)}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:0 0 16px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--line)}
+tbody tr:last-child td{border-bottom:0}
+th{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);background:var(--sunken);
+}
+td.num{text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+td.term{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink);white-space:nowrap}
+
+details{border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:12px 16px;margin-bottom:9px}
+summary{font-family:Archivo,sans-serif;font-weight:600;font-size:16px;cursor:pointer;color:var(--ink)}
+summary::marker{color:var(--ink-3)}
+details[open] summary{margin-bottom:9px}
+details p:last-child{margin-bottom:0}
+
+footer{
+  margin-top:48px;padding-top:20px;border-top:1px solid var(--line);
+  font-family:Archivo,sans-serif;font-size:13px;color:var(--ink-3);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* links laterais entre páginas */
+.side-links{display:flex;flex-direction:column;gap:2px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.side-links a{display:block;text-decoration:none;color:var(--ink-3);padding:4px 8px;border-radius:5px}
+.side-links a:hover{background:var(--sunken);color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="shell">
+<aside class="side">
+  <div class="brand"><span class="dot"></span>Pipeline Olist &middot; Aula 3</div>
+
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Progresso da aula</span><b id="pct">0/8</b></div>
+    <div class="prog-track"><div class="prog-fill" id="fill"></div></div>
+  </div>
+
+  <nav>
+    <ol>
+      <li><a href="#correcao"><span class="n">00</span>A correção do desafio 2</a></li>
+      <li><a href="#partida"><span class="n">01</span>Onde paramos</a></li>
+      <li><a href="#grao"><span class="n">02</span>O grão, PK e FK</a></li>
+      <li><a href="#regras"><span class="n">03</span>Quatro palavras fechadas</a></li>
+      <li><a href="#m1"><span class="n">04</span>Mart 01 &middot; GROUP BY</a></li>
+      <li><a href="#m2"><span class="n">05</span>Mart 02 &middot; JOIN</a></li>
+      <li><a href="#m3"><span class="n">06</span>Mart 03 &middot; CASE WHEN</a></li>
+      <li><a href="#m4"><span class="n">07</span>Mart 04 &middot; CTE e janela</a></li>
+      <li><a href="#m5"><span class="n">08</span>Mart 05 &middot; Janela</a></li>
+      <li><a href="#rodar"><span class="n">09</span>Executor e conferência</a></li>
+      <li><a href="#ia"><span class="n">10</span>A IA revisa o grão</a></li>
+      <li><a href="#desafio"><span class="n">11</span>Os desafios da aula 3</a></li>
+      <li><a href="#contagens"><span class="n">A1</span>Contagens de marts</a></li>
+      <li><a href="#erros"><span class="n">A2</span>Quando quebrar</a></li>
+    </ol>
+  </nav>
+
+  <nav class="side-links">
+    <a href="index.html">&larr; Todas as aulas</a>
+    <a href="aula-1.html">Aula 1</a>
+    <a href="aula-2.html">Aula 2</a>
+    <a href="indicadores.html">Indicadores da turma</a>
+  </nav>
+
+  <div class="side-foot">
+    <button class="tbtn" id="theme" type="button">Tema</button>
+    <button class="tbtn" id="reset" type="button">Zerar progresso</button>
+  </div>
+</aside>
+
+<main>
+<div class="wrap">
+
+  <p class="eyebrow">Aula 3 de 4 &middot; SQL &middot; 1h20</p>
+  <h1>Antes do SELECT, o que é uma linha</h1>
+  <p class="lede">O dado agora merece confiança. Hoje ele responde perguntas: cinco arquivos <code>.sql</code>, cinco perguntas de negócio, um degrau de SQL por arquivo &mdash; e mais cinco para casa. E uma pergunta que vem antes de todas as outras, em cada um deles &mdash; <em>o que é uma linha aqui?</em> &mdash;, porque é ela que decide se o <code>JOIN</code> soma ou multiplica.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Entra</dt><dd class="mono">refined.*</dd></div>
+    <div class="fact"><dt>Sai</dt><dd class="mono">marts.*</dd></div>
+    <div class="fact"><dt>Arquivos</dt><dd class="mono">sql/marts/*.sql</dd></div>
+    <div class="fact"><dt>Novidade</dt><dd>O grão</dd></div>
+    <div class="fact"><dt>Python</dt><dd>Só executa</dd></div>
+  </dl>
+
+  <div class="clock">
+    <span class="c1" style="flex:1 1 19%">correção 15min</span>
+    <span class="c2" style="flex:1 1 62%">construção 50min</span>
+    <span class="c3" style="flex:1 1 19%">dúvidas 15min</span>
+  </div>
+  <p class="small">O relógio de sempre. A construção é quase toda SQL escrito por você: cinco minutos de grão, depois um mart a cada dez minutos. O Python aparece uma vez só, no fim, para rodar os arquivos &mdash; e quem escreve esse Python é a IA, a partir de uma spec que já vem pronta.</p>
+
+  <div class="pipe">
+    <div class="layer l-ref"><span class="tag">refined.*</span><span class="desc"><b>Oito tabelas confiáveis.</b> Uma linha por evento: um pedido, um item, uma avaliação.</span></div>
+    <div class="arrow"><span class="stem">&darr;</span><span class="what">sql/marts/*.sql &middot; <em>SQL</em> junta, agrega e responde</span></div>
+    <div class="layer l-mart"><span class="tag">marts.*</span><span class="desc"><b>Uma tabela por pergunta.</b> Uma linha por mês, por categoria, pela operação inteira.</span></div>
+    <div class="arrow"><span class="stem">&darr;</span><span class="what">app.py &middot; <em>aula 4</em> só lê</span></div>
+    <div class="layer l-mart"><span class="tag">dashboard</span><span class="desc"><b>O que a diretoria vê.</b> Cada número dele sai pronto de um mart.</span></div>
+  </div>
+  <p class="small">A camada nova é a do meio. Repare na mudança de grão entre <code>refined</code> e <code>marts</code>: de <em>um evento</em> para <em>uma resposta</em>. É essa mudança que a aula inteira ensina a fazer sem perder nem inventar linha.</p>
+
+  <!-- ============ 00 CORREÇÃO ============ -->
+  <section id="correcao">
+    <h2>00 &middot; Correção ao vivo</h2>
+    <p class="h2big">A spec da geolocalização</p>
+    <p>Vinte entregas, e nenhuma resposta única &mdash; como prometido. Mas uma pergunta dividiu a turma, e quase ninguém a fez em voz alta: <strong>o que é uma linha desta tabela?</strong> A mesma <code>raw.geolocalizacao</code>, com o mesmo 1.000.163 linhas, virou quatro tabelas diferentes:</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Uma linha é&hellip;</th><th style="text-align:right">Linhas</th><th>Entregas</th><th>O que custa</th></tr></thead>
+        <tbody>
+          <tr><td>um ponto, como veio</td><td class="num">1.000.163</td><td class="nw"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/32" target="_blank" rel="noopener">#32</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/46" target="_blank" rel="noopener">#46</a></td><td>Nada se perde, inclusive as 261.831 cópias exatas, que não trazem informação nenhuma.</td></tr>
+          <tr><td>um ponto distinto</td><td class="num">738.332</td><td class="nw"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/34" target="_blank" rel="noopener">#34</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/37" target="_blank" rel="noopener">#37</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/39" target="_blank" rel="noopener">#39</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/41" target="_blank" rel="noopener">#41</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/47" target="_blank" rel="noopener">#47</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/54" target="_blank" rel="noopener">#54</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/55" target="_blank" rel="noopener">#55</a></td><td>Sai só a linha repetida inteira. Nenhuma decisão sobre conteúdo.</td></tr>
+          <tr><td>um CEP</td><td class="num">19.015</td><td class="nw"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/31" target="_blank" rel="noopener">#31</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/43" target="_blank" rel="noopener">#43</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/44" target="_blank" rel="noopener">#44</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/49" target="_blank" rel="noopener">#49</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/51" target="_blank" rel="noopener">#51</a></td><td>Exige escolher uma coordenada (média? mediana?), uma cidade e uma UF por CEP. É <em>agregação</em>.</td></tr>
+          <tr><td>ainda não sei</td><td class="num">&mdash;</td><td class="nw"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/33" target="_blank" rel="noopener">#33</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/35" target="_blank" rel="noopener">#35</a> <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/50" target="_blank" rel="noopener">#50</a></td><td>Honesto, mas uma spec com a decisão em aberto deixa a IA decidir por você.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>As três primeiras são defensáveis, e as entregas que as escolheram <em>disseram</em> que escolheram. A diferença entre elas não é de certo e errado: é de <strong>camada</strong>. Tirar cópia exata não muda o significado de nenhuma linha &mdash; é trabalho de <code>refined</code>. Reduzir 52 pontos a um por CEP é responder uma pergunta (&ldquo;onde fica este CEP?&rdquo;) &mdash; é trabalho de mart. A <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/31" target="_blank" rel="noopener">#31</a> percebeu isso sozinha e chamou o destino de <code>mart.geolocalizacao_por_cep</code>.</p>
+
+    <h3>Por que o grão importa: o JOIN</h3>
+    <p>Quem escolheu &ldquo;um CEP&rdquo; foi movido por um medo correto, que a <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/44" target="_blank" rel="noopener">#44</a> escreveu com todas as letras: ligar a geolocalização aos clientes pelo CEP multiplica linhas. Quanto?</p>
+    <div class="codewrap"><pre>SELECT count(*) AS linhas
+FROM refined.clientes    AS c
+JOIN raw.geolocalizacao  AS g ON g.geolocation_zip_code_prefix = c.cep_prefixo;</pre><button class="copy" type="button">copiar</button></div>
+    <pre>  linhas
+15.083.455</pre>
+    <p>Noventa e nove mil clientes viram quinze milhões de linhas, sem erro nenhum na tela. Qualquer soma feita depois desse <code>JOIN</code> sai multiplicada por cerca de 150. Não é defeito da tabela: é o que acontece quando você junta duas coisas sem saber o grão de cada uma. <strong>É o assunto da aula de hoje.</strong></p>
+
+    <h3>Mesmo dado, seis números</h3>
+    <p>&ldquo;Quantas coordenadas estão fora do Brasil?&rdquo; As entregas responderam 29, 31, 33, 37, 42 e 68. Ninguém mentiu: cada número tem uma definição diferente, e quase nenhuma entrega escreveu qual era.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th style="text-align:right">Número</th><th>O que ele conta, com a caixa lat <code>-33,75</code> a <code>5,27</code> e lng <code>-73,99</code> a <code>-34,79</code></th></tr></thead>
+        <tbody>
+          <tr><td class="num">42</td><td>Linhas com latitude <em>ou</em> longitude fora da caixa</td></tr>
+          <tr><td class="num">33</td><td>As mesmas, contando cada linha repetida uma vez só</td></tr>
+          <tr><td class="num">31</td><td>Só a latitude fora</td></tr>
+          <tr><td class="num">37</td><td>Só a longitude fora</td></tr>
+          <tr><td class="num">68</td><td>31 + 37: as 26 linhas com as duas coordenadas fora contadas duas vezes</td></tr>
+          <tr><td class="num">29</td><td>Outra caixa, que a entrega chamou de &ldquo;exploratória&rdquo; sem dizer os limites</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Um número sem a sua definição não serve de critério de aceite: quem for conferir não sabe o que contar. O mesmo vale para outra divergência aparente: <strong>157</strong> (<a href="https://github.com/ckoliveiraa/pipeline-olist/issues/34" target="_blank" rel="noopener">#34</a>, <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/47" target="_blank" rel="noopener">#47</a>) e <strong>278</strong> (<a href="https://github.com/ckoliveiraa/pipeline-olist/issues/49" target="_blank" rel="noopener">#49</a>) estão os dois certos. São 157 <em>CEPs</em> de cliente sem geolocalização, onde moram 278 <em>clientes</em>. Escreva a unidade ao lado do número.</p>
+
+    <h3>Três armadilhas que apareceram</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Na spec</th><th>O problema</th></tr></thead>
+        <tbody>
+          <tr><td><code>cidade</code> com <code>FIRST</code> (<a href="https://github.com/ckoliveiraa/pipeline-olist/issues/43" target="_blank" rel="noopener">#43</a>)</td><td><code>FIRST</code> sem <code>ORDER BY</code> devolve a primeira linha que o banco encontrar, e a ordem não é garantida. 8.556 CEPs têm mais de uma cidade: rodar duas vezes pode dar duas tabelas diferentes &mdash; o oposto do critério &ldquo;rodar duas vezes imprime a mesma coisa&rdquo;. A <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/44" target="_blank" rel="noopener">#44</a> e a <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/51" target="_blank" rel="noopener">#51</a> resolveram com moda e desempate alfabético.</td></tr>
+          <tr><td>&ldquo;1.000 &rarr; 1.000 linhas&rdquo; (<a href="https://github.com/ckoliveiraa/pipeline-olist/issues/29" target="_blank" rel="noopener">#29</a>, <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/36" target="_blank" rel="noopener">#36</a>)</td><td>Os motivos citam &ldquo;a imagem&rdquo; e &ldquo;a amostra do <code>LIMIT</code>&rdquo;. Um <code>LIMIT</code> mostra o formato do dado, nunca a quantidade: a tabela tem 1.000.163 linhas, e as 261.831 cópias só aparecem para quem conta todas.</td></tr>
+          <tr><td>&ldquo;identificar&hellip; não presumir&rdquo; (<a href="https://github.com/ckoliveiraa/pipeline-olist/issues/48" target="_blank" rel="noopener">#48</a>)</td><td>A spec manda a IA investigar e decidir. Instrução para descobrir não é decisão: é a lacuna em branco, com outras palavras. E ela cobre as nove tabelas com os nomes originais, quando o desafio era uma só.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <details class="spec spec-det">
+      <summary class="spec-h">Uma spec de referência &middot; trechos que decidem<span class="spec-cue"></span></summary>
+      <p>Não <em>a</em> resposta. Ela fica com o grão &ldquo;um ponto distinto&rdquo; em <code>refined</code> e empurra o &ldquo;um CEP&rdquo; para um mart &mdash; porque é a separação de camadas que o curso usa. Só os itens que mudam em relação à spec da transformação:</p>
+      <div class="codewrap"><pre>1. ESCOPO
+   raw.geolocalizacao -&gt; refined.geolocalizacao. Script separado; os
+   critérios da transformação (550.759 linhas) continuam valendo.
+
+3. TIPOS
+   latitude, longitude: DOUBLE. Motivo: medida contínua, nunca somada
+     como dinheiro; 0 falhas de CAST nas 1.000.163 linhas.
+   cep_prefixo: VARCHAR. Motivo: 245.733 linhas começam com zero.
+
+5. DUPLICATAS
+   Grão: um ponto observado (cep, lat, lng, cidade, uf).
+   cep_prefixo NÃO é chave: 19.015 CEPs, até 1.146 linhas no mesmo CEP.
+   Linha inteira repetida: mantém uma. 1.000.163 -&gt; 738.332 (261.831 saem).
+   Não agrega para um ponto por CEP. Motivo: média, mediana ou moda é a
+   resposta a uma pergunta, e pergunta é trabalho de mart.
+
+6. NULOS E ANOMALIAS
+   0 nulos nas cinco colunas. Se aparecer, mantém.
+   Ficam, sem correção:
+     42 linhas fora da caixa lat -33,75..5,27 / lng -73,99..-34,79;
+     8 CEPs com duas UFs;
+     cidade com e sem acento ('sao paulo' e 'são paulo').
+   Motivo: refined não corrige fato.
+
+AVISO A QUEM CONSOME
+   JOIN direto com clientes multiplica linhas (99.441 -&gt; 15.083.455).
+   Reduza a um ponto por CEP antes, num mart, com a regra escrita.</pre><button class="copy" type="button">copiar</button></div>
+      <p class="spec-foot">O &ldquo;aviso a quem consome&rdquo; não é regra de transformação, e só a <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/46" target="_blank" rel="noopener">#46</a> escreveu algo assim, separado das regras como documentação. Mas é a frase mais útil da spec: ela diz ao próximo leitor qual é o grão e o que acontece se ele esquecer.</p>
+    </details>
+
+    <h3>Duas entregas para ler inteiras</h3>
+    <p>A spec de referência acima mostra só os trechos que decidem. Para ver uma spec completa, do contexto aos critérios de aceite, abra estas duas. Uma acerta a camada de hoje; a outra é o que o &ldquo;um CEP&rdquo; vira quando chega na camada certa.</p>
+    <div class="versus">
+      <div class="vs-card good">
+        <p class="vs-h">refined &middot; um ponto distinto</p>
+        <p class="vs-flow"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/37" target="_blank" rel="noopener">#37</a> &middot; 1.000.163 &rarr; 738.332</p>
+        <p>A mais próxima da referência. Script separado, com os 550.759 da transformação mantidos por escrito. Diz que a tabela não tem chave e que a unidade é a linha inteira. Recusa agregar por CEP, e diz por quê: média, mediana ou primeiro ponto dependem da pergunta. Guarda as anomalias contadas (42 pontos fora do Brasil, 8 CEPs com duas UFs, 8.011 grafias de cidade) e confere que os 19.015 CEPs sobrevivem à deduplicação.</p>
+        <p>O que faltou: o aviso de que o <code>JOIN</code> direto com clientes multiplica linhas.</p>
+      </div>
+      <div class="vs-card good">
+        <p class="vs-h">mart &middot; um ponto por CEP</p>
+        <p class="vs-flow"><a href="https://github.com/ckoliveiraa/pipeline-olist/issues/49" target="_blank" rel="noopener">#49</a> &middot; 1.000.163 &rarr; 19.010</p>
+        <p>A única das que agregaram por CEP que mediu cada passo: tira as cópias, tira os pontos fora do Brasil, reduz a um ponto por CEP &mdash; e conta o que cada passo custa. O filtro geográfico apaga 5 CEPs inteiros, e ela escreveu isso no critério de aceite. A escolha da mediana vem com número, não com adjetivo: um único ponto errado arrasta a média por até 1.118 km.</p>
+        <p>O que muda: com o que vimos hoje, essa spec é de um mart &mdash; <code>mart.geolocalizacao_por_cep</code>, como a <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/31" target="_blank" rel="noopener">#31</a> chamou.</p>
+      </div>
+    </div>
+
+    <div class="note"><b>A frase da correção.</b> <code>refined</code> guarda o grão do evento; o mart escolhe o grão da pergunta. Toda agregação que você fizer hoje mora em <code>sql/marts/</code>, com o grão escrito na primeira linha do arquivo.</div>
+  </section>
+
+  <!-- ============ 01 PONTO DE PARTIDA ============ -->
+  <section id="partida">
+    <h2>01 &middot; Antes de construir</h2>
+    <p class="h2big">Onde paramos</p>
+    <p>Todo mundo começa do mesmo lugar: <code>raw</code> com nove tabelas e <code>refined</code> com oito, nos nomes da <a href="aula-2.html#spec">spec de referência da aula 2</a>. Os marts de hoje usam esses nomes. Se a sua <code>refined</code> tem outros, tudo bem &mdash; mas cada <code>SELECT</code> desta página vai precisar da sua tradução.</p>
+
+    <article class="step" data-id="a3-s0">
+      <div class="step-head">
+        <span class="step-n">3.0</span>
+        <div><p class="step-title">Conferir o ponto de partida</p><p class="step-sub">As duas etapas, do zero, e a pasta dos marts</p></div>
+      </div>
+      <div class="step-body">
+        <p>Nenhum <code>ui.py</code> de pé, nenhum Claude Code com o servidor em <code>--read-write</code>. Então:</p>
+        <div class="codewrap"><pre>uv run python -m pipeline.ingestao
+uv run python -m pipeline.transformacao</pre><button class="copy" type="button">copiar</button></div>
+        <div class="verify"><p class="vh">Confira</p><p>A ingestão termina em <strong>1.550.922</strong> registros e a transformação em <strong>550.759</strong>. Se a sua transformação ainda não roda, use a spec de referência da aula 2 e peça o código à IA antes de seguir: hoje ninguém escreve SQL em <code>raw</code>.</p></div>
+        <p>Depois, crie a pasta onde os marts vão morar. Ela não existe ainda, e nada no pipeline a cria por você: é nela que você salva cada <code>.sql</code> de hoje, e é dela que o executor da <a href="#rodar">seção 09</a> lê.</p>
+        <p class="cmdlabel">Windows (PowerShell)</p>
+        <div class="codewrap"><pre>mkdir sql\marts</pre><button class="copy" type="button">copiar</button></div>
+        <p class="cmdlabel">macOS, Linux ou Git Bash</p>
+        <div class="codewrap"><pre>mkdir -p sql/marts</pre><button class="copy" type="button">copiar</button></div>
+        <div class="verify"><p class="vh">Confira</p><p>A pasta <code>sql/</code> fica na raiz do projeto, ao lado de <code>pipeline/</code> e <code>raw/</code> &mdash; não dentro de <code>pipeline/</code>. Por enquanto, <code>sql/marts/</code> está vazia; o primeiro arquivo chega no passo 3.1.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a3-s0"> Marcar como feito</label>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ============ 02 GRÃO ============ -->
+  <section id="grao">
+    <h2>02 &middot; Fundamento</h2>
+    <p class="h2big">O grão, a PK e a FK</p>
+    <p><strong>Grão</strong> é a resposta para &ldquo;o que é uma linha desta tabela?&rdquo;. Em <code>refined.pedidos</code>, um pedido. Em <code>refined.itens_pedido</code>, um item de um pedido. Em <code>refined.avaliacoes</code>, uma avaliação. Parece óbvio até o primeiro <code>JOIN</code>, porque o <code>JOIN</code> devolve uma tabela no grão <em>mais fino</em> dos dois lados &mdash; e tudo o que era do grão mais grosso passa a se repetir.</p>
+
+    <div class="fig">
+      <div class="fig-scroll">
+      <svg viewBox="0 0 720 268" style="min-width:540px" role="img" aria-label="Uma tabela de avaliações com dois pedidos, A com nota 5 e B com nota 1, juntada com itens_pedido, onde A tem três itens e B tem um. O resultado tem quatro linhas, e a nota 5 do pedido A aparece três vezes. A média depois do JOIN dá 4,0; a média verdadeira dos dois pedidos é 3,0.">
+        <defs>
+          <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--ink-3)"/>
+          </marker>
+        </defs>
+        <g font-family="JetBrains Mono, monospace">
+          <!-- avaliacoes -->
+          <rect x="6" y="28" width="168" height="90" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+          <rect x="7" y="29" width="166" height="28" rx="7" fill="var(--sunken)"/>
+          <text x="18" y="48" font-size="12.5" font-weight="700" fill="var(--ink)">avaliacoes</text>
+          <text x="18" y="16" font-size="10.5" font-family="Archivo, sans-serif" fill="var(--ink-3)">grão: um pedido</text>
+          <text x="18" y="80" font-size="12" fill="var(--ink-2)">pedido A</text><text x="160" y="80" text-anchor="end" font-size="12" font-weight="700" fill="var(--amber)">nota 5</text>
+          <text x="18" y="106" font-size="12" fill="var(--ink-2)">pedido B</text><text x="160" y="106" text-anchor="end" font-size="12" font-weight="700" fill="var(--ink)">nota 1</text>
+
+          <text x="217" y="94" text-anchor="middle" font-size="18" fill="var(--ink-3)">&#8904;</text>
+          <text x="217" y="118" text-anchor="middle" font-size="10" fill="var(--accent)">pedido_id</text>
+
+          <!-- itens -->
+          <rect x="260" y="28" width="168" height="142" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+          <rect x="261" y="29" width="166" height="28" rx="7" fill="var(--sunken)"/>
+          <text x="272" y="48" font-size="12.5" font-weight="700" fill="var(--ink)">itens_pedido</text>
+          <text x="272" y="16" font-size="10.5" font-family="Archivo, sans-serif" fill="var(--ink-3)">grão: um item</text>
+          <text x="272" y="80" font-size="12" fill="var(--ink-2)">pedido A &#183; item 1</text>
+          <text x="272" y="106" font-size="12" fill="var(--ink-2)">pedido A &#183; item 2</text>
+          <text x="272" y="132" font-size="12" fill="var(--ink-2)">pedido A &#183; item 3</text>
+          <text x="272" y="158" font-size="12" fill="var(--ink-2)">pedido B &#183; item 1</text>
+
+          <line x1="436" y1="99" x2="490" y2="99" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#ag)"/>
+
+          <!-- resultado -->
+          <rect x="498" y="28" width="216" height="142" rx="8" fill="var(--surface)" stroke="var(--danger)" stroke-width="1.4"/>
+          <rect x="499" y="29" width="214" height="28" rx="7" fill="var(--sunken)"/>
+          <text x="510" y="48" font-size="12.5" font-weight="700" fill="var(--ink)">depois do JOIN</text>
+          <text x="510" y="16" font-size="10.5" font-family="Archivo, sans-serif" fill="var(--danger)">grão: um item &#8212; a nota veio junto</text>
+          <text x="510" y="80" font-size="12" fill="var(--ink-2)">A &#183; item 1</text><text x="700" y="80" text-anchor="end" font-size="12" font-weight="700" fill="var(--amber)">nota 5</text>
+          <text x="510" y="106" font-size="12" fill="var(--ink-2)">A &#183; item 2</text><text x="700" y="106" text-anchor="end" font-size="12" font-weight="700" fill="var(--amber)">nota 5</text>
+          <text x="510" y="132" font-size="12" fill="var(--ink-2)">A &#183; item 3</text><text x="700" y="132" text-anchor="end" font-size="12" font-weight="700" fill="var(--amber)">nota 5</text>
+          <text x="510" y="158" font-size="12" fill="var(--ink-2)">B &#183; item 1</text><text x="700" y="158" text-anchor="end" font-size="12" font-weight="700" fill="var(--ink)">nota 1</text>
+        </g>
+        <g font-family="Archivo, sans-serif">
+          <rect x="6" y="196" width="344" height="58" rx="8" fill="var(--sunken)"/>
+          <text x="20" y="220" font-size="12" fill="var(--ink-3)">avg(nota) depois do JOIN</text>
+          <text x="20" y="242" font-size="15" font-weight="700" fill="var(--danger)" font-family="JetBrains Mono, monospace">(5 + 5 + 5 + 1) / 4 = 4,0</text>
+          <rect x="370" y="196" width="344" height="58" rx="8" fill="var(--accent-soft)"/>
+          <text x="384" y="220" font-size="12" fill="var(--accent)">a nota dos pedidos, que era a pergunta</text>
+          <text x="384" y="242" font-size="15" font-weight="700" fill="var(--accent)" font-family="JetBrains Mono, monospace">(5 + 1) / 2 = 3,0</text>
+        </g>
+      </svg>
+      </div>
+      <p class="fig-cap">Nenhuma linha está errada, nenhum erro aparece. O pedido A só ganhou peso três porque comprou três coisas. Com o dado da Olist, essa conta piora a nota de <code>office_furniture</code> de 3,62 para 3,49 &mdash; é o mart 04.</p>
+    </div>
+
+    <h3>O grão escrito em colunas: a PK</h3>
+    <p>No diagrama ER da <a href="aula-2.html">aula 2</a>, cada tabela tinha uma <strong>PK</strong> e algumas <strong>FK</strong>. Hoje elas mudam de papel: a PK é o grão escrito em colunas. &ldquo;Um item de um pedido&rdquo;, em SQL, é <code>(pedido_id, item_seq)</code> &mdash; a combinação que nunca se repete. Quem sabe a PK sabe o grão, e pode provar com uma conta:</p>
+    <div class="codewrap"><pre>SELECT count(*)                              AS linhas,
+       count(DISTINCT (pedido_id, item_seq)) AS chaves,
+       count(DISTINCT pedido_id)             AS pedidos
+FROM refined.itens_pedido;</pre><button class="copy" type="button">copiar</button></div>
+    <pre>  linhas   chaves  pedidos
+ 112.650  112.650   98.666</pre>
+    <p><code>linhas</code> igual a <code>chaves</code> prova a PK: nenhuma combinação repete. <code>pedido_id</code> sozinho dá 98.666, porque em <code>itens_pedido</code> ele não é PK: é <strong>FK</strong>, aponta para a PK de <code>pedidos</code> e repete uma vez por item. A mesma coluna é PK numa tabela e FK em outra &mdash; e é a diferença entre as duas que decide o que o <code>JOIN</code> faz.</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Tabela</th><th>Grão</th><th>PK</th><th>FK &rarr; aponta para</th><th style="text-align:right">Linhas</th></tr></thead>
+        <tbody>
+          <tr><td class="term">refined.pedidos</td><td>um pedido</td><td class="term">pedido_id</td><td class="term">cliente_id &rarr; clientes</td><td class="num">99.441</td></tr>
+          <tr><td class="term">refined.itens_pedido</td><td>um item de um pedido</td><td class="term">pedido_id, item_seq</td><td class="term">pedido_id &rarr; pedidos<br>produto_id &rarr; produtos<br>vendedor_id &rarr; vendedores</td><td class="num">112.650</td></tr>
+          <tr><td class="term">refined.pagamentos</td><td>um pagamento de um pedido</td><td class="term">pedido_id, pagamento_seq</td><td class="term">pedido_id &rarr; pedidos</td><td class="num">103.886</td></tr>
+          <tr><td class="term">refined.avaliacoes</td><td>uma avaliação de um pedido</td><td class="term">avaliacao_id, pedido_id</td><td class="term">pedido_id &rarr; pedidos</td><td class="num">99.224</td></tr>
+          <tr><td class="term">refined.clientes</td><td>um cliente <em>por pedido</em> (não uma pessoa)</td><td class="term">cliente_id</td><td>&mdash;</td><td class="num">99.441</td></tr>
+          <tr><td class="term">refined.produtos</td><td>um produto</td><td class="term">produto_id</td><td class="term">categoria &rarr; traducao_categorias</td><td class="num">32.951</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Duas PK compostas pedem atenção. Em <code>avaliacoes</code>, <code>avaliacao_id</code> sozinho não basta: o mesmo id aparece em mais de um pedido, como a spec da aula 2 registrou. E em <code>clientes</code>, a PK <code>cliente_id</code> é por pedido: a pessoa é <code>cliente_unico_id</code>, que não é chave de nada &mdash; 99.441 linhas, 96.096 pessoas.</p>
+
+    <h3>A FK diz para onde o JOIN cresce</h3>
+    <p>Olhe a coluna do <code>ON</code> e pergunte de que lado ela é PK. Quando a ligação é FK de um lado e PK do outro, o resultado fica no grão do lado da FK &mdash; o lado N &mdash; e é o lado da PK que se repete. Quando a coluna não é PK de nenhum dos dois lados, não existe lado 1: cada linha de um lado cruza com cada linha do outro que tem o mesmo valor.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>JOIN</th><th>A coluna do ON</th><th style="text-align:right">Linhas</th><th>Grão do resultado</th></tr></thead>
+        <tbody>
+          <tr><td class="term">itens_pedido &#8904; produtos</td><td><code>produto_id</code>: FK &rarr; PK</td><td class="num nw">112.650 &rarr; 112.650</td><td>um item; o produto se repete</td></tr>
+          <tr><td class="term">pedidos &#8904; itens_pedido</td><td><code>pedido_id</code>: PK &larr; FK</td><td class="num nw">99.441 &rarr; 112.650</td><td>um item; o pedido se repete</td></tr>
+          <tr><td class="term">itens_pedido &#8904; pagamentos</td><td><code>pedido_id</code>: FK e FK</td><td class="num nw">112.650 &rarr; 117.601</td><td>nenhum: item vezes pagamento</td></tr>
+          <tr><td class="term">clientes &#8904; geolocalizacao</td><td><code>cep_prefixo</code>: PK de nenhum lado</td><td class="num nw">99.441 &rarr; 15.083.455</td><td>nenhum: cliente vezes ponto do CEP</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>As duas primeiras são o <code>JOIN</code> que o curso inteiro usa, e o número de linhas é previsível antes de rodar. As duas últimas são as que viraram armadilha: a geolocalização é a da <a href="#correcao">correção</a>, e itens com pagamentos é a que infla a receita do mart 01 para R$&nbsp;14.105.767,00 na <a href="#ia">seção 10</a>. Um pedido pago com cartão e voucher vira duas linhas para cada item &mdash; e a soma do preço conta o item duas vezes.</p>
+
+    <div class="spec">
+      <p class="spec-h">As três perguntas antes de cada mart</p>
+      <ol class="body">
+        <li><strong>Qual é o grão da resposta?</strong> &ldquo;Um mês&rdquo;, &ldquo;uma categoria&rdquo;. Escreva na primeira linha do arquivo, como comentário.</li>
+        <li><strong>Qual é o grão de cada tabela que eu vou juntar?</strong> Olhe a PK de cada lado e a coluna do <code>ON</code>. Se ela é PK de um lado, esse lado vai se repetir; se não é PK de nenhum, as linhas se multiplicam.</li>
+        <li><strong>O que eu somo, conto ou tiro média está no grão certo?</strong> Somar <code>preco</code> num grão de item está certo. Contar pedidos num grão de item exige <code>count(DISTINCT pedido_id)</code>. Tirar média de nota num grão de item está errado &mdash; e não existe <code>DISTINCT</code> que conserte uma média.</li>
+      </ol>
+      <p class="spec-foot">O jeito de conferir é o mesmo da aula 1: conte antes e depois. Se um <code>JOIN</code> mudou o número de linhas e você não sabia que ia mudar, pare ali.</p>
+    </div>
+  </section>
+
+  <!-- ============ 03 REGRAS ============ -->
+  <section id="regras">
+    <h2>03 &middot; Antes do primeiro SELECT</h2>
+    <p class="h2big">Quatro palavras com definição fechada</p>
+    <p>Os marts saíram dos <a href="indicadores.html">indicadores da turma</a>, e lá ficou claro que &ldquo;ticket médio&rdquo; apareceu em três versões, com três números. Para que os marts conversem entre si &mdash; e com o dashboard da aula 4 &mdash;, quatro palavras têm uma definição só, no curso inteiro:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Palavra</th><th>Quer dizer</th><th>Em SQL</th></tr></thead>
+        <tbody>
+          <tr><td><b>Pedido válido</b></td><td>Pedido que aconteceu: tudo menos cancelado e indisponível. 98.207 dos 99.441.</td><td class="nw"><code>status NOT IN ('canceled', 'unavailable')</code></td></tr>
+          <tr><td><b>Receita</b></td><td>Soma do preço dos itens, sem frete. Frete é custo de entrega, não venda.</td><td class="nw"><code>sum(i.preco)</code></td></tr>
+          <tr><td><b>Cliente</b></td><td>A pessoa, nunca o <code>cliente_id</code> &mdash; que muda a cada pedido.</td><td class="nw"><code>cliente_unico_id</code></td></tr>
+          <tr><td><b>Mês</b></td><td>O mês da compra. Não o da aprovação, não o da entrega.</td><td class="nw"><code>date_trunc('month', data_compra)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Discordar de uma delas é permitido &mdash; desde que mude em todo lugar e fique escrito. O que não pode é o mart 01 contar cancelado e o mart 02 não: o dashboard mostraria duas receitas para o mesmo mês, e as duas estariam &ldquo;certas&rdquo;.</p>
+
+    <h3>Como cada mart é construído</h3>
+    <p>Os cinco passos seguintes têm o mesmo roteiro. Siga na ordem, sem pular o chute:</p>
+    <ol class="body">
+      <li><strong>Leia a pergunta e o grão.</strong> Escreva os dois como comentário no topo de um arquivo novo em <code>sql/marts/</code>.</li>
+      <li><strong>Chute o número.</strong> Quantas linhas o mart vai ter? Qual o maior valor? O chute é o que torna o erro visível.</li>
+      <li><strong>Escreva o SELECT no notebook</strong> (<code>uv run python ui.py</code>) até bater com os critérios do passo. Ou peça à IA, pelo MCP, para <em>rodar</em> o seu SELECT &mdash; não para escrevê-lo.</li>
+      <li><strong>Copie para o arquivo.</strong> Por enquanto o mart é só um <code>.sql</code> salvo &mdash; quem o transforma em tabela é o executor, escrito depois dos cinco, na <a href="#rodar">seção 09</a>.</li>
+    </ol>
+    <p class="small">Cada passo tem uma resposta de referência fechada embaixo. Abra só depois de o seu número bater &mdash; ou depois de dez minutos travado, o que vier primeiro.</p>
+  </section>
+
+  <!-- ============ 04 MART 01 ============ -->
+  <section id="m1">
+    <h2>04 &middot; Degrau 1</h2>
+    <p class="h2big">Mart 01 &middot; Quanto vendemos por mês?</p>
+
+    <article class="step" data-id="a3-m1">
+      <div class="step-head">
+        <span class="step-n">3.1</span>
+        <div><p class="step-title">01_vendas_mensais.sql</p><p class="step-sub">GROUP BY e date_trunc &middot; grão: um mês de compra</p></div>
+      </div>
+      <div class="step-body">
+        <p>Para cada mês: quantos pedidos válidos e quanta receita. A data está em <code>pedidos</code>, o preço em <code>itens_pedido</code> &mdash; então já no primeiro degrau tem um <code>JOIN</code>, e ele muda o grão de pedido para item.</p>
+        <p class="cmdlabel">Colunas</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Coluna</th><th>Tipo</th><th>Conteúdo</th></tr></thead>
+            <tbody>
+              <tr><td class="term">mes</td><td>DATE</td><td>Primeiro dia do mês da compra</td></tr>
+              <tr><td class="term">pedidos</td><td>BIGINT</td><td>Pedidos válidos no mês</td></tr>
+              <tr><td class="term">receita</td><td>DECIMAL</td><td>Receita dos pedidos válidos no mês</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="verify"><p class="vh">Critérios</p><ul>
+          <li><strong>24 linhas</strong>, de setembro de 2016 a setembro de 2018.</li>
+          <li>Novembro de 2017: <strong>7.421</strong> pedidos e <strong>R$&nbsp;1.003.862,14</strong>. A Black Friday.</li>
+          <li><code>sum(receita)</code> = <strong>13.494.400,74</strong>, centavo por centavo.</li>
+          <li><code>sum(pedidos)</code> = <strong>98.199</strong>. Não 98.207: 8 pedidos válidos não têm nenhum item, e o <code>JOIN</code> os deixa de fora. Eles não venderam nada, então tudo bem &mdash; mas agora você sabe o nome da diferença.</li>
+        </ul></div>
+        <div class="note"><b>Se o seu mart deu 112.101 pedidos</b>, você contou com <code>count(*)</code> depois do <code>JOIN</code>: está contando itens. É a primeira aparição do grão, e não vai ser a última.</div>
+        <p>Duas coisas para olhar no resultado, sem corrigir: <strong>novembro de 2016 não existe</strong> &mdash; mês sem venda não vira linha com zero, ele simplesmente não aparece, e o gráfico de linha da aula 4 vai ligar outubro a dezembro sem avisar. E as <strong>pontas</strong>: setembro de 2016 tem 2 pedidos, setembro de 2018 tem 1. Cortar ou não é decisão do dashboard, não do mart.</p>
+        <details class="spec spec-det">
+          <summary class="spec-h">Resposta de referência<span class="spec-cue"></span></summary>
+          <div class="codewrap"><pre><span class="c">-- Quanto vendemos por mês?</span>
+<span class="c">-- Grão: um mês de compra.</span>
+SELECT
+    date_trunc('month', p.data_compra)::DATE AS mes,
+    count(DISTINCT p.pedido_id)              AS pedidos,
+    sum(i.preco)                             AS receita
+FROM refined.pedidos      AS p
+JOIN refined.itens_pedido AS i ON i.pedido_id = p.pedido_id
+WHERE p.status NOT IN ('canceled', 'unavailable')
+GROUP BY mes
+ORDER BY mes</pre><button class="copy" type="button">copiar</button></div>
+          <p class="spec-foot">O <code>::DATE</code> depois do <code>date_trunc</code> tira a hora <code>00:00:00</code> que sobraria do <code>TIMESTAMP</code>: o grão é um mês, não um instante. E o <code>GROUP BY mes</code> usa o apelido da coluna &mdash; o DuckDB aceita, o que deixa a consulta mais curta que repetir a expressão.</p>
+        </details>
+        <label class="mark"><input type="checkbox" id="chk-a3-m1"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 05 MART 02 ============ -->
+  <section id="m2">
+    <h2>05 &middot; Degrau 2</h2>
+    <p class="h2big">Mart 02 &middot; Quais categorias mais vendem?</p>
+
+    <article class="step" data-id="a3-m2">
+      <div class="step-head">
+        <span class="step-n">3.2</span>
+        <div><p class="step-title">02_top_categorias.sql</p><p class="step-sub">JOIN de quatro tabelas e LEFT JOIN &middot; grão: uma categoria</p></div>
+      </div>
+      <div class="step-body">
+        <p>Receita por categoria, com o nome em inglês da <code>traducao_categorias</code>. Siga o <a href="aula-2.html#mapa">mapa da aula 2</a>: o preço está no item, a categoria no produto, a tradução numa quarta tabela, e o status &mdash; para saber se o pedido é válido &mdash; em <code>pedidos</code>.</p>
+        <p class="cmdlabel">Colunas</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Coluna</th><th>Conteúdo</th></tr></thead>
+            <tbody>
+              <tr><td class="term">categoria</td><td>Nome em inglês; se não houver tradução, o nome original; se o produto não tiver categoria, <code>'sem_categoria'</code></td></tr>
+              <tr><td class="term">pedidos</td><td>Pedidos válidos com pelo menos um item da categoria</td></tr>
+              <tr><td class="term">itens</td><td>Itens vendidos da categoria</td></tr>
+              <tr><td class="term">receita</td><td>Receita da categoria</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="verify"><p class="vh">Critérios</p><ul>
+          <li><strong>74 linhas</strong>. Lideram <code>health_beauty</code> (R$&nbsp;1.255.695,13), <code>watches_gifts</code> e <code>bed_bath_table</code>.</li>
+          <li><code>sum(receita)</code> = <strong>13.494.400,74</strong> &mdash; exatamente a do mart 01. Toda receita tem uma categoria, nem que seja <code>sem_categoria</code>.</li>
+          <li><code>pc_gamer</code> e <code>portateis_cozinha_e_preparadores_de_alimentos</code> aparecem, com o nome em português.</li>
+        </ul></div>
+        <p><strong>O teste da aula: troque o <code>LEFT JOIN</code> da tradução por <code>JOIN</code> e rode.</strong> Saem 71 categorias e <strong>R$&nbsp;183.813,13</strong> desaparecem: os 610 produtos sem categoria e as duas categorias sem tradução. O <code>JOIN</code> comum só devolve a linha quando encontra par dos dois lados &mdash; e não avisa quando não encontra. <code>sem_categoria</code>, com R$&nbsp;178.572,55, seria a 21.ª categoria do ranking. Some sem deixar rastro.</p>
+        <div class="note"><b>A coluna <code>pedidos</code> não soma.</b> A soma dela dá 99.002, mais do que os 98.199 pedidos com venda: um pedido com itens de duas categorias conta nas duas. Está certo para a pergunta &ldquo;quantos pedidos tiveram esta categoria&rdquo;, e errado para qualquer total. Diga isso no comentário do arquivo, para quem for montar o dashboard.</div>
+        <details class="spec spec-det">
+          <summary class="spec-h">Resposta de referência<span class="spec-cue"></span></summary>
+          <div class="codewrap"><pre><span class="c">-- Quais categorias mais vendem?</span>
+<span class="c">-- Grão: uma categoria. A coluna pedidos não soma entre categorias.</span>
+SELECT
+    coalesce(t.categoria_en, pr.categoria, 'sem_categoria') AS categoria,
+    count(DISTINCT p.pedido_id)                             AS pedidos,
+    count(*)                                                AS itens,
+    sum(i.preco)                                            AS receita
+FROM refined.itens_pedido             AS i
+JOIN refined.pedidos                  AS p  ON p.pedido_id  = i.pedido_id
+JOIN refined.produtos                 AS pr ON pr.produto_id = i.produto_id
+LEFT JOIN refined.traducao_categorias AS t  ON t.categoria  = pr.categoria
+WHERE p.status NOT IN ('canceled', 'unavailable')
+GROUP BY 1
+ORDER BY receita DESC</pre><button class="copy" type="button">copiar</button></div>
+          <p class="spec-foot">O <code>coalesce</code> devolve o primeiro valor não nulo da lista. É ele que dá nome às linhas que o <code>LEFT JOIN</code> salvou &mdash; sem ele, os três grupos sem tradução virariam uma linha só, com categoria nula. Repare que <code>itens_pedido &rarr; produtos</code> pode ser <code>JOIN</code> comum: todo item encontra o seu produto, você contou isso na aula 2.</p>
+        </details>
+        <label class="mark"><input type="checkbox" id="chk-a3-m2"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 06 MART 03 ============ -->
+  <section id="m3">
+    <h2>06 &middot; Degrau 3</h2>
+    <p class="h2big">Mart 03 &middot; Quanto chegou no prazo?</p>
+
+    <article class="step" data-id="a3-m3">
+      <div class="step-head">
+        <span class="step-n">3.3</span>
+        <div><p class="step-title">03_entrega_no_prazo.sql</p><p class="step-sub">CASE WHEN e datas &middot; grão: a operação inteira, uma linha</p></div>
+      </div>
+      <div class="step-body">
+        <p>Na aula 2 ficou prometido: você ia criar um <code>BOOLEAN</code>. É este. Uma comparação entre datas já é um booleano &mdash; rode antes de escrever o mart:</p>
+        <div class="codewrap"><pre>SELECT pedido_id,
+       data_entrega,
+       data_entrega_prevista,
+       data_entrega::DATE &lt;= data_entrega_prevista AS no_prazo
+FROM refined.pedidos
+WHERE status = 'delivered'
+LIMIT 5;</pre><button class="copy" type="button">copiar</button></div>
+        <p>A coluna <code>no_prazo</code> volta <code>true</code> ou <code>false</code>. O mart transforma esse sim-ou-não em contagem, com <code>CASE WHEN</code>: <em>quando</em> chegou no prazo, vale 1, <em>senão</em>, 0 &mdash; e a soma dos uns é quantos chegaram.</p>
+        <p class="cmdlabel">Duas decisões antes de escrever</p>
+        <ol class="body">
+          <li><strong>Quem entra no denominador?</strong> Só pedido <code>delivered</code> <em>com</em> data de entrega: 96.470. Os 8 entregues sem data ficam fora &mdash; não dá para dizer se chegaram no prazo. E 6 pedidos <code>canceled</code> têm data de entrega: o filtro de status os tira.</li>
+          <li><strong>Chegar no dia previsto é no prazo?</strong> Sim. E é aí que mora a armadilha do tipo.</li>
+        </ol>
+        <p class="cmdlabel">Colunas</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Coluna</th><th>Conteúdo</th></tr></thead>
+            <tbody>
+              <tr><td class="term">entregues</td><td>Pedidos <code>delivered</code> com data de entrega</td></tr>
+              <tr><td class="term">no_prazo</td><td>Desses, os que chegaram até o dia previsto</td></tr>
+              <tr><td class="term">atrasados</td><td>Os que chegaram depois</td></tr>
+              <tr><td class="term">pct_no_prazo</td><td><code>no_prazo</code> sobre <code>entregues</code>, em %, uma casa</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="verify"><p class="vh">Critérios</p><ul>
+          <li><strong>1 linha</strong>: 96.470 entregues, 89.936 no prazo, 6.534 atrasados, <strong>93,2%</strong>.</li>
+          <li><code>no_prazo + atrasados = entregues</code>. Se não fechar, algum pedido caiu fora dos dois <code>CASE</code>.</li>
+        </ul></div>
+        <div class="note"><b>Se deu 91,9%</b>, falta o <code>::DATE</code>. <code>data_entrega</code> é <code>TIMESTAMP</code> e <code>data_entrega_prevista</code> é <code>DATE</code>; para comparar, o DuckDB transforma a data prevista em meia-noite. Um pedido entregue às 15h do dia previsto vira &ldquo;atrasado&rdquo; por quinze horas. São 1.292 pedidos &mdash; a decisão de tipo da aula 2 cobrando a conta na aula 3.</div>
+        <details class="spec spec-det">
+          <summary class="spec-h">Resposta de referência<span class="spec-cue"></span></summary>
+          <div class="codewrap"><pre><span class="c">-- Quanto chegou no prazo?</span>
+<span class="c">-- Grão: a operação inteira, uma linha.</span>
+<span class="c">-- Denominador: delivered com data de entrega. Chegar no dia previsto é no prazo.</span>
+SELECT
+    count(*) AS entregues,
+    sum(CASE WHEN data_entrega::DATE &lt;= data_entrega_prevista THEN 1 ELSE 0 END) AS no_prazo,
+    sum(CASE WHEN data_entrega::DATE &gt;  data_entrega_prevista THEN 1 ELSE 0 END) AS atrasados,
+    round(100.0 * sum(CASE WHEN data_entrega::DATE &lt;= data_entrega_prevista THEN 1 ELSE 0 END)
+          / count(*), 1) AS pct_no_prazo
+FROM refined.pedidos
+WHERE status = 'delivered'
+  AND data_entrega IS NOT NULL</pre><button class="copy" type="button">copiar</button></div>
+          <p class="spec-foot">Por que dois <code>CASE</code> e não <code>count(*) - no_prazo</code> para os atrasados? Porque o <code>ELSE</code> engole tudo o que não é verdadeiro &mdash; inclusive o nulo. Sem o <code>data_entrega IS NOT NULL</code>, um <code>CASE ... THEN 0 ELSE 1</code> contaria os 8 sem data como atrasados. Escrever as duas condições faz o critério <code>no_prazo + atrasados = entregues</code> pegar esse erro. E o <code>100.0</code>, com ponto, garante divisão com casas decimais.</p>
+        </details>
+        <label class="mark"><input type="checkbox" id="chk-a3-m3"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 07 MART 04 ============ -->
+  <section id="m4">
+    <h2>07 &middot; Degrau 4</h2>
+    <p class="h2big">Mart 04 &middot; Que nota cada categoria recebe?</p>
+
+    <article class="step" data-id="a3-m4">
+      <div class="step-head">
+        <span class="step-n">3.4</span>
+        <div><p class="step-title">04_nota_por_categoria.sql</p><p class="step-sub">CTE e window function &middot; grão: uma categoria com 100 pedidos avaliados ou mais</p></div>
+      </div>
+      <div class="step-body">
+        <p>É o mart do desenho da <a href="#grao">seção 02</a>. A nota é do <em>pedido</em>, a categoria é do <em>item</em>. Juntar as duas direto dá peso maior a quem comprou mais coisas. A saída é ajustar o grão <strong>antes</strong> de juntar, em degraus &mdash; e cada degrau vira uma CTE.</p>
+        <p><strong>CTE</strong> (<code>WITH nome AS (...)</code>) é uma consulta com nome, que a consulta seguinte usa como se fosse tabela. Serve para escrever em passos o que seria um <code>SELECT</code> ilegível de três andares.</p>
+        <p class="cmdlabel">Os quatro degraus</p>
+        <ol class="body">
+          <li><code>nota_pedido</code>: uma linha por pedido, com a nota. 547 pedidos têm mais de uma avaliação &mdash; use a média delas.</li>
+          <li><code>categoria_pedido</code>: uma linha por par (pedido, categoria). Pedido com três itens da mesma categoria vira uma linha só: <code>SELECT DISTINCT</code>.</li>
+          <li><code>por_categoria</code>: junta os dois (agora o grão bate) e tira a média por categoria. Só fica quem tem 100 pedidos avaliados ou mais.</li>
+          <li>O <code>SELECT</code> final põe a posição no ranking, da pior nota para a melhor.</li>
+        </ol>
+        <p>A posição é uma <strong>window function</strong>: <code>rank() OVER (ORDER BY nota_media)</code>. Diferente do <code>GROUP BY</code>, ela não junta linhas &mdash; olha para todas, e escreve em cada uma a sua posição. Empate leva a mesma posição, e a seguinte pula: duas categorias em 9.º, nenhuma em 10.º.</p>
+        <div class="verify"><p class="vh">Critérios</p><ul>
+          <li><strong>52 linhas</strong>. Pior: <code>office_furniture</code>, <strong>3,62</strong>, em 1.263 pedidos. Melhor: <code>books_general_interest</code>, <strong>4,46</strong>.</li>
+          <li>Sem o <code>HAVING</code>, são 74 categorias, e a pior vira <code>security_and_services</code>: nota 2,5 em <em>dois</em> pedidos. O ranking passa a ser um sorteio entre categorias pequenas.</li>
+          <li>Se <code>office_furniture</code> deu 3,49 em 1.687, você juntou nota com item sem ajustar o grão.</li>
+        </ul></div>
+        <details class="spec spec-det">
+          <summary class="spec-h">Resposta de referência<span class="spec-cue"></span></summary>
+          <div class="codewrap"><pre><span class="c">-- Que nota cada categoria recebe, e qual a posição dela?</span>
+<span class="c">-- Grão: uma categoria com 100 pedidos avaliados ou mais.</span>
+<span class="c">-- Cada pedido conta uma vez por categoria, com a média das suas avaliações.</span>
+WITH nota_pedido AS (
+    SELECT pedido_id, avg(nota) AS nota
+    FROM refined.avaliacoes
+    GROUP BY pedido_id
+),
+categoria_pedido AS (
+    SELECT DISTINCT
+        i.pedido_id,
+        coalesce(t.categoria_en, pr.categoria, 'sem_categoria') AS categoria
+    FROM refined.itens_pedido             AS i
+    JOIN refined.produtos                 AS pr ON pr.produto_id = i.produto_id
+    LEFT JOIN refined.traducao_categorias AS t  ON t.categoria  = pr.categoria
+),
+por_categoria AS (
+    SELECT
+        c.categoria,
+        count(*)              AS pedidos_avaliados,
+        round(avg(n.nota), 2) AS nota_media
+    FROM categoria_pedido AS c
+    JOIN nota_pedido      AS n ON n.pedido_id = c.pedido_id
+    GROUP BY c.categoria
+    HAVING count(*) &gt;= 100
+)
+SELECT
+    categoria,
+    pedidos_avaliados,
+    nota_media,
+    rank() OVER (ORDER BY nota_media) AS posicao_pior
+FROM por_categoria
+ORDER BY posicao_pior</pre><button class="copy" type="button">copiar</button></div>
+          <p class="spec-foot">Este mart não filtra pedido válido, e é de propósito: um pedido cancelado também recebeu nota, e a nota dele diz algo sobre a categoria. Se você discordar, acrescente o filtro &mdash; e escreva o motivo no comentário. <code>HAVING</code> é o <code>WHERE</code> que roda depois do <code>GROUP BY</code>: filtra grupos, não linhas.</p>
+        </details>
+        <label class="mark"><input type="checkbox" id="chk-a3-m4"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 08 MART 05 ============ -->
+  <section id="m5">
+    <h2>08 &middot; Degrau 5</h2>
+    <p class="h2big">Mart 05 &middot; Quantos clientes voltaram a comprar?</p>
+
+    <article class="step" data-id="a3-m5">
+      <div class="step-head">
+        <span class="step-n">3.5</span>
+        <div><p class="step-title">05_recompra.sql</p><p class="step-sub">GROUP BY em dois andares e janela sobre o agregado &middot; grão: um número de pedidos por cliente</p></div>
+      </div>
+      <div class="step-body">
+        <p>A armadilha mais cara dos <a href="indicadores.html">indicadores da turma</a>, e a única das quatro palavras fechadas que nenhum mart usou até aqui: <strong>cliente</strong>. A pergunta é quantas pessoas compraram uma vez, quantas duas, quantas três &mdash; e a resposta pede o grão mudando duas vezes: de pedido para pessoa, de pessoa para &ldquo;quantidade de pedidos&rdquo;.</p>
+        <p class="cmdlabel">Os dois andares</p>
+        <ol class="body">
+          <li><strong>Uma linha por pessoa</strong>, com quantos pedidos válidos ela fez. <code>pedidos</code> e <code>clientes</code> se ligam por <code>cliente_id</code>, que é PK de <code>clientes</code> e único em <code>pedidos</code>: o <code>JOIN</code> não muda o número de linhas, e o <code>count(*)</code> conta pedidos. A pessoa é <code>cliente_unico_id</code>.</li>
+          <li><strong>Uma linha por quantidade de pedidos</strong>: quantas pessoas fizeram 1, quantas fizeram 2. É um <code>GROUP BY</code> em cima do resultado do primeiro &mdash; uma CTE, como no mart 04.</li>
+        </ol>
+        <p>O percentual de cada linha pede o total de pessoas, que não está em linha nenhuma. É de novo uma window function: <code>sum(count(*)) OVER ()</code>. Ela roda depois do <code>GROUP BY</code>, olha para todos os grupos e soma as contagens deles &mdash; o <code>OVER ()</code> vazio quer dizer &ldquo;todas as linhas do resultado&rdquo;.</p>
+        <p class="cmdlabel">Colunas</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Coluna</th><th>Conteúdo</th></tr></thead>
+            <tbody>
+              <tr><td class="term">pedidos_por_cliente</td><td>1, 2, 3&hellip; pedidos válidos</td></tr>
+              <tr><td class="term">clientes</td><td>Pessoas que fizeram exatamente essa quantidade</td></tr>
+              <tr><td class="term">pct_clientes</td><td><code>clientes</code> sobre o total de pessoas, em %, duas casas</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="verify"><p class="vh">Critérios</p><ul>
+          <li><strong>9 linhas</strong>. A primeira: 92.102 pessoas com um pedido só, <strong>96,96%</strong>. A última: uma pessoa com 16 pedidos.</li>
+          <li><code>sum(clientes) = 94.990</code>: as pessoas com pelo menos um pedido válido. Não 96.096 &mdash; 1.106 pessoas só têm pedido cancelado ou indisponível.</li>
+          <li>A recompra é o resto: 100 &minus; 96,96 = <strong>3,04%</strong>, 2.888 pessoas. É o cartão do dashboard da aula 4.</li>
+        </ul></div>
+        <div class="note"><b>Se deu 1 linha, com 98.207 clientes e 100%</b>, você agrupou por <code>cliente_id</code>. Ele é PK de <code>clientes</code> e muda a cada pedido: todo &ldquo;cliente&rdquo; tem exatamente um pedido, e a recompra dá zero &mdash; sem erro nenhum na tela. É a linha da tabela da <a href="#grao">seção 02</a>: <code>refined.clientes</code> tem grão de um cliente <em>por pedido</em>, não de uma pessoa.</div>
+        <details class="spec spec-det">
+          <summary class="spec-h">Resposta de referência<span class="spec-cue"></span></summary>
+          <div class="codewrap"><pre><span class="c">-- Quantos clientes voltaram a comprar?</span>
+<span class="c">-- Grão: um número de pedidos por cliente (1 pedido, 2 pedidos...).</span>
+<span class="c">-- Cliente é a pessoa (cliente_unico_id). Só pedidos válidos.</span>
+WITH pedidos_por_pessoa AS (
+    <span class="c">-- Grão: uma pessoa.</span>
+    SELECT
+        c.cliente_unico_id,
+        count(*) AS pedidos
+    FROM refined.pedidos  AS p
+    JOIN refined.clientes AS c ON c.cliente_id = p.cliente_id
+    WHERE p.status NOT IN ('canceled', 'unavailable')
+    GROUP BY c.cliente_unico_id
+)
+SELECT
+    pedidos                                            AS pedidos_por_cliente,
+    count(*)                                           AS clientes,
+    round(100.0 * count(*) / sum(count(*)) OVER (), 2) AS pct_clientes
+FROM pedidos_por_pessoa
+GROUP BY pedidos
+ORDER BY pedidos_por_cliente</pre><button class="copy" type="button">copiar</button></div>
+          <p class="spec-foot">O <code>count(*)</code> da CTE pode ser comum, sem <code>DISTINCT</code>, porque o <code>JOIN</code> é um para um: uma linha de pedido para uma de cliente. Se a ligação passasse por <code>itens_pedido</code>, ele contaria itens. A ordem de execução explica a janela: primeiro o <code>GROUP BY</code> monta as 9 linhas, depois o <code>OVER ()</code> soma as 9 contagens.</p>
+        </details>
+        <label class="mark"><input type="checkbox" id="chk-a3-m5"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 09 EXECUTOR E CONFERÊNCIA ============ -->
+  <section id="rodar">
+    <h2>09 &middot; Passo a passo</h2>
+    <p class="h2big">Do arquivo à tabela</p>
+
+    <article class="step" data-id="a3-s1">
+      <div class="step-head">
+        <span class="step-n">3.6</span>
+        <div><p class="step-title">O executor de marts</p><p class="step-sub">Encanamento: a spec vem pronta, a IA escreve</p></div>
+      </div>
+      <div class="step-body">
+        <p>Os cinco marts estão escritos, mas ainda são só arquivos <code>.sql</code>: nenhum virou tabela. Alguém precisa pegar cada arquivo e transformá-lo em tabela &mdash; e esse alguém é um script curto, que orquestra a execução sem conter nenhuma regra de negócio. Por ser encanamento, a spec vem pronta, como na aula 1. Ele vem depois dos marts de propósito: toda a regra já está nos arquivos, e o Python só os executa.</p>
+        <p class="cmdlabel">Cole no Claude Code, Codex ou Copilot</p>
+        <div class="codewrap"><pre>CONTEXTO
+Estou construindo um pipeline de dados em Python sobre o dataset público da
+Olist. Trabalho com spec-driven development: a spec abaixo é a fonte da
+verdade e o código é consequência dela. Não acrescente requisito que não
+esteja escrito aqui. Se algo estiver ambíguo, pergunte antes de escrever código.
+
+STACK
+- Python 3.13, uv, DuckDB (olist.duckdb na raiz do projeto)
+
+O QUE JÁ EXISTE (use, não reimplemente)
+pipeline/db.py: conectar(), criar_schema(con, nome)
+O schema refined, com oito tabelas, criado por pipeline/transformacao.py.
+A pasta sql/marts/, com arquivos NN_nome.sql. Cada arquivo tem um único
+SELECT, que pode começar com comentários (--) e com WITH.
+
+ARTEFATO A PRODUZIR
+pipeline/marts.py, executável com:
+  uv run python -m pipeline.marts
+
+SPEC
+1. ESCOPO
+   Lê de refined, escreve no schema marts. Nunca escreve em raw nem em refined.
+   O schema marts é apagado e recriado a cada execução (DROP SCHEMA IF
+   EXISTS marts CASCADE). Motivo: um mart cujo arquivo foi apagado não pode
+   continuar existindo no banco.
+
+2. UM ARQUIVO, UMA TABELA
+   Lê todos os sql/marts/*.sql em ordem alfabética.
+   Nome da tabela = nome do arquivo sem a extensão e sem o prefixo numérico:
+     sql/marts/01_vendas_mensais.sql -&gt; marts.vendas_mensais
+   Executa: CREATE TABLE marts.&lt;nome&gt; AS &lt;conteúdo do arquivo&gt;
+   Tira espaços e um ponto e vírgula do final do conteúdo, e nada mais.
+   O Python não altera, não monta e não completa a SQL.
+   Motivo: a regra de negócio mora inteira no arquivo .sql.
+
+3. SAÍDA NA TELA
+   Uma linha por mart, com a contagem vinda do banco, milhar com ponto:
+     ✓ marts.vendas_mensais        24 linhas
+   Linha final com o número de marts e o total de linhas.
+   stdout reconfigurado para utf-8.
+
+4. ERRO
+   Antes de tudo: se faltar qualquer uma das oito tabelas em refined,
+   lista quais, diz para rodar "uv run python -m pipeline.transformacao"
+   e encerra com sys.exit(1).
+   Se um .sql falhar: mostra o nome do arquivo e a mensagem do DuckDB,
+   não executa os seguintes, sys.exit(1).
+   Se um mart voltar com zero linhas: mostra o nome e encerra com
+   sys.exit(1). Motivo: mart vazio é quase sempre um JOIN que não casou,
+   e um dashboard vazio parece um negócio parado.
+   Se sql/marts/ não tiver nenhum arquivo: avisa e sys.exit(1).
+   Antes de executar qualquer SQL: arquivo sem prefixo NN_ ou dois
+   arquivos que dão o mesmo nome de tabela -&gt; lista quais e sys.exit(1).
+   Tudo roda numa transação só: se qualquer passo falhar (inclusive o
+   mart vazio), o schema marts volta a ser o da última execução que deu
+   certo. Motivo: um schema pela metade quebra o dashboard sem avisar.
+
+CRITÉRIOS DE ACEITE
+- Com um arquivo sql/marts/00_teste.sql contendo "SELECT 1 AS x", cria
+  marts.teste com 1 linha.
+- Apagar o arquivo e rodar de novo faz marts.teste desaparecer.
+- Um arquivo com erro de sintaxe para tudo, com o nome do arquivo na tela,
+  e marts continua exatamente como estava antes da execução.
+- Um arquivo teste.sql, sem prefixo, para antes de executar qualquer SQL.
+- Rodar duas vezes seguidas imprime exatamente a mesma coisa.
+
+ENTREGA
+1. A spec como docstring no topo do arquivo, com o motivo de cada regra.
+2. O código, comentado só onde a decisão não é óbvia.
+3. Uma lista final do que você assumiu e que não estava na spec.</pre><button class="copy" type="button">copiar</button></div>
+        <p>Teste com o arquivo do primeiro critério antes de olhar os seus marts: <code>marts.teste</code> aparece na lista junto com os cinco. Depois, apague o <code>00_teste.sql</code>.</p>
+        <div class="verify"><p class="vh">Confira</p><p>Os cinco critérios de aceite, um por um. O segundo é o que mais escapa: se <code>marts.teste</code> sobreviver ao arquivo apagado, o script não está recriando o schema.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a3-s1"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <article class="step" data-id="a3-s6">
+      <div class="step-head">
+        <span class="step-n">3.7</span>
+        <div><p class="step-title">De refined para marts</p><p class="step-sub">Cinco arquivos, cinco tabelas</p></div>
+      </div>
+      <div class="step-body">
+        <p><code>Ctrl+C</code> no <code>ui.py</code>, e:</p>
+        <div class="codewrap"><pre>uv run python -m pipeline.marts</pre><button class="copy" type="button">copiar</button></div>
+        <pre><span class="ok">&check;</span> marts.vendas_mensais        24 linhas
+<span class="ok">&check;</span> marts.top_categorias        74 linhas
+<span class="ok">&check;</span> marts.entrega_no_prazo       1 linha
+<span class="ok">&check;</span> marts.nota_por_categoria    52 linhas
+<span class="ok">&check;</span> marts.recompra               9 linhas
+  5 marts                    160 linhas</pre>
+        <p>Agora o pipeline inteiro roda do zero, em três comandos, sem nenhum passo à mão no meio:</p>
+        <div class="codewrap"><pre>uv run python -m pipeline.ingestao
+uv run python -m pipeline.transformacao
+uv run python -m pipeline.marts</pre><button class="copy" type="button">copiar</button></div>
+        <div class="verify"><p class="vh">Confira</p><p>Apague o <code>olist.duckdb</code>, rode os três e compare a saída do último com a de cima. Se bater, todo número dos seus marts está em arquivo &mdash; nenhum depende de uma consulta que você rodou no notebook e esqueceu.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a3-s6"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <article class="step" data-id="a3-s7">
+      <div class="step-head">
+        <span class="step-n">3.8</span>
+        <div><p class="step-title">Os marts conversam entre si?</p><p class="step-sub">A mesma receita por dois caminhos</p></div>
+      </div>
+      <div class="step-body">
+        <p>Dois marts que respondem perguntas diferentes sobre o mesmo dinheiro têm que concordar no total. Suba o <code>ui.py</code>:</p>
+        <div class="codewrap"><pre>SELECT (SELECT sum(receita) FROM marts.vendas_mensais) AS por_mes,
+       (SELECT sum(receita) FROM marts.top_categorias) AS por_categoria;</pre><button class="copy" type="button">copiar</button></div>
+        <p class="small">Os dois dão <strong>13.494.400,74</strong>. Se não derem, um dos marts perdeu ou duplicou linha no <code>JOIN</code> &mdash; e a consulta acabou de dizer em qual direção procurar: o maior está contando alguma coisa a mais.</p>
+        <div class="verify"><p class="vh">Confira</p><p>A consulta acima vira um teste na aula 4. Anote outras duas que deveriam fechar &mdash; por exemplo, <code>entregues</code> do mart 03 contra um <code>count(*)</code> em <code>refined.pedidos</code> &mdash; e traga para a próxima aula.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a3-s7"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 09 IA ============ -->
+  <section id="ia">
+    <h2>10 &middot; Método</h2>
+    <p class="h2big">A IA revisa o grão, você decide</p>
+    <p>Em SQL, a IA erra de um jeito específico: ela acerta a sintaxe quase sempre, e o grão quase nunca, porque o grão não está escrito em lugar nenhum &mdash; a não ser que você escreva. O MCP da aula 2 continua ligado, em somente leitura, e é o revisor ideal: ele pode <em>rodar</em> o seu SQL e contar.</p>
+    <p class="cmdlabel">Cole no Claude Code ou no Codex, com o MCP ligado</p>
+    <div class="codewrap"><pre>Leia sql/marts/04_nota_por_categoria.sql. Não altere o arquivo.
+Usando o banco pelo MCP, em somente leitura:
+1. Diga qual é o grão de cada CTE e do resultado final, e confira
+   cada um no banco (linhas totais contra linhas distintas na chave).
+2. Para cada JOIN, conte as linhas antes e depois e diga se a
+   mudança era esperada.
+3. Aponte qualquer média, soma ou contagem feita num grão diferente
+   do grão da pergunta escrita no comentário do arquivo.
+Mostre a SQL de cada conferência.</pre><button class="copy" type="button">copiar</button></div>
+    <p>A pergunta é sobre o <em>seu</em> arquivo, não um pedido de código novo. Se a resposta contradiz o comentário do arquivo, uma das duas coisas está errada &mdash; e a contagem que ela rodou diz qual.</p>
+
+    <h3>O que procurar no SQL que a IA escrever</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Procure</th><th>Por que é armadilha</th><th>Como pegar</th></tr></thead>
+        <tbody>
+          <tr><td class="term">count(*)<br>depois de JOIN</td><td>Conta linhas do grão mais fino. No mart 01, 112.101 &ldquo;pedidos&rdquo;.</td><td>Compare com <code>count(DISTINCT</code> da chave<code>)</code></td></tr>
+          <tr><td class="term">JOIN</td><td>Onde devia ser <code>LEFT JOIN</code>, some com o que não tem par. No mart 02, R$&nbsp;183 mil.</td><td>Total do mart contra total da fonte</td></tr>
+          <tr><td class="term">avg() depois<br>de JOIN</td><td>Dá peso a quem tem mais linhas do outro lado. Não há <code>DISTINCT</code> que conserte.</td><td>Ajustar o grão numa CTE antes</td></tr>
+          <tr><td class="term">JOIN com<br>pagamentos</td><td>Pedido pago com cartão e voucher duplica todos os seus itens. A receita do mart 01 sobe para R$&nbsp;14.105.767,00.</td><td>A receita bate com a do mart 02?</td></tr>
+          <tr><td class="term">TIMESTAMP &lt;= DATE</td><td>A data vira meia-noite. Entrega no dia previsto vira atraso.</td><td>Os 93,2% viram 91,9%</td></tr>
+          <tr><td class="term">ELSE</td><td>No <code>CASE</code>, pega também o nulo, calado.</td><td>As partes somam o todo?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>O exercício da aula.</b> Peça para a IA, sem dizer o grão: &ldquo;escreva a SQL da nota média por categoria no meu banco&rdquo;. Rode a resposta. Se <code>office_furniture</code> voltar com 3,49, ela juntou nota com item &mdash; e o MCP não a salvou, porque ver o dado não é o mesmo que saber o grão da pergunta.</div>
+  </section>
+
+  <!-- ============ 11 DESAFIO ============ -->
+  <section id="desafio">
+    <h2>11 &middot; Para casa</h2>
+    <p class="h2big">O desafio da aula 3</p>
+    <p>A regra de sempre: usa o que foi dado em aula e exige um passo que não foi mostrado. São cinco marts, do <code>06</code> ao <code>10</code>, cada um com a pergunta, as colunas e números para conferir sem a resposta. Os caminhos entre as tabelas você já conhece; o passo novo de cada um está escrito nele.</p>
+    <p>Três regras valem para os cinco: o grão do resultado na primeira linha do arquivo e o de cada CTE dentro dela; as quatro palavras fechadas da <a href="#regras">seção 03</a>; e o arquivo rodando pelo <code>pipeline.marts</code>, não só no notebook.</p>
+
+    <div class="desafios">
+      <article class="desafio">
+        <div class="de-n"><b>06</b>grão 2&times;</div>
+        <div>
+          <h3>Ticket médio por estado</h3>
+          <p><code>sql/marts/06_ticket_medio_por_estado.sql</code>. <strong>Ticket médio</strong> tem definição fechada desde os <a href="indicadores.html">indicadores da turma</a>: a receita de cada pedido válido, somada primeiro, e a média por pedido depois. O valor está no item, a UF no cliente, e os dois só se encontram passando por <code>pedidos</code>. O passo novo: o grão muda duas vezes, de item para pedido e de pedido para UF.</p>
+          <p>Colunas: <code>uf</code>, <code>pedidos</code> e <code>ticket_medio</code> (em reais, duas casas).</p>
+          <p>Para conferir: 27 linhas, a soma de <code>pedidos</code> dá 98.199, e SP tem o menor ticket do país. Se o seu ticket de SP ficou perto de R$&nbsp;110, releia o desenho da <a href="#grao">seção 02</a>: você tirou a média de outra coisa.</p>
+        </div>
+      </article>
+      <article class="desafio">
+        <div class="de-n"><b>07</b>1 : N</div>
+        <div>
+          <h3>Mix de pagamento</h3>
+          <p><code>sql/marts/07_mix_pagamento.sql</code>. Quanto do dinheiro pago entra por cartão, boleto, voucher e débito, nos pedidos válidos. O passo novo é a tabela: <code>pagamentos</code> tem PK <code>(pedido_id, pagamento_seq)</code>, e um pedido pago com dois vouchers e um cartão tem três linhas.</p>
+          <p>Colunas: <code>tipo</code>, <code>pagamentos</code>, <code>pedidos</code>, <code>valor</code> e <code>pct_valor</code> (% do valor total, uma casa).</p>
+          <p>Para conferir: 4 linhas, <code>credit_card</code> com 78,5% do valor, e a soma de <code>valor</code> dá R$&nbsp;15.739.137,01. É mais que a receita do mart 01: explique a diferença no comentário do arquivo. E a soma de <code>pedidos</code> passa dos 98.206 pedidos válidos com pagamento &mdash; diga por quê.</p>
+        </div>
+      </article>
+      <article class="desafio">
+        <div class="de-n"><b>08</b>CTE + CASE</div>
+        <div>
+          <h3>A nota de quem recebeu atrasado</h3>
+          <p><code>sql/marts/08_nota_por_prazo.sql</code>. A pergunta que junta logística e satisfação: o atraso derruba a nota? Uma linha para quem recebeu no prazo e uma para quem recebeu atrasado, com o mesmo denominador do mart 03. O passo novo é combinar dois marts: a nota por pedido do mart 04 com o <code>CASE</code> do mart 03.</p>
+          <p>Colunas: <code>situacao</code> (<code>'no_prazo'</code> ou <code>'atrasado'</code>), <code>pedidos_avaliados</code>, <code>nota_media</code> (duas casas) e <code>pct_nota_baixa</code> (% de pedidos com nota até 2, uma casa).</p>
+          <p>Para conferir: 2 linhas, a soma de <code>pedidos_avaliados</code> dá 95.824, e a nota dos atrasados fica abaixo de 2,5. Se a soma deu 96.353, você contou avaliações, não pedidos. Se a nota dos atrasados deu 2,57, releia a armadilha do mart 03.</p>
+        </div>
+      </article>
+      <article class="desafio">
+        <div class="de-n"><b>09</b>janela</div>
+        <div>
+          <h3>Concentração de vendedores</h3>
+          <p><code>sql/marts/09_vendedores_pareto.sql</code>. Que fração dos vendedores faz 80% da receita? Uma linha por vendedor com venda válida, do maior para o menor, com a receita acumulada até ele. O passo novo é a janela com ordem: <code>sum(...) OVER (ORDER BY ...)</code> soma da primeira linha até a atual.</p>
+          <p>Colunas: <code>vendedor_id</code>, <code>uf</code> (do vendedor), <code>receita</code>, <code>posicao</code> e <code>pct_acumulado</code> (% da receita total até esta linha, duas casas).</p>
+          <p>Para conferir: 3.053 linhas, a última com 100,00, e a soma de <code>receita</code> igual à do mart 01. O primeiro vendedor a passar de 80% está na posição 540. Há vendedores com a receita idêntica: sem um desempate no <code>ORDER BY</code> da janela, eles ganham o mesmo acumulado, e rodar duas vezes pode não dar a mesma ordem.</p>
+        </div>
+      </article>
+      <article class="desafio">
+        <div class="de-n"><b>10</b>datas</div>
+        <div>
+          <h3>Tempo de entrega por estado</h3>
+          <p><code>sql/marts/10_tempo_entrega_por_estado.sql</code>. Quantos dias, da compra até a entrega, por UF do cliente. Mesmo denominador do mart 03. O passo novo são duas funções: <code>date_diff('day', inicio, fim)</code>, que conta dias de calendário, e <code>median()</code>.</p>
+          <p>Colunas: <code>uf</code>, <code>entregues</code>, <code>dias_medio</code> (uma casa) e <code>dias_mediana</code>.</p>
+          <p>Para conferir: 27 linhas, a soma de <code>entregues</code> dá 96.470 &mdash; a mesma do mart 03 &mdash;, SP é o mais rápido com 8,7 dias e RR o mais lento com 29,3. Se partiu de <code>data_envio</code>, mediu outra coisa: o tempo da transportadora, não o da loja.</p>
+        </div>
+      </article>
+    </div>
+    <p class="small" style="margin-top:14px"><strong>Entrega:</strong> os cinco arquivos <code>.sql</code> e a saída do <code>uv run python -m pipeline.marts</code> com os dez marts, colados no <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/new?template=desafio-03.yml" target="_blank" rel="noopener">formulário de entrega do desafio 3</a>. Traga o que não saiu, quebrado: um mart travado com a dúvida escrita vale mais que cinco copiados.</p>
+    <p class="small" style="margin-top:14px">Na correção, os arquivos vão para a tela lado a lado, e o primeiro critério é o comentário com o grão. SQL certo com grão não declarado é acerto por sorte.</p>
+  </section>
+
+  <!-- ============ ANEXOS ============ -->
+  <section id="contagens">
+    <h2>A1 &middot; Anexo</h2>
+    <p class="h2big">Contagens de marts</p>
+    <p>Medido nos arquivos do curso, com a spec de referência da aula 2 e as respostas de referência desta página. Se você mudou uma definição, os números mudam &mdash; e você tem que saber explicar quanto e por quê.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Mart</th><th style="text-align:right">Linhas</th><th>Números de conferência</th></tr></thead>
+        <tbody>
+          <tr><td class="term">marts.vendas_mensais</td><td class="num">24</td><td>receita 13.494.400,74 &middot; pedidos 98.199 &middot; nov/2017: 7.421 e 1.003.862,14</td></tr>
+          <tr><td class="term">marts.top_categorias</td><td class="num">74</td><td>receita 13.494.400,74 &middot; itens 112.101 &middot; <code>health_beauty</code> 1.255.695,13</td></tr>
+          <tr><td class="term">marts.entrega_no_prazo</td><td class="num">1</td><td>96.470 entregues &middot; 89.936 no prazo &middot; 6.534 atrasados &middot; 93,2%</td></tr>
+          <tr><td class="term">marts.nota_por_categoria</td><td class="num">52</td><td><code>office_furniture</code> 3,62 em 1.263 &middot; <code>books_general_interest</code> 4,46 em 508</td></tr>
+          <tr><td class="term">marts.recompra</td><td class="num">9</td><td>94.990 pessoas &middot; 92.102 com um pedido (96,96%) &middot; recompra 3,04%, 2.888 pessoas</td></tr>
+          <tr><td><b>Total</b></td><td class="num"><b>160</b></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>As diferenças que têm nome</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th style="text-align:right">De</th><th style="text-align:right">Para</th><th>Por quê</th></tr></thead>
+        <tbody>
+          <tr><td class="num">99.441</td><td class="num">98.207</td><td>Pedidos que não aconteceram: <code>canceled</code> e <code>unavailable</code></td></tr>
+          <tr><td class="num">98.207</td><td class="num">98.199</td><td>8 pedidos válidos sem nenhum item</td></tr>
+          <tr><td class="num">112.650</td><td class="num">112.101</td><td>Itens de pedidos não válidos</td></tr>
+          <tr><td class="num">98.199</td><td class="num">99.002</td><td>Soma da coluna <code>pedidos</code> do mart 02: pedido com duas categorias conta nas duas</td></tr>
+          <tr><td class="num">99.441</td><td class="num">96.470</td><td>Denominador do mart 03: só <code>delivered</code> com data de entrega</td></tr>
+          <tr><td class="num">74</td><td class="num">52</td><td>Categorias com menos de 100 pedidos avaliados, fora do mart 04</td></tr>
+          <tr><td class="num">99.441</td><td class="num">96.096</td><td>Linhas de <code>clientes</code> contra pessoas: <code>cliente_id</code> é por pedido, <code>cliente_unico_id</code> é a pessoa</td></tr>
+          <tr><td class="num">96.096</td><td class="num">94.990</td><td>Pessoas do mart 05: só quem tem pelo menos um pedido válido</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="erros">
+    <h2>A2 &middot; Anexo</h2>
+    <p class="h2big">Quando quebrar</p>
+
+    <details>
+      <summary>IO Error: Could not set lock on file</summary>
+      <p>O de sempre: um <code>ui.py</code> de pé enquanto o <code>pipeline.marts</code> tenta escrever. <code>Ctrl+C</code> nele. O fim da aula alterna os dois &mdash; executor para gravar, notebook para conferir &mdash;, então esse erro vai aparecer. Não é o banco quebrado.</p>
+    </details>
+
+    <details>
+      <summary>Catalog Error: Table with name ... does not exist</summary>
+      <p>Faltou o schema na frente (<code>pedidos</code> em vez de <code>refined.pedidos</code>), ou a sua <code>refined</code> usa outros nomes. Rode <code>SHOW ALL TABLES;</code> e <code>DESCRIBE refined.pedidos;</code> e compare com o <code>SELECT</code>.</p>
+    </details>
+
+    <details>
+      <summary>Binder Error: column ... must appear in the GROUP BY clause</summary>
+      <p>Toda coluna do <code>SELECT</code> que não está dentro de <code>sum</code>, <code>count</code> ou <code>avg</code> precisa estar no <code>GROUP BY</code>. Se o banco reclama de uma coluna, pergunte-se: ela faz parte do grão do mart? Se faz, vai para o <code>GROUP BY</code>. Se não faz, ela não pode estar no resultado sem uma agregação.</p>
+    </details>
+
+    <details>
+      <summary>Binder Error: Referenced column ... not found (num JOIN)</summary>
+      <p>Coluna com o prefixo da tabela errada: <code>p.preco</code> quando o preço está em <code>i</code>. Cada coluna mora numa tabela só &mdash; foi uma das armadilhas do desafio 1. O <a href="aula-2.html#mapa">mapa da aula 2</a> diz onde.</p>
+    </details>
+
+    <details>
+      <summary>Ambiguous reference to column name</summary>
+      <p>Duas tabelas do <code>JOIN</code> têm uma coluna com o mesmo nome &mdash; <code>pedido_id</code>, <code>categoria</code> &mdash; e você escreveu sem prefixo. Escreva <code>i.pedido_id</code> ou <code>p.pedido_id</code>. Prefixar tudo, sempre, evita o erro e deixa claro de onde vem cada coluna.</p>
+    </details>
+
+    <details>
+      <summary>O mart voltou vazio e o executor parou</summary>
+      <p>Quase sempre um <code>JOIN</code> que não casou ou um <code>WHERE</code> que não deixa nada passar. Rode o <code>SELECT</code> no notebook tirando uma tabela de cada vez do <code>JOIN</code>, e um filtro de cada vez do <code>WHERE</code>, até as linhas voltarem. A última coisa que você tirou é a culpada. Um clássico: <code>status = 'Delivered'</code>, com maiúscula. Texto compara letra a letra.</p>
+    </details>
+
+    <details>
+      <summary>O número é parecido, mas não bate</summary>
+      <p>Diferença pequena é a mais perigosa, porque parece arredondamento. Nunca é. Procure na ordem: o filtro de pedido válido (está em todos os marts que falam de venda?), um <code>JOIN</code> que devia ser <code>LEFT</code>, e o tipo das datas comparadas. A tabela <a href="#contagens">As diferenças que têm nome</a> lista as que já apareceram.</p>
+    </details>
+
+    <details>
+      <summary>Quebrei tudo e não sei onde</summary>
+      <p>Apague o <code>olist.duckdb</code> e rode as três etapas na ordem. Seus <code>.sql</code> estão em arquivo; o banco é descartável.</p>
+      <div class="codewrap"><pre>uv run python -m pipeline.ingestao
+uv run python -m pipeline.transformacao
+uv run python -m pipeline.marts</pre><button class="copy" type="button">copiar</button></div>
+    </details>
+  </section>
+
+  <footer>
+    Curso Olist &middot; Aula 3 de 4 &middot; dados públicos da Olist Store (Kaggle, CC BY-NC-SA 4.0).<br>
+    Seu progresso fica salvo neste navegador. &middot; <a href="index.html">Todas as aulas</a> &middot; <a href="aula-1.html">Aula 1</a> &middot; <a href="aula-2.html">Aula 2</a>
+  </footer>
+
+</div>
+</main>
+</div>
+
+
+<script>
+(function(){
+  // Só os passos visíveis contam no progresso: as etapas ainda não liberadas
+  // ficam dentro de uma div [hidden], e contá-las deixaria a barra travada.
+  var steps = Array.prototype.slice.call(document.querySelectorAll(".step"))
+    .filter(function(s){ return !s.closest("[hidden]"); });
+  var fill = document.getElementById("fill");
+  var pct = document.getElementById("pct");
+  var KEY = "olist-progresso";
+
+  function load(){
+    try { return JSON.parse(localStorage.getItem(KEY) || "{}"); }
+    catch(e){ return {}; }
+  }
+  function save(state){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  }
+  function paint(){
+    var done = 0;
+    steps.forEach(function(s){
+      var box = s.querySelector("input[type=checkbox]");
+      if (box.checked){ done++; s.classList.add("done"); }
+      else { s.classList.remove("done"); }
+    });
+    pct.textContent = done + "/" + steps.length;
+    fill.style.width = (steps.length ? (done / steps.length * 100) : 0) + "%";
+  }
+
+  var state = load();
+  steps.forEach(function(s){
+    var id = s.getAttribute("data-id");
+    var box = s.querySelector("input[type=checkbox]");
+    box.checked = !!state[id];
+    box.addEventListener("change", function(){
+      state[id] = box.checked;
+      save(state);
+      paint();
+    });
+  });
+  paint();
+
+  document.getElementById("reset").addEventListener("click", function(){
+    state = {};
+    save(state);
+    steps.forEach(function(s){ s.querySelector("input[type=checkbox]").checked = false; });
+    paint();
+  });
+
+  // copiar
+  document.querySelectorAll(".copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      var txt = pre.innerText.split("\n").filter(function(l){ return l.trim().indexOf("#") !== 0; }).join("\n").trim();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(txt).then(function(){
+          btn.textContent = "copiado";
+          setTimeout(function(){ btn.textContent = "copiar"; }, 1600);
+        });
+      }
+    });
+  });
+
+  // tema
+  var TKEY = "olist-tema";
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem(TKEY);
+    if (saved) root.setAttribute("data-theme", saved);
+  } catch(e){}
+  document.getElementById("theme").addEventListener("click", function(){
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem(TKEY, next); } catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

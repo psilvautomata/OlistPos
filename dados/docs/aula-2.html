@@ -1,0 +1,1604 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aula 2 · Transformação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#eef1ee;
+  --surface:#f7f9f7;
+  --sunken:#e4e9e5;
+  --ink:#10171a;
+  --ink-2:#39474a;
+  --ink-3:#6b7b7c;
+  --line:#cdd6cf;
+  --accent:#1a6b52;
+  --accent-soft:#dcebe3;
+  --amber:#a86e05;
+  --amber-soft:#f6ebd2;
+  --danger:#9b3a25;
+  --code-bg:#12191c;
+  --code-ink:#dce7e0;
+  --shadow:0 1px 2px rgba(16,23,26,.06),0 8px 24px -16px rgba(16,23,26,.3);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d1214;
+    --surface:#141c1f;
+    --sunken:#1b2529;
+    --ink:#e7eee9;
+    --ink-2:#b2c0ba;
+    --ink-3:#7d8d88;
+    --line:#2a383c;
+    --accent:#4fbf94;
+    --accent-soft:#12302a;
+    --amber:#e0a800;
+    --amber-soft:#2e2510;
+    --danger:#e0805f;
+    --code-bg:#080d0f;
+    --code-ink:#cfded6;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d1214;
+  --surface:#141c1f;
+  --sunken:#1b2529;
+  --ink:#e7eee9;
+  --ink-2:#b2c0ba;
+  --ink-3:#7d8d88;
+  --line:#2a383c;
+  --accent:#4fbf94;
+  --accent-soft:#12302a;
+  --amber:#e0a800;
+  --amber-soft:#2e2510;
+  --danger:#e0805f;
+  --code-bg:#080d0f;
+  --code-ink:#cfded6;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.ui{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+a{color:var(--accent)}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;
+  grid-template-columns:262px minmax(0,1fr);
+  gap:44px;
+  max-width:1180px;
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:0 72px;
+}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+}
+
+/* ---------- sidebar ---------- */
+.side{
+  position:sticky;
+  top:0;
+  align-self:start;
+  max-height:100vh;
+  overflow-y:auto;
+  padding-block:28px 32px;
+  font-family:Archivo,sans-serif;
+  font-size:13.5px;
+}
+@media (max-width:900px){
+  .side{position:static;max-height:none;border-bottom:1px solid var(--line);margin-bottom:8px}
+}
+.side .brand{
+  font-weight:700;letter-spacing:-.01em;font-size:15px;color:var(--ink);
+  display:flex;align-items:center;gap:8px;margin-bottom:18px;
+}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--amber);flex:none}
+.prog-wrap{margin-bottom:20px}
+.prog-label{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px;
+}
+.prog-label b{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums}
+.prog-track{height:4px;background:var(--sunken);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:var(--accent);transition:width .35s ease}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+nav a{
+  display:flex;gap:9px;align-items:baseline;
+  text-decoration:none;color:var(--ink-2);
+  padding:5px 8px;border-radius:5px;line-height:1.35;
+}
+nav a:hover{background:var(--sunken);color:var(--ink)}
+nav a .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);flex:none;width:18px}
+.side-foot{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);display:flex;gap:8px}
+.tbtn{
+  font-family:Archivo,sans-serif;font-size:12px;
+  background:var(--surface);color:var(--ink-2);
+  border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;
+}
+.tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+
+/* ---------- main ---------- */
+main{padding-block:28px 0;min-width:0}
+.wrap{max-width:68ch}
+
+/* hero */
+.eyebrow{
+  font-family:Archivo,sans-serif;font-size:11.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin:0 0 14px;
+}
+h1{
+  font-size:clamp(34px,5.2vw,50px);font-weight:700;letter-spacing:-.025em;
+  line-height:1.04;margin:0 0 18px;text-wrap:balance;
+}
+.lede{font-size:20px;line-height:1.55;color:var(--ink-2);margin:0 0 26px;text-wrap:pretty}
+.facts{
+  display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:10px;
+  background:var(--surface);overflow:hidden;margin-bottom:40px;
+}
+.fact{flex:1 1 130px;padding:13px 16px;border-right:1px solid var(--line)}
+.fact:last-child{border-right:0}
+@media (max-width:560px){.fact{flex:1 1 50%;border-bottom:1px solid var(--line)}}
+.fact dt{
+  font-family:Archivo,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 3px;
+}
+.fact dd{margin:0;font-family:Archivo,sans-serif;font-weight:600;font-size:15px;color:var(--ink)}
+
+/* sections */
+section{padding-block:34px 0;scroll-margin-top:16px}
+h2{
+  font-size:13px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 6px;
+}
+.h2big{
+  font-family:Archivo,sans-serif;font-size:clamp(24px,3.4vw,31px);font-weight:700;
+  letter-spacing:-.02em;line-height:1.15;margin:0 0 16px;color:var(--ink);text-wrap:balance;
+}
+h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol.body{padding-left:20px;margin:0 0 15px}
+li{margin-bottom:6px}
+strong{font-weight:600}
+.small{font-size:15px;color:var(--ink-2)}
+
+/* pipeline diagram */
+.pipe{
+  display:flex;flex-direction:column;gap:0;margin:0 0 12px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:20px;box-shadow:var(--shadow);
+}
+.layer{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
+@media (max-width:520px){.layer{grid-template-columns:minmax(0,1fr);gap:4px}}
+.layer .tag{
+  font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  padding:5px 8px;border-radius:5px;text-align:center;
+  background:var(--sunken);color:var(--ink-2);
+}
+.layer.l-raw .tag{background:var(--sunken);color:var(--ink-2)}
+.layer.l-ref .tag{background:var(--amber-soft);color:var(--amber)}
+.layer.l-mart .tag{background:var(--accent-soft);color:var(--accent)}
+.layer .desc{font-size:15px;color:var(--ink-2)}
+.layer .desc b{color:var(--ink);font-family:Archivo,sans-serif;font-weight:600}
+.arrow{
+  display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;
+  padding:7px 0;align-items:center;
+}
+@media (max-width:520px){.arrow{grid-template-columns:minmax(0,1fr)}.arrow .stem{display:none}}
+.arrow .stem{display:flex;justify-content:center;color:var(--ink-3);font-size:14px;line-height:1}
+.arrow .what{
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);
+}
+.arrow .what em{font-style:normal;color:var(--accent);font-weight:600}
+
+/* steps */
+.step{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:22px;margin-bottom:16px;box-shadow:var(--shadow);
+}
+.step.done{border-color:var(--accent);background:var(--surface)}
+.step-head{display:flex;gap:13px;align-items:flex-start;margin-bottom:4px}
+.step-n{
+  font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  background:var(--amber-soft);color:var(--amber);
+  border-radius:6px;padding:4px 8px;flex:none;margin-top:3px;
+}
+.step.done .step-n{background:var(--accent-soft);color:var(--accent)}
+.step-title{font-family:Archivo,sans-serif;font-weight:600;font-size:20px;letter-spacing:-.01em;margin:0;line-height:1.25}
+.step-sub{font-size:14.5px;color:var(--ink-3);margin:2px 0 0;font-family:Archivo,sans-serif}
+.step-body{margin-top:14px}
+.step-body > :last-child{margin-bottom:0}
+
+/* figura / diagrama */
+.fig{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:22px 20px 16px;margin:0 0 14px;box-shadow:var(--shadow);
+}
+.fig svg{display:block;width:100%;height:auto}
+.fig-scroll{overflow-x:auto;padding-bottom:4px}
+.fig-scroll svg{min-width:660px}
+.er-scroll svg.er{min-width:780px}
+@media (min-width:901px){.er-fig{width:calc(100vw - 386px);max-width:834px}}
+td.nw{white-space:nowrap}
+.fig-cap{
+  font-size:13.5px;color:var(--ink-3);margin:14px 0 0;text-align:center;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* duas colunas comparativas */
+.versus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 16px}
+@media (max-width:620px){.versus{grid-template-columns:minmax(0,1fr)}}
+.vs-card{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:18px 20px;
+}
+.vs-card.bad{border-color:var(--danger)}
+.vs-card.good{border-color:var(--accent)}
+.vs-h{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;margin:0 0 10px;
+}
+.vs-card.bad .vs-h{color:var(--danger)}
+.vs-card.good .vs-h{color:var(--accent)}
+.vs-flow{
+  font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-2);
+  margin:0 0 12px;line-height:1.9;
+}
+.vs-card p{font-size:15px;color:var(--ink-2)}
+.vs-card p:last-child{margin-bottom:0}
+
+/* spec */
+.spec{
+  border:1px solid var(--line);border-radius:12px;background:var(--sunken);
+  padding:20px 22px;margin-bottom:16px;
+}
+.spec-h{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--amber);margin:0 0 10px;
+}
+.spec ol{margin-bottom:0}
+.spec li{margin-bottom:10px;font-size:15.5px}
+.spec li:last-child{margin-bottom:0}
+.spec-foot{
+  font-size:14.5px;color:var(--ink-3);margin:14px 0 0;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* spec colapsavel */
+details.spec-det{padding:0;margin-bottom:16px}
+details.spec-det > summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
+  margin:0;padding:16px 22px;
+}
+details.spec-det > summary::-webkit-details-marker{display:none}
+details.spec-det > summary::before{
+  content:"";width:0;height:0;flex:none;
+  border-left:5px solid currentColor;border-top:4px solid transparent;
+  border-bottom:4px solid transparent;transition:transform .15s ease;
+}
+details.spec-det[open] > summary::before{transform:rotate(90deg)}
+details.spec-det > summary:hover{background:var(--line);border-radius:12px}
+details.spec-det[open] > summary:hover{border-radius:12px 12px 0 0}
+.spec-cue{
+  margin-left:auto;font-size:10px;letter-spacing:.09em;color:var(--ink-3);
+}
+.spec-cue::after{content:"abrir"}
+details.spec-det[open] .spec-cue::after{content:"fechar"}
+details.spec-det > :not(summary){margin-left:22px;margin-right:22px}
+details.spec-det > :last-child{margin-bottom:20px}
+
+/* code */
+pre{
+  background:var(--code-bg);color:var(--code-ink);
+  border-radius:8px;padding:13px 15px;overflow-x:auto;
+  font-size:13.5px;line-height:1.6;margin:0 0 14px;
+}
+pre .c{color:#7d8d88}
+pre .ok{color:#4fbf94}
+code:not(pre code){
+  background:var(--sunken);border-radius:4px;padding:1px 5px;font-size:.87em;color:var(--ink);
+}
+.cmdlabel{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 6px;
+}
+.codewrap{position:relative}
+.copy{
+  position:absolute;top:8px;right:8px;
+  font-family:Archivo,sans-serif;font-size:11px;letter-spacing:.04em;
+  background:rgba(255,255,255,.08);color:#cfded6;
+  border:1px solid rgba(255,255,255,.16);border-radius:5px;padding:3px 8px;cursor:pointer;
+}
+.copy:hover{background:rgba(255,255,255,.16)}
+
+/* verify block */
+.verify{
+  border-left:3px solid var(--accent);background:var(--accent-soft);
+  border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 14px;
+}
+.verify .vh{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 6px;
+}
+.verify p,.verify ul{margin-bottom:0;font-size:15px}
+.note{
+  border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 14px;font-size:15px;
+}
+.note b{font-family:Archivo,sans-serif}
+.note > :last-child{margin-bottom:0}
+
+/* checkbox */
+.mark{
+  display:flex;align-items:center;gap:9px;margin-top:16px;padding-top:14px;
+  border-top:1px solid var(--line);
+  font-family:Archivo,sans-serif;font-size:14px;color:var(--ink-3);cursor:pointer;user-select:none;
+}
+.mark input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex:none}
+.step.done .mark{color:var(--accent);font-weight:600}
+
+/* aulas */
+.aulas{display:flex;flex-direction:column;gap:12px;margin-bottom:8px}
+.aula{
+  display:grid;grid-template-columns:62px minmax(0,1fr);gap:16px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:18px 20px;
+}
+@media (max-width:560px){.aula{grid-template-columns:minmax(0,1fr);gap:8px}}
+.aula .when{
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);
+  border-right:1px solid var(--line);padding-right:12px;
+}
+@media (max-width:560px){.aula .when{border-right:0;padding-right:0}}
+.aula .when b{display:block;font-size:22px;color:var(--amber);line-height:1.1;font-weight:600}
+.aula h3{margin:0 0 6px;font-size:18px}
+.aula p{font-size:15px;margin-bottom:10px;color:var(--ink-2)}
+.chal{
+  font-size:14.5px;background:var(--sunken);border-radius:7px;padding:9px 12px;color:var(--ink-2);
+}
+.chal b{font-family:Archivo,sans-serif;color:var(--ink);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+
+/* desafios */
+[hidden]{display:none!important}
+.embreve{
+  border:1px dashed var(--line);border-radius:12px;background:var(--sunken);
+  padding:16px 20px;margin:0 0 16px;font-size:15px;color:var(--ink-3);
+}
+.embreve b{font-family:Archivo,sans-serif;color:var(--ink-2)}
+.desafios{display:flex;flex-direction:column;gap:12px}
+.desafio{
+  display:grid;grid-template-columns:76px minmax(0,1fr);gap:18px;
+  border:1px solid var(--line);border-left:3px solid var(--amber);
+  border-radius:0 12px 12px 0;background:var(--surface);padding:18px 20px;
+}
+@media (max-width:560px){.desafio{grid-template-columns:minmax(0,1fr);gap:6px}}
+.desafio .de-n{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.desafio .de-n b{display:block;font-size:21px;color:var(--amber);line-height:1.1;letter-spacing:0}
+.desafio h3{margin:0 0 6px;font-size:17px}
+.desafio p{font-size:15.5px;margin-bottom:0;color:var(--ink-2)}
+.desafio p + p{margin-top:8px}
+.desafio .entrega-ex{
+  font-size:13px;color:var(--ink-3);margin-top:8px;
+}
+.desafio .entrega-ex code{font-size:12.5px;line-height:1.7}
+.desafio .entrega{
+  font-family:Archivo,sans-serif;font-size:13px;color:var(--ink-3);
+  margin-top:9px;padding-top:9px;border-top:1px solid var(--line);
+}
+
+/* clock bar */
+.clock{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:6px 0 14px;font-family:Archivo,sans-serif;font-size:11px}
+.clock span{display:flex;align-items:center;justify-content:center;color:#fff;white-space:nowrap;overflow:hidden}
+.c1{background:var(--ink-3)}
+.c2{background:var(--accent)}
+.c3{background:var(--amber)}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:0 0 16px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--line)}
+tbody tr:last-child td{border-bottom:0}
+th{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);background:var(--sunken);
+}
+td.num{text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+td.term{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink);white-space:nowrap}
+
+details{border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:12px 16px;margin-bottom:9px}
+summary{font-family:Archivo,sans-serif;font-weight:600;font-size:16px;cursor:pointer;color:var(--ink)}
+summary::marker{color:var(--ink-3)}
+details[open] summary{margin-bottom:9px}
+details p:last-child{margin-bottom:0}
+
+footer{
+  margin-top:48px;padding-top:20px;border-top:1px solid var(--line);
+  font-family:Archivo,sans-serif;font-size:13px;color:var(--ink-3);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* links laterais entre páginas */
+.side-links{display:flex;flex-direction:column;gap:2px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.side-links a{display:block;text-decoration:none;color:var(--ink-3);padding:4px 8px;border-radius:5px}
+.side-links a:hover{background:var(--sunken);color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="shell">
+<aside class="side">
+  <div class="brand"><span class="dot"></span>Pipeline Olist &middot; Aula 2</div>
+
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Progresso da aula</span><b id="pct">0/8</b></div>
+    <div class="prog-track"><div class="prog-fill" id="fill"></div></div>
+  </div>
+
+  <nav>
+    <ol>
+      <li><a href="#correcao"><span class="n">00</span>A correção do desafio 1</a></li>
+      <li><a href="#partida"><span class="n">01</span>Onde paramos</a></li>
+      <li><a href="#tipos"><span class="n">02</span>Tipos de dados</a></li>
+      <li><a href="#investigar"><span class="n">03</span>Investigar antes de limpar</a></li>
+      <li><a href="#mcp"><span class="n">04</span>A IA no banco (MCP)</a></li>
+      <li><a href="#spec"><span class="n">05</span>A spec é sua agora</a></li>
+      <li><a href="#rodar"><span class="n">06</span>Rodar e conferir</a></li>
+      <li><a href="#ia"><span class="n">07</span>Não acreditar na IA</a></li>
+      <li><a href="#desafio"><span class="n">08</span>O desafio da aula 2</a></li>
+      <li><a href="#contagens"><span class="n">A1</span>Contagens de refined</a></li>
+      <li><a href="#erros"><span class="n">A2</span>Quando quebrar</a></li>
+    </ol>
+  </nav>
+
+  <nav class="side-links">
+    <a href="index.html">&larr; Todas as aulas</a>
+    <a href="aula-1.html">Aula 1</a>
+    <a href="aula-3.html">Aula 3</a>
+  </nav>
+
+  <div class="side-foot">
+    <button class="tbtn" id="theme" type="button">Tema</button>
+    <button class="tbtn" id="reset" type="button">Zerar progresso</button>
+  </div>
+</aside>
+
+<main>
+<div class="wrap">
+
+  <p class="eyebrow">Aula 2 de 4 &middot; Transformação &middot; 1h20</p>
+  <h1>Ler o dado &ne; confiar no dado</h1>
+  <p class="lede">Na aula 1 o dado entrou no banco exatamente como chegou: tudo texto, nulo onde estava nulo. Hoje ele passa a merecer confiança &mdash; data vira data, dinheiro vira número, duplicata é contada, e cada nulo vira uma decisão escrita. É a aula sem resposta única, e por isso a mais importante.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Entra</dt><dd class="mono">raw.*</dd></div>
+    <div class="fact"><dt>Sai</dt><dd class="mono">refined.*</dd></div>
+    <div class="fact"><dt>Arquivo</dt><dd class="mono">transformacao.py</dd></div>
+    <div class="fact"><dt>Novidade</dt><dd>A spec é sua</dd></div>
+    <div class="fact"><dt>IA no banco</dt><dd>MCP</dd></div>
+  </dl>
+
+  <div class="clock">
+    <span class="c1" style="flex:1 1 19%">correção 15min</span>
+    <span class="c2" style="flex:1 1 62%">construção 50min</span>
+    <span class="c3" style="flex:1 1 19%">dúvidas 15min</span>
+  </div>
+  <p class="small">O mesmo relógio de sempre. A construção, hoje, começa com cinco minutos de tipos de dados e depois tem quatro partes: investigar à mão, conectar a IA ao banco e conferi-la contra o que você achou, escrever a spec, e deixar a IA testar a transformação no banco antes de virar código.</p>
+
+  <!-- ============ 00 CORREÇÃO ============ -->
+  <section id="correcao">
+    <h2>00 &middot; Correção ao vivo</h2>
+    <p class="h2big">O que o dado é capaz de responder</p>
+    <p>Os dez indicadores de cada um, na tela &mdash; já consolidados em <a href="indicadores.html">Indicadores da turma</a>. A correção não é para dar nota &mdash; é para separar, em voz alta, três pilhas:</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Pilha</th><th>O que entra</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td><b>Dá</b></td><td>Toda coluna necessária existe, e o caminho entre as tabelas também.</td><td>Ticket médio, vendas por mês, nota média por categoria</td></tr>
+          <tr><td><b>Dá, mas&hellip;</b></td><td>As colunas existem, mas ainda são texto ou têm nulo que muda a resposta. <strong>É a pilha que vira a aula de hoje.</strong></td><td>Prazo de entrega: a data é <code>VARCHAR</code>, e 2.965 pedidos não têm data de entrega</td></tr>
+          <tr><td><b>Não dá</b></td><td>Nenhuma coluna sustenta, por mais que o negócio quisesse.</td><td>Margem de lucro (não existe custo do produto), custo de aquisição de cliente, estoque</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>A pergunta que ficou no anexo</h3>
+    <p>No fim do guia da aula 1 ficou uma provocação: <code>clientes</code> e <code>pedidos</code> têm exatamente 99.441 linhas cada. Coincidência? Não. Rode no notebook:</p>
+    <div class="codewrap"><pre>SELECT count(*)                            AS linhas,
+       count(DISTINCT customer_id)         AS customer_id,
+       count(DISTINCT customer_unique_id)  AS customer_unique_id
+FROM raw.clientes;</pre><button class="copy" type="button">copiar</button></div>
+    <pre>linhas  customer_id  customer_unique_id
+99.441       99.441              96.096</pre>
+    <p>A Olist gera um <code>customer_id</code> novo <strong>a cada pedido</strong>. A pessoa de verdade é o <code>customer_unique_id</code>: 96.096 clientes fizeram 99.441 pedidos. Quem escreveu "clientes que voltaram a comprar" usando <code>customer_id</code> chegaria a zero recompra &mdash; sem erro nenhum na tela. Guarde o caso: é o primeiro exemplo do curso de uma coluna cujo nome mente sobre o que ela é.</p>
+
+    <h3 id="mapa">Como as nove tabelas se ligam</h3>
+    <p>A dúvida mais comum nas entregas foi "como eu ligo uma tabela na outra?". Este é o mapa. Guarde: ele volta na aula 3, em todo <code>JOIN</code>.</p>
+    <div class="fig er-fig">
+      <div class="fig-scroll er-scroll">
+<svg class="er" viewBox="0 0 1110 640" role="img" aria-label="Diagrama de como as nove tabelas do schema raw se ligam: pedidos no centro, ligado a clientes, itens_pedido, pagamentos e avaliacoes; itens_pedido ligado a produtos e vendedores; produtos ligado a traducao_categorias; geolocalizacao ligada a clientes e vendedores pelo prefixo do CEP, tracejada">
+  <defs><marker id="er-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 z" fill="var(--ink-3)"/></marker></defs>
+  <path d="M 245 81.0 L 285 81.0 L 285 101.0 L 321 101.0" stroke="var(--ink-3)" stroke-width="1.4" fill="none"/>
+  <text x="285" y="59.0" text-anchor="middle" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">customer_id</text>
+  <text x="285" y="73.0" text-anchor="middle" font-size="11" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">1 : 1</text>
+  <path d="M 575 81.0 L 651 81.0" stroke="var(--ink-3)" stroke-width="1.4" fill="none"/>
+  <text x="613" y="59.0" text-anchor="middle" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">order_id</text>
+  <text x="613" y="73.0" text-anchor="middle" font-size="11" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">1 : N</text>
+  <path d="M 860 121.0 L 877 121.0 L 877 81.0 L 891 81.0" stroke="var(--ink-3)" stroke-width="1.4" fill="none"/>
+  <text x="877" y="137.0" text-anchor="middle" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)"></text>
+  <text x="877" y="151.0" text-anchor="middle" font-size="11" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">N : 1</text>
+  <path d="M 990 138 L 990 336" stroke="var(--ink-3)" stroke-width="1.4" fill="none"/>
+  <text x="982" y="222" text-anchor="end" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">product_category_name</text>
+  <text x="982" y="236" text-anchor="end" font-size="11" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">N : 1</text>
+  <path d="M 765 198 L 765 336" stroke="var(--ink-3)" stroke-width="1.4" fill="none"/>
+  <text x="773" y="262" text-anchor="start" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">seller_id</text>
+  <text x="773" y="276" text-anchor="start" font-size="11" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">N : 1</text>
+  <path d="M 365 198 L 365 336" stroke="var(--ink-3)" stroke-width="1.4" fill="none"/>
+  <text x="373" y="262" text-anchor="start" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">order_id</text>
+  <text x="373" y="276" text-anchor="start" font-size="11" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">1 : N</text>
+  <path d="M 545 198 L 545 336" stroke="var(--ink-3)" stroke-width="1.4" fill="none"/>
+  <text x="553" y="262" text-anchor="start" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">order_id</text>
+  <text x="553" y="276" text-anchor="start" font-size="11" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">1 : N</text>
+  <path d="M 132 340 L 132 178" stroke="var(--ink-3)" stroke-width="1.3" stroke-dasharray="5 4" fill="none"/>
+  <text x="140" y="262" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--ink-3)">zip_code_prefix</text>
+  <text x="140" y="276" font-size="11" font-weight="700" font-family="Archivo, sans-serif" fill="var(--ink-3)">? : ?</text>
+  <path d="M 132 478 L 132 612 L 765 612 L 765 458" stroke="var(--ink-3)" stroke-width="1.3" stroke-dasharray="5 4" fill="none"/>
+  <text x="450" y="606" text-anchor="middle" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--ink-3)">zip_code_prefix &#183; ? : ?</text>
+  <g>
+    <rect x="20" y="40" width="225" height="138" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.2"/>
+    <path d="M 20 70 L 245 70" stroke="var(--line)" stroke-width="1"/>
+    <rect x="21" y="41" width="223" height="29" rx="7" fill="var(--sunken)"/>
+    <text x="32" y="60" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">clientes</text>
+    <text x="32" y="85" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">customer_id</text>
+    <text x="235" y="85" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK</text>
+    <text x="32" y="105" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">customer_unique_id</text>
+    <text x="32" y="125" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">customer_zip_code_prefix</text>
+    <text x="32" y="145" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">customer_city</text>
+    <text x="32" y="165" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">customer_state</text>
+  </g>
+  <g>
+    <rect x="325" y="40" width="250" height="158" rx="8" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.6"/>
+    <path d="M 325 70 L 575 70" stroke="var(--accent)" stroke-width="1"/>
+    <rect x="326" y="41" width="248" height="29" rx="7" fill="var(--accent-soft)"/>
+    <text x="337" y="60" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--accent)">pedidos</text>
+    <text x="337" y="85" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">order_id</text>
+    <text x="565" y="85" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK</text>
+    <text x="337" y="105" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">customer_id</text>
+    <text x="565" y="105" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--accent)">FK</text>
+    <text x="337" y="125" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">order_status</text>
+    <text x="337" y="145" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">order_purchase_timestamp</text>
+    <text x="337" y="165" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">order_delivered_customer_date</text>
+    <text x="337" y="185" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">order_estimated_delivery_date</text>
+  </g>
+  <g>
+    <rect x="655" y="40" width="205" height="158" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.2"/>
+    <path d="M 655 70 L 860 70" stroke="var(--line)" stroke-width="1"/>
+    <rect x="656" y="41" width="203" height="29" rx="7" fill="var(--sunken)"/>
+    <text x="667" y="60" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">itens_pedido</text>
+    <text x="667" y="85" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">order_id</text>
+    <text x="850" y="85" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK FK</text>
+    <text x="667" y="105" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">order_item_id</text>
+    <text x="850" y="105" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK</text>
+    <text x="667" y="125" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">product_id</text>
+    <text x="850" y="125" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--accent)">FK</text>
+    <text x="667" y="145" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">seller_id</text>
+    <text x="850" y="145" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--accent)">FK</text>
+    <text x="667" y="165" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">price</text>
+    <text x="667" y="185" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">freight_value</text>
+  </g>
+  <g>
+    <rect x="895" y="40" width="195" height="98" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.2"/>
+    <path d="M 895 70 L 1090 70" stroke="var(--line)" stroke-width="1"/>
+    <rect x="896" y="41" width="193" height="29" rx="7" fill="var(--sunken)"/>
+    <text x="907" y="60" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">produtos</text>
+    <text x="907" y="85" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">product_id</text>
+    <text x="1080" y="85" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK</text>
+    <text x="907" y="105" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">product_category_name</text>
+    <text x="1080" y="105" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--accent)">FK</text>
+    <text x="907" y="125" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">product_weight_g</text>
+  </g>
+  <g>
+    <rect x="20" y="340" width="225" height="138" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.2" stroke-dasharray="5 4"/>
+    <path d="M 20 370 L 245 370" stroke="var(--line)" stroke-width="1"/>
+    <rect x="21" y="341" width="223" height="29" rx="7" fill="var(--sunken)"/>
+    <text x="32" y="360" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">geolocalizacao</text>
+    <text x="32" y="385" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">geolocation_zip_code_prefix</text>
+    <text x="32" y="405" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">geolocation_lat</text>
+    <text x="32" y="425" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">geolocation_lng</text>
+    <text x="32" y="445" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">geolocation_city</text>
+    <text x="32" y="465" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">geolocation_state</text>
+  </g>
+  <g>
+    <rect x="265" y="340" width="200" height="138" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.2"/>
+    <path d="M 265 370 L 465 370" stroke="var(--line)" stroke-width="1"/>
+    <rect x="266" y="341" width="198" height="29" rx="7" fill="var(--sunken)"/>
+    <text x="277" y="360" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">pagamentos</text>
+    <text x="277" y="385" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">order_id</text>
+    <text x="455" y="385" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK FK</text>
+    <text x="277" y="405" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">payment_sequential</text>
+    <text x="455" y="405" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK</text>
+    <text x="277" y="425" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">payment_type</text>
+    <text x="277" y="445" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">payment_installments</text>
+    <text x="277" y="465" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">payment_value</text>
+  </g>
+  <g>
+    <rect x="480" y="340" width="175" height="118" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.2"/>
+    <path d="M 480 370 L 655 370" stroke="var(--line)" stroke-width="1"/>
+    <rect x="481" y="341" width="173" height="29" rx="7" fill="var(--sunken)"/>
+    <text x="492" y="360" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">avaliacoes</text>
+    <text x="492" y="385" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">review_id</text>
+    <text x="645" y="385" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK</text>
+    <text x="492" y="405" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">order_id</text>
+    <text x="645" y="405" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK FK</text>
+    <text x="492" y="425" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">review_score</text>
+    <text x="492" y="445" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">review_creation_date</text>
+  </g>
+  <g>
+    <rect x="670" y="340" width="190" height="118" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.2"/>
+    <path d="M 670 370 L 860 370" stroke="var(--line)" stroke-width="1"/>
+    <rect x="671" y="341" width="188" height="29" rx="7" fill="var(--sunken)"/>
+    <text x="682" y="360" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">vendedores</text>
+    <text x="682" y="385" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">seller_id</text>
+    <text x="850" y="385" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK</text>
+    <text x="682" y="405" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">seller_zip_code_prefix</text>
+    <text x="682" y="425" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">seller_city</text>
+    <text x="682" y="445" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">seller_state</text>
+  </g>
+  <g>
+    <rect x="875" y="340" width="215" height="78" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.2"/>
+    <path d="M 875 370 L 1090 370" stroke="var(--line)" stroke-width="1"/>
+    <rect x="876" y="341" width="213" height="29" rx="7" fill="var(--sunken)"/>
+    <text x="887" y="360" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">traducao_categorias</text>
+    <text x="887" y="385" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">product_category_name</text>
+    <text x="1080" y="385" text-anchor="end" font-size="9.5" font-weight="700" font-family="Archivo, sans-serif" fill="var(--amber)">PK</text>
+    <text x="887" y="405" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">product_category_name_english</text>
+  </g>
+</svg>
+      </div>
+      <p class="fig-cap"><b>PK</b> (chave primária) é a coluna que identifica uma linha da tabela, sem repetir. <b>FK</b> (chave estrangeira) é a coluna que aponta para a PK de outra tabela &mdash; é por ela que o <code>JOIN</code> passa. <b>1 : N</b> se lê na ordem do desenho: um pedido, vários itens. A geolocalização está tracejada de propósito: como ela se liga é parte do desafio 2.</p>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Ligação</th><th>Pela coluna</th><th>Tipo</th><th>O que o dado mostra</th></tr></thead>
+        <tbody>
+          <tr><td>clientes &harr; pedidos</td><td class="term">customer_id</td><td class="nw">1 : 1</td><td>Cada pedido tem o seu próprio <code>customer_id</code>. A pessoa é o <code>customer_unique_id</code>.</td></tr>
+          <tr><td>pedidos &rarr; itens_pedido</td><td class="term">order_id</td><td class="nw">1 : N</td><td>9.803 pedidos têm mais de um item (até 21). 775 não têm nenhum.</td></tr>
+          <tr><td>pedidos &rarr; pagamentos</td><td class="term">order_id</td><td class="nw">1 : N</td><td>Até 29 pagamentos num pedido só. 1 pedido não tem pagamento.</td></tr>
+          <tr><td>pedidos &rarr; avaliacoes</td><td class="term">order_id</td><td class="nw">1 : N</td><td>768 pedidos sem avaliação; até 3 num pedido.</td></tr>
+          <tr><td>itens_pedido &rarr; produtos</td><td class="term">product_id</td><td class="nw">N : 1</td><td>Todo item encontra o seu produto.</td></tr>
+          <tr><td>itens_pedido &rarr; vendedores</td><td class="term">seller_id</td><td class="nw">N : 1</td><td>O vendedor é do <em>item</em>, não do pedido: 1.278 pedidos têm mais de um vendedor.</td></tr>
+          <tr><td>produtos &rarr; traducao_categorias</td><td class="term">product_category_name</td><td class="nw">N : 1</td><td>2 categorias não têm tradução.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>Como usar o mapa:</strong> para juntar duas tabelas que não se tocam, siga as linhas entre elas. Cada linha que você atravessa é um <code>JOIN ... ON</code>, com a coluna escrita na linha. O valor do item está em <code>itens_pedido</code> e o estado está em <code>clientes</code>; o caminho entre os dois passa por <code>pedidos</code>:</p>
+    <div class="codewrap"><pre>SELECT c.customer_state, count(*) AS itens_vendidos
+FROM raw.itens_pedido AS i
+JOIN raw.pedidos      AS p ON p.order_id    = i.order_id      <span class="c">-- linha order_id</span>
+JOIN raw.clientes     AS c ON c.customer_id = p.customer_id   <span class="c">-- linha customer_id</span>
+GROUP BY c.customer_state
+ORDER BY itens_vendidos DESC;</pre><button class="copy" type="button">copiar</button></div>
+    <p class="small">Repare no lado <b>N</b> das ligações: juntar <code>pedidos</code> com <code>itens_pedido</code> transforma 99.441 linhas em 112.650, porque cada pedido aparece uma vez por item. Contar pedidos depois desse <code>JOIN</code> exige <code>count(DISTINCT order_id)</code> &mdash; senão o pedido de três itens conta três vezes.</p>
+
+    <div class="note"><b>Os indicadores escolhidos hoje viram os marts da aula 3.</b> Anote no seu <code>indicadores.md</code> quais foram, e em que pilha cada um caiu. Os da pilha do meio são exatamente o que a transformação precisa destravar.</div>
+  </section>
+
+  <!-- ============ 01 PONTO DE PARTIDA ============ -->
+  <section id="partida">
+    <h2>01 &middot; Antes de construir</h2>
+    <p class="h2big">Onde paramos</p>
+    <p>Todo mundo começa a construção do mesmo lugar: o schema <code>raw</code> com as nove tabelas. Quem faltou, travou ou apagou o banco recupera em um minuto &mdash; a ingestão é idempotente justamente para isso.</p>
+
+    <article class="step" data-id="a2-s0">
+      <div class="step-head">
+        <span class="step-n">2.0</span>
+        <div><p class="step-title">Conferir o ponto de partida</p><p class="step-sub">Nove tabelas em raw, nenhum servidor de pé</p></div>
+      </div>
+      <div class="step-body">
+        <p>Primeiro, garanta que o <code>ui.py</code> da aula passada não ficou rodando em algum terminal esquecido &mdash; com ele de pé, nada consegue escrever no banco. Depois, rode a ingestão de novo. Não faz mal nenhum, e confirma que tudo continua lá:</p>
+        <div class="codewrap"><pre>uv run python -m pipeline.ingestao</pre><button class="copy" type="button">copiar</button></div>
+        <div class="verify"><p class="vh">Confira</p><p>Nove linhas e total de <strong>1.550.922</strong> registros, como na aula 1. Se der <code>Could not set lock on file</code>, é um <code>ui.py</code> vivo em algum lugar: <code>Ctrl+C</code> nele e rode de novo.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a2-s0"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 02 TIPOS ============ -->
+  <section id="tipos">
+    <h2>02 &middot; Fundamento</h2>
+    <p class="h2big">Tipos de dados em cinco minutos</p>
+    <p>Na aula 1, tudo entrou em <code>raw</code> como <code>VARCHAR</code> &mdash; texto &mdash;, de propósito. Boa parte do trabalho de hoje é dar a cada coluna o tipo do que ela realmente é. E o tipo de uma coluna decide duas coisas: <strong>o que cabe nela</strong> e <strong>o que dá para fazer com ela</strong>.</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Tipo</th><th>Guarda</th><th>Na Olist</th><th>Cuidado</th></tr></thead>
+        <tbody>
+          <tr><td class="term">VARCHAR</td><td>Texto, de qualquer tamanho</td><td><code>order_id</code>, <code>customer_state</code>, CEP</td><td>Compara e ordena letra a letra, não por valor</td></tr>
+          <tr><td class="term">INTEGER</td><td>Número inteiro</td><td><code>payment_installments</code>, <code>product_weight_g</code></td><td>Para contagem e medida; <code>BIGINT</code> quando passa de 2 bilhões</td></tr>
+          <tr><td class="term">DECIMAL(p,s)</td><td>Número com casas decimais exatas</td><td><code>price</code>, <code>payment_value</code></td><td><code>DECIMAL(10,2)</code>: até 10 dígitos, 2 depois da vírgula. É o tipo do dinheiro</td></tr>
+          <tr><td class="term">DOUBLE</td><td>Número com vírgula, aproximado</td><td>médias, porcentagens</td><td>Rápido, mas erra na última casa. Nunca para dinheiro</td></tr>
+          <tr><td class="term">BOOLEAN</td><td><code>true</code> ou <code>false</code></td><td>nenhuma coluna ainda</td><td>Você vai criar um na aula 3: entregue no prazo, sim ou não</td></tr>
+          <tr><td class="term">DATE</td><td>Um dia, sem hora</td><td><code>order_estimated_delivery_date</code></td><td>Subtrair duas datas dá o número de dias entre elas</td></tr>
+          <tr><td class="term">TIMESTAMP</td><td>Dia e hora</td><td><code>order_purchase_timestamp</code></td><td>Aceita <code>date_trunc</code>, <code>extract</code>, comparação no tempo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small"><b>E o <code>NULL</code>?</b> Não é um tipo: é a ausência de valor, e pode aparecer em uma coluna de qualquer tipo. Uma coluna <code>TIMESTAMP</code> com nulo continua sendo <code>TIMESTAMP</code> &mdash; só tem linhas em que a data não existe.</p>
+
+    <h3>Cinco consultas para ver a diferença</h3>
+    <p>Nenhuma delas precisa das tabelas. Suba o notebook do DuckDB (<code>uv run python ui.py</code>) &mdash; ele fica aberto também para a investigação &mdash; e rode cada uma numa célula. Antes de rodar, chute o resultado.</p>
+
+    <p class="cmdlabel">1 &middot; texto não é número</p>
+    <div class="codewrap"><pre>SELECT max(x) AS maior FROM (VALUES ('9'), ('10'), ('100')) AS t(x);</pre><button class="copy" type="button">copiar</button></div>
+    <p class="small">Resposta: <code>'9'</code>. Em texto, <code>'9'</code> vem depois de <code>'1'</code>, como "zebra" vem depois de "abacaxi". Nenhum erro, nenhum aviso. Uma entrega do desafio 1 rodou <code>max(price)</code> em <code>raw.itens_pedido</code> e encontrou R$&nbsp;999,99 como o maior preço da Olist. O maior de verdade é R$&nbsp;6.735,00.</p>
+
+    <p class="cmdlabel">2 &middot; dinheiro não é DOUBLE</p>
+    <div class="codewrap"><pre>SELECT 0.1::DOUBLE + 0.2::DOUBLE              AS double,
+       0.1::DECIMAL(10,2) + 0.2::DECIMAL(10,2) AS decimal;</pre><button class="copy" type="button">copiar</button></div>
+    <p class="small"><code>0.30000000000000004</code> contra <code>0.30</code>. O <code>DOUBLE</code> guarda uma aproximação binária do número; em uma soma isso some, em cem mil somas vira centavo que não fecha. O <code>::</code> é o jeito curto de converter: <code>valor::TIPO</code> é o mesmo que <code>CAST(valor AS TIPO)</code>.</p>
+
+    <p class="cmdlabel">3 &middot; data em texto não faz conta</p>
+    <div class="codewrap"><pre>SELECT DATE '2018-03-01' - DATE '2018-02-01' AS dias;</pre><button class="copy" type="button">copiar</button></div>
+    <p class="small"><code>28</code>. Agora tire o <code>DATE</code> das duas e rode de novo: <code>Binder Error</code>. É por isso que nenhum indicador de prazo de entrega sai de <code>raw</code>.</p>
+
+    <p class="cmdlabel">4 &middot; nem tudo que parece número é número</p>
+    <div class="codewrap"><pre>SELECT '01151'::INTEGER AS cep;</pre><button class="copy" type="button">copiar</button></div>
+    <p class="small"><code>1151</code>. O zero da frente sumiu, e com ele o CEP. CEP, <code>order_id</code> e telefone têm cara de número, mas são <em>identificadores</em>: ninguém soma CEP. Ficam <code>VARCHAR</code>.</p>
+
+    <p class="cmdlabel">5 &middot; nulo não é igual a nada, nem a outro nulo</p>
+    <div class="codewrap"><pre>SELECT NULL = NULL AS igual, NULL IS NULL AS e_nulo;</pre><button class="copy" type="button">copiar</button></div>
+    <p class="small"><code>NULL</code> e <code>true</code>. Comparar com nulo dá nulo, porque "não sei" comparado com "não sei" continua "não sei". Para achar nulos, só <code>IS NULL</code> funciona; um <code>WHERE coluna = NULL</code> devolve zero linhas, sem erro.</p>
+
+    <div class="spec">
+      <p class="spec-h">A regra de bolso</p>
+      <ol class="body">
+        <li><strong>Vai fazer conta com isso?</strong> Se não, é <code>VARCHAR</code>, por mais que pareça número.</li>
+        <li><strong>É dinheiro?</strong> <code>DECIMAL</code>.</li>
+        <li><strong>Conta coisas inteiras?</strong> <code>INTEGER</code>.</li>
+        <li><strong>É um momento no tempo?</strong> <code>TIMESTAMP</code> se a hora importa, <code>DATE</code> se não.</li>
+      </ol>
+      <p class="spec-foot">No pandas os nomes mudam &mdash; <code>object</code>, <code>int64</code>, <code>float64</code>, <code>datetime64</code>, <code>bool</code> &mdash; e falta um: o pandas não tem <code>DECIMAL</code> nativo, e dinheiro vira <code>float64</code> sem avisar. Guarde isso para quando for decidir onde a conversão acontece.</p>
+    </div>
+
+    <p>Na investigação a seguir, a pergunta por trás de cada célula é sempre a mesma: <strong>que tipo esta coluna deveria ter, e o dado deixa?</strong></p>
+  </section>
+
+  <!-- ============ 03 INVESTIGAR ============ -->
+  <section id="investigar">
+    <h2>03 &middot; Passo a passo</h2>
+    <p class="h2big">Investigar antes de limpar</p>
+    <p>A regra da aula, numa frase: <strong>você não limpa o que não contou</strong>. Antes de decidir o que fazer com um nulo, você precisa saber quantos são, onde estão e o que significam. Quinze minutos de notebook agora economizam a aula inteira de "por que meu número mudou?".</p>
+
+    <article class="step" data-id="a2-s1">
+      <div class="step-head">
+        <span class="step-n">2.1</span>
+        <div><p class="step-title">Seis perguntas ao dado</p><p class="step-sub">No notebook do DuckDB, em <code>raw</code></p></div>
+      </div>
+      <div class="step-body">
+        <div class="codewrap"><pre>uv run python ui.py</pre><button class="copy" type="button">copiar</button></div>
+        <p>Uma célula por pergunta. Antes de rodar cada uma, <strong>chute o resultado</strong> &mdash; a diferença entre o chute e a resposta é o que você aprende.</p>
+
+        <p class="cmdlabel">Célula 1 &middot; quantos nulos nas datas de pedido?</p>
+        <div class="codewrap"><pre>SELECT count(*)                                      AS linhas,
+       count(*) - count(order_approved_at)           AS sem_aprovacao,
+       count(*) - count(order_delivered_carrier_date) AS sem_envio,
+       count(*) - count(order_delivered_customer_date) AS sem_entrega
+FROM raw.pedidos;</pre><button class="copy" type="button">copiar</button></div>
+        <p class="small">Esperado: 99.441 linhas, 160 sem aprovação, 1.783 sem envio, 2.965 sem entrega. O truque do <code>count(*) - count(coluna)</code>: <code>count(coluna)</code> ignora nulos, então a diferença é exatamente quantos são.</p>
+
+        <p class="cmdlabel">Célula 2 &middot; o nulo é erro ou é informação?</p>
+        <div class="codewrap"><pre>SELECT order_status,
+       count(*)                                        AS pedidos,
+       count(*) - count(order_approved_at)             AS sem_aprovacao,
+       count(*) - count(order_delivered_customer_date) AS sem_entrega
+FROM raw.pedidos
+GROUP BY order_status
+ORDER BY pedidos DESC;</pre><button class="copy" type="button">copiar</button></div>
+        <p>Esta é a célula da aula. Dos 2.965 pedidos sem data de entrega, 1.107 estão <code>shipped</code> (a caminho), 619 <code>canceled</code>, 609 <code>unavailable</code>&hellip; Eles não chegaram porque <em>não era para ter chegado ainda</em>. O nulo está dizendo a verdade. Apagar essas linhas apagaria todos os cancelamentos do dashboard.</p>
+        <p>Mas olhe a linha <code>delivered</code>: 8 pedidos entregues sem data de entrega, e 14 entregues sem data de aprovação. Esses, sim, são estranhos. Estranho não quer dizer "apague" &mdash; quer dizer "anote e decida".</p>
+
+        <p class="cmdlabel">Célula 3 &middot; existe duplicata?</p>
+        <div class="codewrap"><pre>SELECT count(*) AS linhas, count(DISTINCT order_id) AS pedidos_distintos
+FROM raw.pedidos;</pre><button class="copy" type="button">copiar</button></div>
+        <p class="small">Esperado: os dois números iguais. Zero duplicatas também é resultado &mdash; e você só pode afirmar isso porque contou. Repita para <code>itens_pedido</code> com a chave composta <code>(order_id, order_item_id)</code>: um pedido tem vários itens, então <code>order_id</code> sozinho repete <em>por definição</em>, e isso não é duplicata.</p>
+
+        <p class="cmdlabel">Célula 4 &middot; em que formato a data está?</p>
+        <div class="codewrap"><pre>SELECT order_purchase_timestamp,
+       length(order_purchase_timestamp) AS tamanho
+FROM raw.pedidos LIMIT 5;</pre><button class="copy" type="button">copiar</button></div>
+        <p class="small"><code>2017-10-02 10:56:33</code>, 19 caracteres, ano-mês-dia. Em todas as 99.441 linhas, sem exceção &mdash; confira com um <code>GROUP BY tamanho</code>. Formato uniforme é o que permite <em>declarar</em> o formato em vez de deixar adivinhar.</p>
+
+        <p class="cmdlabel">Célula 5 &middot; o formato declarado converte tudo?</p>
+        <div class="codewrap"><pre>SELECT count(*) FILTER (
+         WHERE order_purchase_timestamp IS NOT NULL
+           AND try_strptime(order_purchase_timestamp, '%Y-%m-%d %H:%M:%S') IS NULL
+       ) AS falhas
+FROM raw.pedidos;</pre><button class="copy" type="button">copiar</button></div>
+        <p class="small">Esperado: <code>0</code>. Agora troque o formato por <code>'%d/%m/%Y %H:%M:%S'</code> e rode de novo: 99.441 falhas. É assim que se testa uma conversão antes de confiar nela &mdash; o <code>try_</code> devolve nulo em vez de estourar, e você conta os nulos que <em>ele</em> criou.</p>
+
+        <p class="cmdlabel">Célula 6 &middot; por que o CEP entrou como texto?</p>
+        <div class="codewrap"><pre>SELECT count(*) AS ceps_com_zero_a_esquerda
+FROM raw.clientes
+WHERE customer_zip_code_prefix LIKE '0%';</pre><button class="copy" type="button">copiar</button></div>
+        <p class="small"><strong>23.995</strong>. Quase um quarto dos clientes &mdash; Grande São Paulo inteira. Se a aula 1 tivesse deixado o pandas inferir o tipo, <code>01151</code> teria virado <code>1151</code> sem aviso, e o CEP deixaria de casar com qualquer outra tabela. CEP parece número, mas é identificador: nunca vai ser somado. Fica texto.</p>
+
+        <div class="verify"><p class="vh">Confira</p><p>Você consegue dizer, sem olhar, quantos pedidos não têm data de entrega e <em>por quê</em>. Se a resposta é "porque o dado é sujo", volte à célula 2.</p></div>
+        <div class="note"><b>Agora desligue o servidor.</b> <code>Ctrl+C</code> no terminal do <code>ui.py</code> antes de seguir. Com ele de pé, nem a IA do próximo passo consegue ler o banco, nem a transformação consegue escrever: o banco aceita um escritor por vez, e quem escreve não divide o arquivo com ninguém.</div>
+        <label class="mark"><input type="checkbox" id="chk-a2-s1"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 04 MCP ============ -->
+  <section id="mcp">
+    <h2>04 &middot; A IA no banco</h2>
+    <p class="h2big">MCP: a IA para de adivinhar o seu dado</p>
+    <p>Até aqui, a IA escrevia código sobre um banco que ela nunca viu. Você colava o <code>DESCRIBE</code>, ela supunha o resto. Quando ela erra o nome de uma coluna ou chuta o formato da data, o motivo é esse: ela está trabalhando às cegas.</p>
+    <p>O <strong>MCP</strong> (<em>Model Context Protocol</em>) é a peça que tira a venda. É um protocolo aberto para ligar a IA a ferramentas externas &mdash; e a ferramenta de hoje é o seu <code>olist.duckdb</code>. Com ele, a IA <strong>roda SQL de verdade no seu banco</strong>, lê o resultado e decide com base no dado, não no que ela imagina que o dado seja.</p>
+
+    <div class="fig">
+      <div class="fig-scroll">
+      <svg viewBox="0 0 720 196" role="img" aria-label="Fluxo do MCP: a IA (Claude Code ou Codex) pede uma consulta, você aprova, o servidor MCP executa no olist.duckdb e o resultado volta para a IA">
+        <defs>
+          <marker id="am" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--ink-3)"/>
+          </marker>
+        </defs>
+        <g font-family="Archivo, sans-serif">
+          <rect x="4" y="44" width="150" height="70" rx="9" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="79" y="72" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">a IA</text>
+          <text x="79" y="92" text-anchor="middle" font-size="11.5" fill="var(--ink-3)">Claude Code &#183; Codex</text>
+
+          <rect x="198" y="44" width="134" height="70" rx="9" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/>
+          <text x="265" y="72" text-anchor="middle" font-size="14" font-weight="700" fill="var(--amber)">você</text>
+          <text x="265" y="92" text-anchor="middle" font-size="11.5" fill="var(--amber)">lê a SQL e aprova</text>
+
+          <rect x="376" y="44" width="170" height="70" rx="9" fill="var(--sunken)" stroke="var(--line)"/>
+          <text x="461" y="72" text-anchor="middle" font-size="12.5" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">servidor MCP</text>
+          <text x="461" y="92" text-anchor="middle" font-size="11" font-family="JetBrains Mono, monospace" fill="var(--ink-3)">somente leitura</text>
+
+          <rect x="590" y="44" width="126" height="70" rx="9" fill="var(--accent-soft)" stroke="var(--accent)"/>
+          <text x="653" y="76" text-anchor="middle" font-size="12.5" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--accent)">olist.duckdb</text>
+          <text x="653" y="94" text-anchor="middle" font-size="11" fill="var(--accent)">raw &#183; refined</text>
+
+          <line x1="158" y1="70" x2="192" y2="70" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#am)"/>
+          <line x1="336" y1="70" x2="370" y2="70" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#am)"/>
+          <line x1="550" y1="70" x2="584" y2="70" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#am)"/>
+          <text x="461" y="30" text-anchor="middle" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">execute_query</text>
+
+          <path d="M 653 118 L 653 150 Q 653 160 643 160 L 89 160 Q 79 160 79 150 L 79 120"
+                fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#am)"/>
+          <text x="366" y="182" text-anchor="middle" font-size="12" fill="var(--accent)" font-style="italic">o resultado volta para a IA, que decide o próximo passo com o dado real</text>
+        </g>
+      </svg>
+      </div>
+      <p class="fig-cap">Três coisas que o desenho mostra: a IA nunca toca o arquivo diretamente, quem executa é o servidor; toda consulta passa por você antes de rodar; e o servidor tem uma trava própria &mdash; somente leitura &mdash; que vale independentemente do que a IA quiser fazer.</p>
+    </div>
+
+    <h3>As três regras do MCP no curso</h3>
+    <div class="spec">
+      <ol class="body">
+        <li><strong>Somente leitura, sempre que possível.</strong> E a trava é do servidor, não do prompt. Pedir "não altere nada" para a IA é um pedido; rodar o servidor sem <code>--read-write</code> é uma garantia. Se ela tentar um <code>CREATE</code>, quem recusa é o DuckDB.</li>
+        <li><strong>O que a IA rodou no banco não existe para o pipeline.</strong> Uma tabela criada por uma consulta no chat some na próxima vez que alguém rodar o pipeline do zero, e ninguém sabe como recriá-la. Toda transformação termina como código em <code>pipeline/transformacao.py</code>. O banco é laboratório; o arquivo é a fonte da verdade.</li>
+        <li><strong>Leia a SQL antes de aprovar.</strong> O Claude Code pede permissão a cada consulta; o Codex, conforme o modo de aprovação da sessão. Se a consulta rodar sem você ver, peça que a IA mostre a SQL junto com cada resposta. Aprovar sem ler é o mesmo que colar código sem conferir &mdash; só que agora o código roda no seu dado na hora.</li>
+      </ol>
+    </div>
+
+    <article class="step" data-id="a2-mcp1">
+      <div class="step-head">
+        <span class="step-n">2.2</span>
+        <div><p class="step-title">Conectar a IA ao banco</p><p class="step-sub">Claude Code, Codex ou Copilot: o mesmo servidor</p></div>
+      </div>
+      <div class="step-body">
+        <p>O servidor é o <a href="https://github.com/motherduckdb/mcp-server-motherduck" target="_blank" rel="noopener">mcp-server-motherduck</a>, mantido pela empresa por trás do DuckDB na nuvem &mdash; mas ele funciona com arquivo local, sem conta e sem nuvem. O <code>uvx</code>, que veio junto com o uv, baixa e roda o servidor sem instalar nada no projeto.</p>
+        <p>Antes de tudo, baixe o servidor uma vez, à mão. Na primeira execução o <code>uvx</code> baixa cerca de 70 pacotes, e isso pode estourar o tempo que a IA espera o servidor subir:</p>
+        <div class="codewrap"><pre>uvx mcp-server-motherduck --help</pre><button class="copy" type="button">copiar</button></div>
+        <p>Agora escolha a sua ferramenta. O servidor é o mesmo nas três; muda só o arquivo onde a configuração mora.</p>
+        <p class="cmdlabel">Claude Code &middot; na raiz do projeto</p>
+        <div class="codewrap"><pre>claude mcp add --scope project duckdb -- uvx mcp-server-motherduck --db-path olist.duckdb</pre><button class="copy" type="button">copiar</button></div>
+        <p>O <code>--scope project</code> grava a configuração num arquivo <code>.mcp.json</code> na raiz, que vai para o git junto com o código: quem clonar o projeto ganha a mesma conexão. É isto que ele escreve:</p>
+        <p class="cmdlabel">.mcp.json</p>
+        <div class="codewrap"><pre>{
+  "mcpServers": {
+    "duckdb": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["mcp-server-motherduck", "--db-path", "olist.duckdb"],
+      "env": {}
+    }
+  }
+}</pre><button class="copy" type="button">copiar</button></div>
+        <p>Repare no que <em>não</em> está ali: <code>--read-write</code>. Sem ele, o servidor abre o arquivo em somente leitura e, a cada consulta, abre e fecha a conexão &mdash; o arquivo fica destravado entre uma consulta e outra, e o seu pipeline continua conseguindo escrever.</p>
+        <details open>
+          <summary>Uso o Codex (OpenAI)</summary>
+          <p>O Codex lê servidores MCP de um arquivo <code>config.toml</code>, em TOML e com <code>mcp_servers</code> em <em>snake_case</em> &mdash; não <code>mcpServers</code>. Crie o arquivo <code>.codex/config.toml</code> na raiz do projeto:</p>
+          <p class="cmdlabel">.codex/config.toml</p>
+          <div class="codewrap"><pre>[mcp_servers.duckdb]
+command = "uvx"
+args = ["mcp-server-motherduck", "--db-path", "olist.duckdb"]
+startup_timeout_sec = 60</pre><button class="copy" type="button">copiar</button></div>
+          <p>Duas coisas que pegam quem vem do Claude Code:</p>
+          <ul>
+            <li><b>Configuração de projeto só vale em projeto confiável.</b> Na primeira vez que você abre o <code>codex</code> na pasta, ele pergunta se confia nela. Se você recusou, o arquivo acima é ignorado em silêncio.</li>
+            <li><b>O <code>startup_timeout_sec</code> não é enfeite.</b> O padrão do Codex é esperar 10 segundos o servidor subir, e o <code>uvx</code> pode levar mais que isso. Com 60, sobra folga.</li>
+          </ul>
+          <p>Se preferir o comando em vez do arquivo, o <code>codex mcp add</code> faz o mesmo &mdash; mas grava na configuração <em>global</em> (<code>~/.codex/config.toml</code>), que vale em qualquer pasta. Por isso, ali o caminho do banco tem que ser completo:</p>
+          <div class="codewrap"><pre>codex mcp add duckdb -- uvx mcp-server-motherduck --db-path C:/caminho/do/projeto/olist.duckdb</pre><button class="copy" type="button">copiar</button></div>
+          <p>Para conferir: <code>codex mcp list</code> no terminal, ou <code>/mcp</code> dentro do Codex. A extensão do Codex no VS Code usa a mesma configuração do terminal &mdash; configurou uma vez, vale nas duas.</p>
+        </details>
+        <details>
+          <summary>Uso o Copilot no VS Code</summary>
+          <p>O VS Code lê o mesmo servidor de um arquivo <code>.vscode/mcp.json</code>, com uma chave diferente na raiz:</p>
+          <div class="codewrap"><pre>{
+  "servers": {
+    "duckdb": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["mcp-server-motherduck", "--db-path", "${workspaceFolder}/olist.duckdb"]
+    }
+  }
+}</pre><button class="copy" type="button">copiar</button></div>
+          <p>Abra o chat do Copilot no modo <b>Agent</b> e ligue as ferramentas do servidor <code>duckdb</code> no ícone de ferramentas.</p>
+          <p class="small">O ChatGPT no navegador não alcança um arquivo no seu disco. Para esta parte da aula, use Claude Code, Codex ou Copilot.</p>
+        </details>
+        <p>Abra a IA na pasta do projeto (<code>claude</code> ou <code>codex</code>). Na primeira vez ela pergunta se você confia no projeto &mdash; aceite. Depois, digite <code>/mcp</code>: o servidor <code>duckdb</code> tem que aparecer como conectado.</p>
+        <p class="cmdlabel">O primeiro teste</p>
+        <div class="codewrap"><pre>Quais tabelas existem no schema raw do meu banco, e quantas linhas tem raw.pedidos?</pre><button class="copy" type="button">copiar</button></div>
+        <div class="verify"><p class="vh">Confira</p><p>A IA chama <code>list_tables</code> ou <code>execute_query</code> &mdash; você vê o nome da ferramenta na tela &mdash; e a resposta vem com as nove tabelas e <strong>99.441</strong>. Se nenhuma ferramenta aparecer, ela não consultou o banco: está chutando. Pergunte de novo, pedindo que mostre a SQL.</p></div>
+        <div class="note"><b>Desligue o <code>ui.py</code> antes.</b> Somente leitura não resolve tudo: se outro processo estiver com o banco aberto para escrita &mdash; o <code>ui.py</code>, ou a transformação rodando &mdash; o servidor MCP também não consegue abrir o arquivo, e a IA recebe o mesmo <code>Could not set lock on file</code>. Um escritor por vez continua valendo.</div>
+        <label class="mark"><input type="checkbox" id="chk-a2-mcp1"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <article class="step" data-id="a2-mcp3">
+      <div class="step-head">
+        <span class="step-n">2.3</span>
+        <div><p class="step-title">Conferir a IA contra a sua investigação</p><p class="step-sub">Você já sabe as respostas. Ela sabe?</p></div>
+      </div>
+      <div class="step-body">
+        <p>A investigação veio antes, e feita sem IA, por um motivo: <strong>agora você tem gabarito</strong>. Sem ele, você conferiria a IA com a palavra da própria IA. Faça a ela as mesmas perguntas que você respondeu no notebook:</p>
+        <p class="cmdlabel">Cole no Claude Code ou no Codex</p>
+        <div class="codewrap"><pre>Usando o banco pelo MCP, responda as perguntas abaixo.
+Para cada resposta, mostre a SQL que você rodou.
+
+1. Quantos pedidos em raw.pedidos não têm data de entrega? Por quê?
+2. Existe pedido duplicado em raw.pedidos?
+3. Em que formato estão as datas de raw.pedidos?
+4. Quantos clientes a Olist tem?</pre><button class="copy" type="button">copiar</button></div>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Pergunta</th><th>O gabarito</th><th>O que observar</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>2.965</td><td>O número ela acerta. O <em>porquê</em> é o teste: ela foi sozinha ao <code>GROUP BY order_status</code>, ou respondeu "dados faltantes"?</td></tr>
+              <tr><td>2</td><td>Não, zero</td><td>Comparou <code>count(*)</code> com <code>count(DISTINCT order_id)</code>, ou só afirmou?</td></tr>
+              <tr><td>3</td><td><code>%Y-%m-%d %H:%M:%S</code>, 19 caracteres em todas as linhas</td><td>Olhou cinco linhas e generalizou, ou conferiu as 99.441?</td></tr>
+              <tr><td>4</td><td>96.096 pessoas</td><td>A pegadinha. Um <code>count(*)</code> em <code>raw.clientes</code> responde 99.441, que é o número de <em>pedidos</em>.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A pergunta 4 é a da aula. Ter acesso ao dado não é o mesmo que entender o dado: o MCP tira a venda, mas a pergunta certa &mdash; e a desconfiança da resposta &mdash; continuam sendo suas.</p>
+        <div class="verify"><p class="vh">Confira</p><p>Para cada resposta, você consegue apontar a célula da sua investigação que confirma ou desmente. Onde a IA errou, anote: é exatamente o tipo de erro que vai aparecer no código que ela escrever daqui a pouco.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a2-mcp3"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <h3>E quando liberar a escrita?</h3>
+    <div class="versus">
+      <div class="vs-card good">
+        <p class="vs-h">Somente leitura &middot; o padrão</p>
+        <p class="vs-flow">--db-path olist.duckdb</p>
+        <p>A IA investiga, testa conversão, conta, compara. Não consegue estragar nada, e o arquivo fica livre para o pipeline. Cobre tudo o que a aula 2 pede.</p>
+      </div>
+      <div class="vs-card bad">
+        <p class="vs-h">Leitura e escrita &middot; a exceção</p>
+        <p class="vs-flow">--db-path olist.duckdb --read-write</p>
+        <p>A IA cria e apaga tabela. O servidor segura o arquivo aberto enquanto o Claude Code estiver de pé, então o pipeline e o <code>ui.py</code> param de funcionar com erro de lock. Se usar, só num schema de rascunho (<code>lab</code>), nunca em <code>raw</code> ou <code>refined</code> &mdash; e feche o Claude Code antes de rodar o pipeline.</p>
+      </div>
+    </div>
+    <div class="note"><b>O dado vai junto.</b> Tudo o que uma consulta devolve é enviado para o modelo de IA. Com a Olist, que é pública, tanto faz. No trabalho, com dado de cliente de verdade, a primeira pergunta antes de conectar um MCP ao banco é se a política da empresa permite que aquele dado saia de lá.</div>
+  </section>
+
+  <!-- ============ 05 SPEC ============ -->
+  <section id="spec">
+    <h2>05 &middot; O método</h2>
+    <p class="h2big">A spec é sua agora</p>
+    <p>Na aula 1 a spec veio pronta, para você ver o formato. Hoje você escreve. Não porque ficou mais fácil &mdash; porque a transformação é cheia de decisões que <em>só você</em> pode tomar, e qualquer uma delas que ficar de fora a IA vai tomar por você, em silêncio, do jeito dela.</p>
+
+    <div class="spec">
+      <p class="spec-h">As sete decisões da transformação</p>
+      <ol class="body">
+        <li><strong>Escopo: o que vai para <code>refined</code>.</strong> Todas as nove tabelas? Nenhum mart do curso usa a geolocalização &mdash; e ela é o desafio de casa. Diga o que entra, o que fica de fora, e por quê.</li>
+        <li><strong>Nomes de coluna.</strong> <code>order_purchase_timestamp</code> ou <code>data_compra</code>? A <code>raw</code> não podia renomear &mdash; a <code>refined</code> pode. E <code>product_name_lenght</code> vem com erro de digitação de fábrica. Se for renomear, escreva o mapa inteiro, coluna por coluna: é o vocabulário que você vai digitar de memória nos <code>JOIN</code> da aula 3.</li>
+        <li><strong>O tipo de cada coluna.</strong> Data vira <code>TIMESTAMP</code> com formato declarado. Dinheiro vira <code>DECIMAL</code> ou <code>DOUBLE</code>? (A consulta 2 de <a href="#tipos">tipos de dados</a> responde.) Contagem vira inteiro. E o que <em>parece</em> número mas é identificador &mdash; CEP, <code>order_item_id</code>? Decida um por um.</li>
+        <li><strong>O que acontece quando a conversão falha.</strong> Vira nulo e segue, ou para tudo? Converter falha em nulo é a forma mais silenciosa de perder dado que existe: os 2.965 nulos reais se misturam com nulos que <em>você</em> fabricou, e ninguém nunca mais separa os dois.</li>
+        <li><strong>O que é duplicata, tabela por tabela.</strong> Qual é a chave de cada uma? Se a chave repetir com conteúdo idêntico, sai. E se repetir com conteúdo <em>diferente</em> &mdash; você escolhe uma linha, ou para e avisa?</li>
+        <li><strong>O que fazer com cada nulo.</strong> Manter, apagar a linha, ou preencher? Preencher com zero, com a média, com "desconhecido"? Cada resposta muda um número do dashboard. A célula 2 já te disse o que os nulos de <code>pedidos</code> significam.</li>
+        <li><strong>O que aparece na tela.</strong> Na aula 1 era nome e contagem. Agora tem que ser o <strong>antes e o depois</strong>: quantas linhas entraram, quantas saíram, quantas duplicatas, quantos nulos ficaram. Uma transformação que não mostra o que mudou é uma caixa-preta.</li>
+      </ol>
+      <p class="spec-foot">Repare que a <em>reexecução</em> e o <em>tratamento de erro</em> não estão na lista: valem as mesmas regras da aula 1. Recria a tabela, nunca acrescenta. Faltou tabela em <code>raw</code>, para com mensagem clara.</p>
+    </div>
+
+    <article class="step" data-id="a2-s2">
+      <div class="step-head">
+        <span class="step-n">2.4</span>
+        <div><p class="step-title">Escrever a spec</p><p class="step-sub">Preencher as lacunas antes de pedir código</p></div>
+      </div>
+      <div class="step-body">
+        <p>O esqueleto abaixo é o prompt da aula 1 com as decisões em branco. Copie para um arquivo <code>specs/transformacao.md</code> &mdash; spec é artefato do projeto, fica versionada junto do código &mdash; e preencha cada <code>[ ]</code>. Ao lado de cada decisão, uma linha de <strong>motivo</strong>. Decisão sem motivo não é decisão, é palpite.</p>
+        <p class="cmdlabel">specs/transformacao.md &middot; esqueleto</p>
+        <div class="codewrap"><pre>CONTEXTO
+Estou construindo um pipeline de dados em Python sobre o dataset público da
+Olist. Trabalho com spec-driven development: a spec abaixo é a fonte da
+verdade e o código é consequência dela. Não acrescente requisito que não
+esteja escrito aqui. Se algo estiver ambíguo, pergunte antes de escrever código.
+
+STACK
+- Python 3.13, uv, DuckDB (olist.duckdb na raiz do projeto)
+
+O QUE JÁ EXISTE (use, não reimplemente)
+pipeline/db.py: conectar(), criar_schema(con, nome)
+O schema raw, com nove tabelas, todas as colunas VARCHAR.
+
+ARTEFATO A PRODUZIR
+pipeline/transformacao.py, executável com:
+  uv run python -m pipeline.transformacao
+
+SPEC
+
+1. ESCOPO
+   Lê de raw, escreve em refined. Nunca escreve em raw.
+   Tabelas que entram:   [ ]
+   Tabelas que ficam de fora, e por quê:   [ ]
+
+2. NOMES
+   [ manter os nomes originais / renomear com o mapa abaixo ]
+   Mapa coluna_original -&gt; coluna_nova, tabela por tabela:   [ ]
+
+3. TIPOS
+   Datas:        [ tipo ]  formato declarado: [ ]
+   Dinheiro:     [ tipo ]  motivo: [ ]
+   Contagens:    [ tipo ]
+   Identificadores que parecem número (CEP, ...):  [ tipo ]  motivo: [ ]
+
+4. CONVERSÃO QUE FALHA
+   [ vira nulo / para tudo ]  motivo: [ ]
+
+5. DUPLICATAS
+   Chave de cada tabela:   [ ]
+   Chave repetida com conteúdo idêntico:   [ ]
+   Chave repetida com conteúdo diferente:  [ ]
+
+6. NULOS
+   Regra geral:   [ ]
+   Exceções, coluna por coluna, com motivo:   [ ]
+
+7. SAÍDA NA TELA
+   Por tabela: [ o que mostrar ]
+   stdout reconfigurado para utf-8.
+
+REEXECUÇÃO E ERRO (iguais à etapa 1)
+   CREATE OR REPLACE, nunca acrescenta.
+   Faltando tabela em raw: lista quais, manda rodar a ingestão, sys.exit(1).
+
+CRITÉRIOS DE ACEITE
+   [ como você vai saber que funcionou — números, não adjetivos ]
+
+ENTREGA
+1. A spec como docstring no topo do arquivo, com o motivo de cada regra.
+2. O código, comentado só onde a decisão não é óbvia.
+3. Uma lista final do que você assumiu e que não estava na spec.</pre><button class="copy" type="button">copiar</button></div>
+        <div class="note"><b>O item 3 da entrega é a sua nota.</b> Quando a IA devolver a lista "o que assumi", cada item é um <code>[ ]</code> que você deixou em branco sem perceber. Lista vazia é spec completa.</div>
+        <div class="verify"><p class="vh">Confira</p><p>Nenhum <code>[ ]</code> sobrando, e cada decisão com o seu motivo. Os critérios de aceite têm número: "99.441 entram, 99.441 saem" é critério; "os dados ficam limpos" não é.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a2-s2"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <details class="spec spec-det">
+      <summary class="spec-h">A spec de referência &middot; abra só depois de escrever a sua<span class="spec-cue"></span></summary>
+      <p>Uma resposta possível &mdash; não <em>a</em> resposta. Compare com a sua decisão por decisão. Onde forem diferentes, a pergunta não é "quem acertou", é "o motivo dela é melhor que o meu?". É também a spec que o resto do curso assume: os marts da aula 3 usam os nomes daqui.</p>
+      <p class="cmdlabel">Cole no Claude Code, ChatGPT ou Copilot</p>
+      <div class="codewrap"><pre>CONTEXTO
+Estou construindo um pipeline de dados em Python sobre o dataset público da
+Olist (e-commerce brasileiro, 2016-2018). Trabalho com spec-driven development:
+a spec abaixo é a fonte da verdade e o código é consequência dela. Não
+acrescente requisito que não esteja escrito aqui. Se algo estiver ambíguo,
+pergunte antes de escrever código.
+
+STACK
+- Python 3.13, dependências gerenciadas com uv
+- DuckDB, arquivo olist.duckdb na raiz do projeto
+- Nenhum orquestrador. Script executável pela linha de comando.
+
+O QUE JÁ EXISTE (use, não reimplemente)
+pipeline/db.py expõe:
+  conectar()                 abre o olist.duckdb, criando se faltar
+  criar_schema(con, nome)    CREATE SCHEMA IF NOT EXISTS
+O schema raw, criado pela etapa 1: nove tabelas, todas as colunas VARCHAR,
+campo vazio como NULL.
+
+ARTEFATO A PRODUZIR
+pipeline/transformacao.py, executável com:
+  uv run python -m pipeline.transformacao
+
+SPEC
+
+1. ESCOPO
+   Lê de raw, escreve no schema refined. Nunca escreve em raw.
+   Entram oito tabelas: pedidos, itens_pedido, pagamentos, clientes,
+   vendedores, produtos, traducao_categorias, avaliacoes.
+   Fica de fora:
+     geolocalizacao  nenhum mart do curso usa. Não se limpa o que
+                     ninguém vai ler.
+
+2. NOMES
+   Colunas renomeadas para português, snake_case, com o mapa abaixo,
+   completo e literal. Nenhuma coluna fora do mapa; nenhuma descartada.
+   Motivo: é o vocabulário que vou digitar de memória nos JOINs da aula 3.
+
+   pedidos
+     order_id -&gt; pedido_id                 customer_id -&gt; cliente_id
+     order_status -&gt; status                order_purchase_timestamp -&gt; data_compra
+     order_approved_at -&gt; data_aprovacao   order_delivered_carrier_date -&gt; data_envio
+     order_delivered_customer_date -&gt; data_entrega
+     order_estimated_delivery_date -&gt; data_entrega_prevista
+   itens_pedido
+     order_id -&gt; pedido_id                 order_item_id -&gt; item_seq
+     product_id -&gt; produto_id              seller_id -&gt; vendedor_id
+     shipping_limit_date -&gt; data_limite_envio
+     price -&gt; preco                        freight_value -&gt; frete
+   pagamentos
+     order_id -&gt; pedido_id                 payment_sequential -&gt; pagamento_seq
+     payment_type -&gt; tipo                  payment_installments -&gt; parcelas
+     payment_value -&gt; valor
+   clientes
+     customer_id -&gt; cliente_id             customer_unique_id -&gt; cliente_unico_id
+     customer_zip_code_prefix -&gt; cep_prefixo
+     customer_city -&gt; cidade               customer_state -&gt; uf
+   vendedores
+     seller_id -&gt; vendedor_id              seller_zip_code_prefix -&gt; cep_prefixo
+     seller_city -&gt; cidade                 seller_state -&gt; uf
+   produtos
+     product_id -&gt; produto_id              product_category_name -&gt; categoria
+     product_name_lenght -&gt; tamanho_nome   product_description_lenght -&gt; tamanho_descricao
+     product_photos_qty -&gt; qtd_fotos       product_weight_g -&gt; peso_g
+     product_length_cm -&gt; comprimento_cm   product_height_cm -&gt; altura_cm
+     product_width_cm -&gt; largura_cm
+   traducao_categorias
+     product_category_name -&gt; categoria
+     product_category_name_english -&gt; categoria_en
+   avaliacoes
+     review_id -&gt; avaliacao_id             order_id -&gt; pedido_id
+     review_score -&gt; nota                  review_comment_title -&gt; titulo
+     review_comment_message -&gt; comentario
+     review_creation_date -&gt; data_criacao
+     review_answer_timestamp -&gt; data_resposta
+
+3. TIPOS
+   Datas com hora: TIMESTAMP, formato declarado '%Y-%m-%d %H:%M:%S'
+     (data_compra, data_aprovacao, data_envio, data_entrega,
+      data_limite_envio, data_resposta).
+   data_entrega_prevista: DATE. Motivo: a hora é sempre 00:00:00 nas
+     99.441 linhas; guardar a hora seria inventar precisão.
+   data_criacao: DATE. Motivo: a hora é 00:00:00 em 99.139 das 99.224
+     avaliações; nas outras 85 é 01:00:00, efeito de horário de verão, e
+     não um horário de verdade.
+   Dinheiro (preco, frete, valor): DECIMAL(10,2). Motivo: DOUBLE não
+     representa centavos com exatidão, e soma de dinheiro tem que fechar.
+   Contagens e medidas (item_seq, pagamento_seq, parcelas, tamanho_nome,
+     tamanho_descricao, qtd_fotos, peso_g, comprimento_cm, altura_cm,
+     largura_cm, nota): INTEGER.
+   Todo o resto continua VARCHAR — inclusive cep_prefixo. Motivo: 23.995
+     clientes têm CEP começando com zero; CEP é identificador, nunca é
+     somado, e como número perderia o zero.
+   A conversão é feita em SQL pelo DuckDB (strptime, CAST), disparada pelo
+   Python. Motivo: o dado já está no banco; não há por que trazê-lo para a
+   memória só para converter tipo.
+
+4. CONVERSÃO QUE FALHA
+   Para tudo. Use strptime e CAST, que estouram, e nunca try_strptime,
+   TRY_CAST ou errors="coerce", que transformam falha em nulo.
+   Ao falhar: diga tabela, coluna e um exemplo do valor que não converteu,
+   e encerre com sys.exit(1).
+   Motivo: um nulo fabricado pela conversão fica indistinguível de um nulo
+   verdadeiro do dado, para sempre.
+
+5. DUPLICATAS
+   Chave de cada tabela:
+     pedidos (pedido_id)            itens_pedido (pedido_id, item_seq)
+     pagamentos (pedido_id, pagamento_seq)
+     clientes (cliente_id)          vendedores (vendedor_id)
+     produtos (produto_id)          traducao_categorias (categoria)
+     avaliacoes (avaliacao_id, pedido_id)
+       — avaliacao_id sozinho não é chave: o mesmo id aparece em mais
+         de um pedido.
+   Linha inteira repetida: mantém uma, e conta quantas saíram.
+   Chave repetida com conteúdo diferente: para, mostra a chave e as linhas
+   conflitantes, sys.exit(1). Não escolhe uma por conta própria.
+   Motivo: escolher em silêncio é decidir sem dizer que decidiu.
+
+6. NULOS
+   Nenhuma linha é apagada por ter nulo. Nenhum nulo é preenchido.
+   Motivo: nas datas de pedidos, o nulo é informação — pedido cancelado
+   não tem data de entrega porque não foi entregue. Em produtos, 610 sem
+   categoria continuam sem categoria; dar um rótulo para eles é decisão
+   de mart (aula 3), não de refined. Em avaliacoes, título e comentário
+   nulos continuam nulos: avaliação sem texto é a regra, não a exceção.
+   Anomalias de negócio também ficam (ex.: 8 pedidos delivered sem
+   data_entrega, 166 com data_envio antes da data_compra, pedidos com
+   mais de uma avaliação). refined não
+   corrige fato; quem decide o que fazer com ele é a pergunta que o mart
+   responde.
+
+7. SAÍDA NA TELA
+   Uma linha por tabela, no formato:
+     refined.pedidos            99.441 -&gt; 99.441 linhas  (0 duplicatas)
+   Abaixo dela, indentadas, as colunas com nulo e a contagem:
+       nulos mantidos: data_aprovacao 160, data_envio 1.783, data_entrega 2.965
+   As contagens vêm do banco, milhar separado por ponto. Linha final com o
+   total. stdout reconfigurado para utf-8.
+
+REEXECUÇÃO
+   CREATE OR REPLACE TABLE, nunca acrescenta. Rodar dez vezes = rodar uma.
+
+ERRO
+   Antes de transformar, verifica se as oito tabelas de entrada existem em
+   raw. Faltando qualquer uma: lista quais, diz para rodar
+   "uv run python -m pipeline.ingestao" e encerra com sys.exit(1).
+
+CRITÉRIOS DE ACEITE
+- Oito tabelas em refined; em cada uma, linhas que saem = linhas que entram
+  (com este dado, 0 duplicatas em todas). Total: 550.759.
+- DESCRIBE refined.pedidos mostra TIMESTAMP nas cinco datas com hora e DATE
+  em data_entrega_prevista.
+- Nulos depois = nulos antes, coluna por coluna (pedidos: 160 / 1.783 /
+  2.965; produtos: 610 em categoria; avaliacoes: 87.656 em titulo,
+  58.247 em comentario).
+- sum(preco) em refined.itens_pedido bate com sum(CAST(price AS DECIMAL))
+  em raw, centavo por centavo.
+- cep_prefixo continua com o zero à esquerda: '01151' e não 1151.
+- Rodar duas vezes seguidas imprime exatamente a mesma coisa.
+
+ENTREGA, nesta ordem
+1. A spec como docstring no topo do arquivo, dizendo por que cada regra
+   existe — não só o que ela manda fazer.
+2. O código, com comentários apenas onde a decisão não é óbvia pelo código.
+3. Uma lista final do que você assumiu e que não estava na spec. Se a lista
+   não estiver vazia, é a minha spec que precisa melhorar.</pre><button class="copy" type="button">copiar</button></div>
+      <p class="spec-foot">Note onde esta spec é mais longa que a da aula 1: no mapa de nomes e nos motivos. Não é acidente. Transformação é a etapa em que as decisões são de julgamento, e julgamento sem motivo escrito não sobrevive à primeira pessoa que pergunta "por que está assim?" &mdash; inclusive você, daqui a um mês.</p>
+    </details>
+
+    <article class="step" data-id="a2-mcp2">
+      <div class="step-head">
+        <span class="step-n">2.5</span>
+        <div><p class="step-title">A IA testa a transformação antes de escrevê-la</p><p class="step-sub">SELECT no banco real, código só depois</p></div>
+      </div>
+      <div class="step-body">
+        <p>Aqui está o ganho de verdade. Converter tipo, contar duplicata, comparar nulo antes e depois &mdash; tudo isso cabe num <code>SELECT</code>, e <code>SELECT</code> roda em somente leitura. A IA pode, portanto, <strong>executar a transformação inteira no seu dado sem gravar nada</strong>, provar que os números batem, e só então escrever o arquivo.</p>
+        <p class="cmdlabel">Cole no Claude Code ou no Codex</p>
+        <div class="codewrap"><pre>Você tem acesso ao meu banco olist.duckdb pelo MCP, em somente leitura.
+Leia specs/transformacao.md: é a fonte da verdade.
+
+Antes de escrever qualquer código:
+1. Para cada tabela de entrada, escreva o SELECT que aplica a spec
+   (nomes, tipos, duplicatas) e rode no banco, sem criar tabela.
+2. Para cada uma, confira no banco e me mostre numa tabela:
+   linhas que entram, linhas que saem, nulos por coluna antes e depois,
+   e quantos valores falharam na conversão.
+3. Se algum número não bater com a spec, pare e me explique.
+   Não ajuste a spec nem o SELECT por conta própria.
+
+Só depois que eu aprovar os números:
+4. Escreva pipeline/transformacao.py usando exatamente esses SELECTs.
+   O script é quem grava em refined; você não grava nada no banco.</pre><button class="copy" type="button">copiar</button></div>
+        <p>A tabela que volta tem que bater com o seu gabarito da <a href="#investigar">investigação</a> e com a <a href="#contagens">tabela de contagens</a>: 99.441 pedidos, 160 sem aprovação, 1.783 sem envio, 2.965 sem entrega, zero falhas de conversão. Número diferente não se corrige no chute: ou a spec tem buraco, ou o <code>SELECT</code> não a respeita.</p>
+        <div class="verify"><p class="vh">Confira</p><p>Nenhuma tabela nova no banco depois desta etapa (<code>SHOW ALL TABLES</code> mostra só <code>raw</code>), e um <code>pipeline/transformacao.py</code> cujos <code>SELECT</code> são os mesmos que você viu rodar e aprovou.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a2-mcp2"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 06 RODAR ============ -->
+  <section id="rodar">
+    <h2>06 &middot; Passo a passo</h2>
+    <p class="h2big">Rodar e conferir</p>
+
+    <article class="step" data-id="s5">
+      <div class="step-head">
+        <span class="step-n">2.6</span>
+        <div><p class="step-title">De raw para refined</p><p class="step-sub">Onde o dado passa a merecer confiança</p></div>
+      </div>
+      <div class="step-body">
+        <p>Com o <code>pipeline/transformacao.py</code> escrito a partir dos <code>SELECT</code> que você viu rodar e aprovou no <a href="#spec">passo 2.5</a>, leia a lista do que a IA assumiu, corrija a spec se for o caso, feche o Claude Code se o servidor estiver com <code>--read-write</code>, e só então rode:</p>
+        <div class="codewrap"><pre>uv run python -m pipeline.transformacao</pre><button class="copy" type="button">copiar</button></div>
+        <p>Com a spec de referência, a saída é esta &mdash; a sua pode ter outro formato, mas os números têm que ter explicação:</p>
+        <pre><span class="ok">&check;</span> refined.pedidos              99.441 &rarr; 99.441 linhas  (0 duplicatas)
+    nulos mantidos: data_aprovacao 160, data_envio 1.783, data_entrega 2.965
+<span class="ok">&check;</span> refined.itens_pedido        112.650 &rarr; 112.650 linhas (0 duplicatas)
+<span class="ok">&check;</span> refined.pagamentos          103.886 &rarr; 103.886 linhas (0 duplicatas)
+<span class="ok">&check;</span> refined.clientes             99.441 &rarr; 99.441 linhas  (0 duplicatas)
+<span class="ok">&check;</span> refined.vendedores            3.095 &rarr; 3.095 linhas   (0 duplicatas)
+<span class="ok">&check;</span> refined.produtos             32.951 &rarr; 32.951 linhas  (0 duplicatas)
+    nulos mantidos: categoria 610, tamanho_nome 610, tamanho_descricao 610,
+                    qtd_fotos 610, peso_g 2, comprimento_cm 2, altura_cm 2, largura_cm 2
+<span class="ok">&check;</span> refined.traducao_categorias      71 &rarr; 71 linhas      (0 duplicatas)
+<span class="ok">&check;</span> refined.avaliacoes           99.224 &rarr; 99.224 linhas  (0 duplicatas)
+    nulos mantidos: titulo 87.656, comentario 58.247
+  total                                     550.759 linhas</pre>
+        <div class="verify"><p class="vh">Confira</p><p>Toda linha que sumiu tem que ter explicação. Se entraram 99.441 e saíram 98.900, você precisa saber o nome das 541 &mdash; e concordar com o sumiço. "Deve ser lixo" não é resposta.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-s5"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <article class="step" data-id="a2-s4">
+      <div class="step-head">
+        <span class="step-n">2.7</span>
+        <div><p class="step-title">Provar que funcionou</p><p class="step-sub">Os critérios de aceite, um por um, no notebook</p></div>
+      </div>
+      <div class="step-body">
+        <p>"Rodou sem erro" não é critério de aceite. Suba o <code>ui.py</code> de novo e confira a spec contra o banco:</p>
+        <p class="cmdlabel">O tipo mudou?</p>
+        <div class="codewrap"><pre>DESCRIBE refined.pedidos;</pre><button class="copy" type="button">copiar</button></div>
+        <p class="small">É o momento prometido na aula 1: onde estava <code>VARCHAR</code>, agora <code>TIMESTAMP</code>. Coloque lado a lado com <code>DESCRIBE raw.pedidos</code>.</p>
+
+        <p class="cmdlabel">A conversão fabricou nulo?</p>
+        <div class="codewrap"><pre>SELECT 'raw'     AS camada, count(*) - count(order_delivered_customer_date) AS sem_entrega FROM raw.pedidos
+UNION ALL
+SELECT 'refined', count(*) - count(data_entrega) FROM refined.pedidos;</pre><button class="copy" type="button">copiar</button></div>
+        <p class="small">Os dois têm que dar 2.965. Se <code>refined</code> der mais, a conversão engoliu valores em silêncio &mdash; exatamente o que a decisão 4 proibia.</p>
+
+        <p class="cmdlabel">O dinheiro fechou?</p>
+        <div class="codewrap"><pre>SELECT (SELECT sum(CAST(price AS DECIMAL(10,2))) FROM raw.itens_pedido)  AS raw,
+       (SELECT sum(preco)                             FROM refined.itens_pedido) AS refined;</pre><button class="copy" type="button">copiar</button></div>
+
+        <p class="cmdlabel">O zero do CEP sobreviveu?</p>
+        <div class="codewrap"><pre>SELECT cep_prefixo FROM refined.clientes WHERE cep_prefixo LIKE '0%' LIMIT 3;</pre><button class="copy" type="button">copiar</button></div>
+
+        <p class="cmdlabel">E a prova de que data agora é data</p>
+        <div class="codewrap"><pre>SELECT date_trunc('month', data_compra) AS mes, count(*) AS pedidos
+FROM refined.pedidos
+GROUP BY mes
+ORDER BY mes;</pre><button class="copy" type="button">copiar</button></div>
+        <p class="small">Em <code>raw</code> essa consulta nem roda &mdash; <code>date_trunc</code> não aceita texto. Em <code>refined</code> ela devolve os 25 meses de vendas, de setembro de 2016 a outubro de 2018. É o primeiro mart do curso, escrito sem querer: semana que vem ele vira arquivo.</p>
+        <div class="verify"><p class="vh">Confira</p><p>Cada critério de aceite da sua spec tem uma consulta que o prova. Se algum critério não tem como ser conferido, ele não é critério &mdash; reescreva.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-a2-s4"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ 05 IA ============ -->
+  <section id="ia">
+    <h2>07 &middot; Método</h2>
+    <p class="h2big">Onde você aprende a não acreditar nela</p>
+    <p>Hoje é a primeira vez que a IA escreve código de <em>julgamento</em>, e não só de encanamento. É onde os erros dela ficam perigosos, porque nenhum deles estoura. Leia o código que voltou procurando estas quatro coisas &mdash; elas aparecem com uma frequência impressionante:</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Procure</th><th>Por que é armadilha</th><th>Como pegar</th></tr></thead>
+        <tbody>
+          <tr><td class="term">dropna()</td><td>Apaga toda linha com <em>qualquer</em> nulo. Em <code>pedidos</code>, levaria 2.980 pedidos &mdash; todos os cancelados e os ainda a caminho.</td><td>Linhas que saem &lt; linhas que entram</td></tr>
+          <tr><td class="term">errors="coerce"<br>TRY_CAST</td><td>Transforma falha de conversão em nulo, calado. O nulo fabricado se mistura com o verdadeiro.</td><td>Nulos depois &gt; nulos antes</td></tr>
+          <tr><td class="term">to_datetime()<br>sem format=</td><td>Funciona hoje, porque o dado é ano-mês-dia. No dia em que chegar um arquivo com <code>03/04/2017</code>, a inferência escolhe entre março e abril por você, e não avisa.</td><td>A spec declara o formato; o código não</td></tr>
+          <tr><td class="term">drop_duplicates()<br>sem subset</td><td>Compara a linha inteira, não a chave. Ou pior, com a chave errada: <code>order_id</code> em <code>itens_pedido</code> apaga todo item depois do primeiro.</td><td>112.650 vira 98.666</td></tr>
+          <tr><td class="term">fillna(0)</td><td>Pedido sem data de entrega vira entregue em 1970. Produto sem peso pesa zero e entra na média.</td><td><code>min(data_entrega)</code> em 1970</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Nenhuma dessas linhas está errada em Python. Todas estão erradas <em>para este dado</em> &mdash; e é exatamente por isso que só a sua spec consegue apontar o erro. A IA não tem como saber que o nulo de <code>data_entrega</code> é um pedido cancelado. Você tem, porque rodou a célula 2.</p>
+    <div class="note"><b>O exercício da aula.</b> Peça para a IA, <em>sem</em> spec &mdash; mesmo com o MCP ligado e o dado à vista: "limpe a tabela raw.pedidos do DuckDB". Compare o código com o que veio da sua spec. Conte quantas decisões ela tomou sozinha, e quantas delas você teria tomado diferente.</div>
+  </section>
+
+  <!-- ============ 06 DESAFIO ============ -->
+  <section id="desafio">
+    <h2>08 &middot; Para casa</h2>
+    <p class="h2big">O desafio da aula 2</p>
+    <p>Mesma regra de sempre: usa o que foi dado em aula, mas exige um passo que não foi mostrado. Hoje o passo é investigar sozinho &mdash; ninguém vai te dizer o que procurar.</p>
+
+    <div class="desafios">
+      <article class="desafio">
+        <div class="de-n"><b>02</b>spec</div>
+        <div>
+          <h3>A spec da tabela mais difícil</h3>
+          <p><code>raw.geolocalizacao</code> ficou fora da transformação. É a tabela mais difícil das nove. Escreva a spec dela &mdash; só a spec.</p>
+          <p>Use o formato da spec que você escreveu em aula: cada decisão com o seu motivo, e cada motivo apoiado num número que você contou no banco. Nada de código e nada gravado no banco: a geolocalização não entra no pipeline do curso. Se usar a IA pelo MCP, ela continua em somente leitura.</p>
+          <p class="entrega">Entrega: <code>specs/geolocalizacao.md</code>, colada no <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/new?template=desafio-02.yml" target="_blank" rel="noopener">formulário de entrega do desafio 2</a>.</p>
+        </div>
+      </article>
+    </div>
+    <p class="small" style="margin-top:14px">Na correção, as specs vão para a tela lado a lado. Não existe resposta única &mdash; existe decisão com motivo e decisão sem.</p>
+  </section>
+
+  <!-- ============ ANEXOS ============ -->
+  <section id="contagens">
+    <h2>A1 &middot; Anexo</h2>
+    <p class="h2big">Contagens de refined</p>
+    <p>Medido nos arquivos do curso, com a spec de referência. Use para conferir a sua transformação &mdash; se você tomou decisões diferentes, os números podem ser diferentes, e tudo bem, <em>desde que você saiba explicar a diferença</em>.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Tabela</th><th style="text-align:right">Linhas</th><th>Nulos que ficam</th></tr></thead>
+        <tbody>
+          <tr><td class="term">refined.pedidos</td><td class="num">99.441</td><td>data_aprovacao 160 &middot; data_envio 1.783 &middot; data_entrega 2.965</td></tr>
+          <tr><td class="term">refined.itens_pedido</td><td class="num">112.650</td><td>&mdash;</td></tr>
+          <tr><td class="term">refined.pagamentos</td><td class="num">103.886</td><td>&mdash;</td></tr>
+          <tr><td class="term">refined.clientes</td><td class="num">99.441</td><td>&mdash;</td></tr>
+          <tr><td class="term">refined.vendedores</td><td class="num">3.095</td><td>&mdash;</td></tr>
+          <tr><td class="term">refined.produtos</td><td class="num">32.951</td><td>categoria e 3 colunas de descrição: 610 &middot; peso e medidas: 2</td></tr>
+          <tr><td class="term">refined.traducao_categorias</td><td class="num">71</td><td>&mdash;</td></tr>
+          <tr><td class="term">refined.avaliacoes</td><td class="num">99.224</td><td>titulo 87.656 &middot; comentario 58.247</td></tr>
+          <tr><td><b>Total</b></td><td class="num"><b>550.759</b></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>O que ficou no dado de propósito</h3>
+    <p>Anomalias reais que a <code>refined</code> mantém, porque são fato e não defeito de leitura. Cada uma é uma pergunta para um mart da aula 3:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Onde</th><th style="text-align:right">Linhas</th><th>O quê</th></tr></thead>
+        <tbody>
+          <tr><td class="term">pedidos</td><td class="num">8</td><td>Status <code>delivered</code> sem data de entrega</td></tr>
+          <tr><td class="term">pedidos</td><td class="num">166</td><td>Data de envio anterior à data de compra</td></tr>
+          <tr><td class="term">pedidos</td><td class="num">775</td><td>Pedidos sem nenhum item em <code>itens_pedido</code></td></tr>
+          <tr><td class="term">produtos</td><td class="num">2</td><td>Categorias sem tradução: <code>pc_gamer</code> e <code>portateis_cozinha_e_preparadores_de_alimentos</code></td></tr>
+          <tr><td class="term">pagamentos</td><td class="num">3</td><td>Tipo <code>not_defined</code></td></tr>
+          <tr><td class="term">itens_pedido</td><td class="num">383</td><td>Frete zero</td></tr>
+          <tr><td class="term">avaliacoes</td><td class="num">1.603</td><td>Linhas de 789 avaliações que se repetem em mais de um pedido, com nota e comentário idênticos em cada cópia</td></tr>
+          <tr><td class="term">avaliacoes</td><td class="num">547</td><td>Pedidos com mais de uma avaliação &mdash; 202 deles com notas diferentes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Os 775 pedidos sem item e as 2 categorias sem tradução vão morder na aula 3: são o motivo de existir <code>LEFT JOIN</code>. E os pedidos com mais de uma avaliação são a primeira decisão do mart de nota por categoria: qual nota vale?</p>
+  </section>
+
+  <section id="erros">
+    <h2>A2 &middot; Anexo</h2>
+    <p class="h2big">Quando quebrar</p>
+
+    <details>
+      <summary>IO Error: Could not set lock on file</summary>
+      <p>Tem um <code>ui.py</code> de pé &mdash; às vezes num terminal que você nem lembra que abriu. <code>Ctrl+C</code> nele. Ou um Claude Code aberto com o servidor MCP em <code>--read-write</code>: feche-o. Se não achar, feche todos os terminais do VS Code. O banco não está corrompido.</p>
+    </details>
+
+    <details>
+      <summary>Invalid Input Error: Could not parse string ... according to format specifier</summary>
+      <p>É a decisão 4 funcionando: um valor não bate com o formato que você declarou. Não troque <code>strptime</code> por <code>try_strptime</code> para "resolver" &mdash; isso esconde o problema. Leia o valor que aparece na mensagem e descubra por que ele é diferente dos outros.</p>
+    </details>
+
+    <details>
+      <summary>Catalog Error: Table with name ... does not exist</summary>
+      <p>Ou a ingestão não rodou, ou o nome da tabela em <code>raw</code> é diferente do que a spec da transformação assume. Rode <code>SHOW ALL TABLES;</code> no notebook e compare com o seu mapa da aula 1.</p>
+    </details>
+
+    <details>
+      <summary>Saíram menos linhas do que entraram</summary>
+      <p>Procure <code>dropna</code>, <code>drop_duplicates</code> e <code>WHERE</code> no código. Depois descubra <em>quais</em> linhas sumiram com um anti-join: <code>SELECT * FROM raw.pedidos r WHERE NOT EXISTS (SELECT 1 FROM refined.pedidos f WHERE f.pedido_id = r.order_id)</code>. Olhe as linhas antes de decidir se o sumiço é certo.</p>
+    </details>
+
+    <details>
+      <summary>A soma do dinheiro não bate por centavos</summary>
+      <p>A coluna virou <code>DOUBLE</code> em algum ponto do caminho &mdash; muitas vezes porque o código passou pelo pandas, que converte número para <code>float64</code>. Converta direto para <code>DECIMAL(10,2)</code>, a partir do texto.</p>
+    </details>
+
+    <details>
+      <summary>O /mcp não mostra o servidor duckdb, ou mostra com falha</summary>
+      <p>Três suspeitos, nesta ordem. <b>O <code>uvx</code> não está no PATH</b>: rode <code>uvx --version</code> no mesmo terminal. <b>O banco não existe ainda</b>: em somente leitura o servidor não cria arquivo, então rode a ingestão primeiro. <b>O caminho relativo não resolveu</b>: abra o Claude Code na raiz do projeto, ou troque <code>olist.duckdb</code> no <code>.mcp.json</code> pelo caminho completo do arquivo. <b>No Codex</b>, mais dois: o projeto não foi marcado como confiável (e o <code>.codex/config.toml</code> foi ignorado), ou faltou o <code>startup_timeout_sec = 60</code> e o servidor não subiu a tempo.</p>
+    </details>
+
+    <details>
+      <summary>A IA diz que não consegue escrever no banco</summary>
+      <p>Está certo, e é a trava funcionando: o servidor está em somente leitura. Não libere a escrita para resolver &mdash; peça o <code>SELECT</code> e coloque a escrita no <code>transformacao.py</code>, que é onde ela tem que morar.</p>
+    </details>
+
+    <details>
+      <summary>Quebrei tudo e não sei onde</summary>
+      <p>Apague o <code>olist.duckdb</code> e rode as duas etapas em ordem. Um minuto, e você está de volta onde a turma está:</p>
+      <div class="codewrap"><pre>uv run python -m pipeline.ingestao
+uv run python -m pipeline.transformacao</pre><button class="copy" type="button">copiar</button></div>
+    </details>
+  </section>
+
+  <footer>
+    Curso Olist &middot; Aula 2 de 4 &middot; dados públicos da Olist Store (Kaggle, CC BY-NC-SA 4.0).<br>
+    Seu progresso fica salvo neste navegador. &middot; <a href="index.html">Todas as aulas</a> &middot; <a href="aula-1.html">Aula 1</a> &middot; <a href="aula-3.html">Aula 3</a>
+  </footer>
+
+</div>
+</main>
+</div>
+
+<script>
+(function(){
+  // Só os passos visíveis contam no progresso: as etapas ainda não liberadas
+  // ficam dentro de uma div [hidden], e contá-las deixaria a barra travada.
+  var steps = Array.prototype.slice.call(document.querySelectorAll(".step"))
+    .filter(function(s){ return !s.closest("[hidden]"); });
+  var fill = document.getElementById("fill");
+  var pct = document.getElementById("pct");
+  var KEY = "olist-progresso";
+
+  function load(){
+    try { return JSON.parse(localStorage.getItem(KEY) || "{}"); }
+    catch(e){ return {}; }
+  }
+  function save(state){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  }
+  function paint(){
+    var done = 0;
+    steps.forEach(function(s){
+      var box = s.querySelector("input[type=checkbox]");
+      if (box.checked){ done++; s.classList.add("done"); }
+      else { s.classList.remove("done"); }
+    });
+    pct.textContent = done + "/" + steps.length;
+    fill.style.width = (steps.length ? (done / steps.length * 100) : 0) + "%";
+  }
+
+  var state = load();
+  steps.forEach(function(s){
+    var id = s.getAttribute("data-id");
+    var box = s.querySelector("input[type=checkbox]");
+    box.checked = !!state[id];
+    box.addEventListener("change", function(){
+      state[id] = box.checked;
+      save(state);
+      paint();
+    });
+  });
+  paint();
+
+  document.getElementById("reset").addEventListener("click", function(){
+    state = {};
+    save(state);
+    steps.forEach(function(s){ s.querySelector("input[type=checkbox]").checked = false; });
+    paint();
+  });
+
+  // copiar
+  document.querySelectorAll(".copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      var txt = pre.innerText.split("\n").filter(function(l){ return l.trim().indexOf("#") !== 0; }).join("\n").trim();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(txt).then(function(){
+          btn.textContent = "copiado";
+          setTimeout(function(){ btn.textContent = "copiar"; }, 1600);
+        });
+      }
+    });
+  });
+
+  // tema
+  var TKEY = "olist-tema";
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem(TKEY);
+    if (saved) root.setAttribute("data-theme", saved);
+  } catch(e){}
+  document.getElementById("theme").addEventListener("click", function(){
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem(TKEY, next); } catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

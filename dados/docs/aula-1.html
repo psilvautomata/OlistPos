@@ -1,0 +1,1407 @@
+<title>Pipeline Olist em 4 Aulas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#eef1ee;
+  --surface:#f7f9f7;
+  --sunken:#e4e9e5;
+  --ink:#10171a;
+  --ink-2:#39474a;
+  --ink-3:#6b7b7c;
+  --line:#cdd6cf;
+  --accent:#1a6b52;
+  --accent-soft:#dcebe3;
+  --amber:#a86e05;
+  --amber-soft:#f6ebd2;
+  --danger:#9b3a25;
+  --code-bg:#12191c;
+  --code-ink:#dce7e0;
+  --shadow:0 1px 2px rgba(16,23,26,.06),0 8px 24px -16px rgba(16,23,26,.3);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d1214;
+    --surface:#141c1f;
+    --sunken:#1b2529;
+    --ink:#e7eee9;
+    --ink-2:#b2c0ba;
+    --ink-3:#7d8d88;
+    --line:#2a383c;
+    --accent:#4fbf94;
+    --accent-soft:#12302a;
+    --amber:#e0a800;
+    --amber-soft:#2e2510;
+    --danger:#e0805f;
+    --code-bg:#080d0f;
+    --code-ink:#cfded6;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d1214;
+  --surface:#141c1f;
+  --sunken:#1b2529;
+  --ink:#e7eee9;
+  --ink-2:#b2c0ba;
+  --ink-3:#7d8d88;
+  --line:#2a383c;
+  --accent:#4fbf94;
+  --accent-soft:#12302a;
+  --amber:#e0a800;
+  --amber-soft:#2e2510;
+  --danger:#e0805f;
+  --code-bg:#080d0f;
+  --code-ink:#cfded6;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.ui{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+a{color:var(--accent)}
+
+/* ---------- shell ---------- */
+.shell{
+  display:grid;
+  grid-template-columns:262px minmax(0,1fr);
+  gap:44px;
+  max-width:1180px;
+  margin:0 auto;
+  padding-inline:20px;
+  padding-block:0 72px;
+}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+}
+
+/* ---------- sidebar ---------- */
+.side{
+  position:sticky;
+  top:0;
+  align-self:start;
+  max-height:100vh;
+  overflow-y:auto;
+  padding-block:28px 32px;
+  font-family:Archivo,sans-serif;
+  font-size:13.5px;
+}
+@media (max-width:900px){
+  .side{position:static;max-height:none;border-bottom:1px solid var(--line);margin-bottom:8px}
+}
+.side .brand{
+  font-weight:700;letter-spacing:-.01em;font-size:15px;color:var(--ink);
+  display:flex;align-items:center;gap:8px;margin-bottom:18px;
+}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--amber);flex:none}
+.prog-wrap{margin-bottom:20px}
+.prog-label{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px;
+}
+.prog-label b{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);font-variant-numeric:tabular-nums}
+.prog-track{height:4px;background:var(--sunken);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:var(--accent);transition:width .35s ease}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+nav a{
+  display:flex;gap:9px;align-items:baseline;
+  text-decoration:none;color:var(--ink-2);
+  padding:5px 8px;border-radius:5px;line-height:1.35;
+}
+nav a:hover{background:var(--sunken);color:var(--ink)}
+nav a .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);flex:none;width:18px}
+.side-foot{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);display:flex;gap:8px}
+.tbtn{
+  font-family:Archivo,sans-serif;font-size:12px;
+  background:var(--surface);color:var(--ink-2);
+  border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;
+}
+.tbtn:hover{color:var(--ink);border-color:var(--ink-3)}
+
+/* ---------- main ---------- */
+main{padding-block:28px 0;min-width:0}
+.wrap{max-width:68ch}
+
+/* hero */
+.eyebrow{
+  font-family:Archivo,sans-serif;font-size:11.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin:0 0 14px;
+}
+h1{
+  font-size:clamp(34px,5.2vw,50px);font-weight:700;letter-spacing:-.025em;
+  line-height:1.04;margin:0 0 18px;text-wrap:balance;
+}
+.lede{font-size:20px;line-height:1.55;color:var(--ink-2);margin:0 0 26px;text-wrap:pretty}
+.facts{
+  display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:10px;
+  background:var(--surface);overflow:hidden;margin-bottom:40px;
+}
+.fact{flex:1 1 130px;padding:13px 16px;border-right:1px solid var(--line)}
+.fact:last-child{border-right:0}
+@media (max-width:560px){.fact{flex:1 1 50%;border-bottom:1px solid var(--line)}}
+.fact dt{
+  font-family:Archivo,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 3px;
+}
+.fact dd{margin:0;font-family:Archivo,sans-serif;font-weight:600;font-size:15px;color:var(--ink)}
+
+/* sections */
+section{padding-block:34px 0;scroll-margin-top:16px}
+h2{
+  font-size:13px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 6px;
+}
+.h2big{
+  font-family:Archivo,sans-serif;font-size:clamp(24px,3.4vw,31px);font-weight:700;
+  letter-spacing:-.02em;line-height:1.15;margin:0 0 16px;color:var(--ink);text-wrap:balance;
+}
+h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol.body{padding-left:20px;margin:0 0 15px}
+li{margin-bottom:6px}
+strong{font-weight:600}
+.small{font-size:15px;color:var(--ink-2)}
+
+/* pipeline diagram */
+.pipe{
+  display:flex;flex-direction:column;gap:0;margin:0 0 12px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:20px;box-shadow:var(--shadow);
+}
+.layer{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
+@media (max-width:520px){.layer{grid-template-columns:minmax(0,1fr);gap:4px}}
+.layer .tag{
+  font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  padding:5px 8px;border-radius:5px;text-align:center;
+  background:var(--sunken);color:var(--ink-2);
+}
+.layer.l-raw .tag{background:var(--sunken);color:var(--ink-2)}
+.layer.l-ref .tag{background:var(--amber-soft);color:var(--amber)}
+.layer.l-mart .tag{background:var(--accent-soft);color:var(--accent)}
+.layer .desc{font-size:15px;color:var(--ink-2)}
+.layer .desc b{color:var(--ink);font-family:Archivo,sans-serif;font-weight:600}
+.arrow{
+  display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;
+  padding:7px 0;align-items:center;
+}
+@media (max-width:520px){.arrow{grid-template-columns:minmax(0,1fr)}.arrow .stem{display:none}}
+.arrow .stem{display:flex;justify-content:center;color:var(--ink-3);font-size:14px;line-height:1}
+.arrow .what{
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);
+}
+.arrow .what em{font-style:normal;color:var(--accent);font-weight:600}
+
+/* steps */
+.step{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:22px;margin-bottom:16px;box-shadow:var(--shadow);
+}
+.step.done{border-color:var(--accent);background:var(--surface)}
+.step-head{display:flex;gap:13px;align-items:flex-start;margin-bottom:4px}
+.step-n{
+  font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+  background:var(--amber-soft);color:var(--amber);
+  border-radius:6px;padding:4px 8px;flex:none;margin-top:3px;
+}
+.step.done .step-n{background:var(--accent-soft);color:var(--accent)}
+.step-title{font-family:Archivo,sans-serif;font-weight:600;font-size:20px;letter-spacing:-.01em;margin:0;line-height:1.25}
+.step-sub{font-size:14.5px;color:var(--ink-3);margin:2px 0 0;font-family:Archivo,sans-serif}
+.step-body{margin-top:14px}
+.step-body > :last-child{margin-bottom:0}
+
+/* figura / diagrama */
+.fig{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:22px 20px 16px;margin:0 0 14px;box-shadow:var(--shadow);
+}
+.fig svg{display:block;width:100%;height:auto}
+.fig-scroll{overflow-x:auto;padding-bottom:4px}
+.fig-scroll svg{min-width:660px}
+.fig-cap{
+  font-size:13.5px;color:var(--ink-3);margin:14px 0 0;text-align:center;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* duas colunas comparativas */
+.versus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 16px}
+@media (max-width:620px){.versus{grid-template-columns:minmax(0,1fr)}}
+.vs-card{
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  padding:18px 20px;
+}
+.vs-card.bad{border-color:var(--danger)}
+.vs-card.good{border-color:var(--accent)}
+.vs-h{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;margin:0 0 10px;
+}
+.vs-card.bad .vs-h{color:var(--danger)}
+.vs-card.good .vs-h{color:var(--accent)}
+.vs-flow{
+  font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--ink-2);
+  margin:0 0 12px;line-height:1.9;
+}
+.vs-card p{font-size:15px;color:var(--ink-2)}
+.vs-card p:last-child{margin-bottom:0}
+
+/* spec */
+.spec{
+  border:1px solid var(--line);border-radius:12px;background:var(--sunken);
+  padding:20px 22px;margin-bottom:16px;
+}
+.spec-h{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--amber);margin:0 0 10px;
+}
+.spec ol{margin-bottom:0}
+.spec li{margin-bottom:10px;font-size:15.5px}
+.spec li:last-child{margin-bottom:0}
+.spec-foot{
+  font-size:14.5px;color:var(--ink-3);margin:14px 0 0;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* spec colapsavel */
+details.spec-det{padding:0;margin-bottom:16px}
+details.spec-det > summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
+  margin:0;padding:16px 22px;
+}
+details.spec-det > summary::-webkit-details-marker{display:none}
+details.spec-det > summary::before{
+  content:"";width:0;height:0;flex:none;
+  border-left:5px solid currentColor;border-top:4px solid transparent;
+  border-bottom:4px solid transparent;transition:transform .15s ease;
+}
+details.spec-det[open] > summary::before{transform:rotate(90deg)}
+details.spec-det > summary:hover{background:var(--line);border-radius:12px}
+details.spec-det[open] > summary:hover{border-radius:12px 12px 0 0}
+.spec-cue{
+  margin-left:auto;font-size:10px;letter-spacing:.09em;color:var(--ink-3);
+}
+.spec-cue::after{content:"abrir"}
+details.spec-det[open] .spec-cue::after{content:"fechar"}
+details.spec-det > :not(summary){margin-left:22px;margin-right:22px}
+details.spec-det > :last-child{margin-bottom:20px}
+
+/* code */
+pre{
+  background:var(--code-bg);color:var(--code-ink);
+  border-radius:8px;padding:13px 15px;overflow-x:auto;
+  font-size:13.5px;line-height:1.6;margin:0 0 14px;
+}
+pre .c{color:#7d8d88}
+pre .ok{color:#4fbf94}
+code:not(pre code){
+  background:var(--sunken);border-radius:4px;padding:1px 5px;font-size:.87em;color:var(--ink);
+}
+.cmdlabel{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 6px;
+}
+.codewrap{position:relative}
+.copy{
+  position:absolute;top:8px;right:8px;
+  font-family:Archivo,sans-serif;font-size:11px;letter-spacing:.04em;
+  background:rgba(255,255,255,.08);color:#cfded6;
+  border:1px solid rgba(255,255,255,.16);border-radius:5px;padding:3px 8px;cursor:pointer;
+}
+.copy:hover{background:rgba(255,255,255,.16)}
+
+/* verify block */
+.verify{
+  border-left:3px solid var(--accent);background:var(--accent-soft);
+  border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 14px;
+}
+.verify .vh{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 6px;
+}
+.verify p,.verify ul{margin-bottom:0;font-size:15px}
+.note{
+  border-left:3px solid var(--amber);background:var(--amber-soft);
+  border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 14px;font-size:15px;
+}
+.note b{font-family:Archivo,sans-serif}
+.note > :last-child{margin-bottom:0}
+
+/* checkbox */
+.mark{
+  display:flex;align-items:center;gap:9px;margin-top:16px;padding-top:14px;
+  border-top:1px solid var(--line);
+  font-family:Archivo,sans-serif;font-size:14px;color:var(--ink-3);cursor:pointer;user-select:none;
+}
+.mark input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex:none}
+.step.done .mark{color:var(--accent);font-weight:600}
+
+/* aulas */
+.aulas{display:flex;flex-direction:column;gap:12px;margin-bottom:8px}
+.aula{
+  display:grid;grid-template-columns:62px minmax(0,1fr);gap:16px;
+  border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:18px 20px;
+}
+@media (max-width:560px){.aula{grid-template-columns:minmax(0,1fr);gap:8px}}
+.aula .when{
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-3);
+  border-right:1px solid var(--line);padding-right:12px;
+}
+@media (max-width:560px){.aula .when{border-right:0;padding-right:0}}
+.aula .when b{display:block;font-size:22px;color:var(--amber);line-height:1.1;font-weight:600}
+.aula h3{margin:0 0 6px;font-size:18px}
+.aula p{font-size:15px;margin-bottom:10px;color:var(--ink-2)}
+.chal{
+  font-size:14.5px;background:var(--sunken);border-radius:7px;padding:9px 12px;color:var(--ink-2);
+}
+.chal b{font-family:Archivo,sans-serif;color:var(--ink);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+
+/* desafios */
+[hidden]{display:none!important}
+.embreve{
+  border:1px dashed var(--line);border-radius:12px;background:var(--sunken);
+  padding:16px 20px;margin:0 0 16px;font-size:15px;color:var(--ink-3);
+}
+.embreve b{font-family:Archivo,sans-serif;color:var(--ink-2)}
+.desafios{display:flex;flex-direction:column;gap:12px}
+.desafio{
+  display:grid;grid-template-columns:76px minmax(0,1fr);gap:18px;
+  border:1px solid var(--line);border-left:3px solid var(--amber);
+  border-radius:0 12px 12px 0;background:var(--surface);padding:18px 20px;
+}
+@media (max-width:560px){.desafio{grid-template-columns:minmax(0,1fr);gap:6px}}
+.desafio .de-n{
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.desafio .de-n b{display:block;font-size:21px;color:var(--amber);line-height:1.1;letter-spacing:0}
+.desafio h3{margin:0 0 6px;font-size:17px}
+.desafio p{font-size:15.5px;margin-bottom:0;color:var(--ink-2)}
+.desafio p + p{margin-top:8px}
+.desafio .entrega-ex{
+  font-size:13px;color:var(--ink-3);margin-top:8px;
+}
+.desafio .entrega-ex code{font-size:12.5px;line-height:1.7}
+.desafio .entrega{
+  font-family:Archivo,sans-serif;font-size:13px;color:var(--ink-3);
+  margin-top:9px;padding-top:9px;border-top:1px solid var(--line);
+}
+
+/* clock bar */
+.clock{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:6px 0 14px;font-family:Archivo,sans-serif;font-size:11px}
+.clock span{display:flex;align-items:center;justify-content:center;color:#fff;white-space:nowrap;overflow:hidden}
+.c1{background:var(--ink-3)}
+.c2{background:var(--accent)}
+.c3{background:var(--amber)}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:0 0 16px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--line)}
+tbody tr:last-child td{border-bottom:0}
+th{
+  font-family:Archivo,sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);background:var(--sunken);
+}
+td.num{text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+td.term{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink);white-space:nowrap}
+
+details{border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:12px 16px;margin-bottom:9px}
+summary{font-family:Archivo,sans-serif;font-weight:600;font-size:16px;cursor:pointer;color:var(--ink)}
+summary::marker{color:var(--ink-3)}
+details[open] summary{margin-bottom:9px}
+details p:last-child{margin-bottom:0}
+
+footer{
+  margin-top:48px;padding-top:20px;border-top:1px solid var(--line);
+  font-family:Archivo,sans-serif;font-size:13px;color:var(--ink-3);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="shell">
+<aside class="side">
+  <div class="brand"><span class="dot"></span>Pipeline Olist</div>
+
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Seu progresso</span><b id="pct">0/9</b></div>
+    <div class="prog-track"><div class="prog-fill" id="fill"></div></div>
+  </div>
+
+  <nav>
+    <ol>
+      <li><a href="#construir"><span class="n">00</span>O que vamos construir</a></li>
+      <li><a href="#vocab"><span class="n">01</span>Vocabulário</a></li>
+      <li><a href="#encontros"><span class="n">02</span>Os quatro encontros</a></li>
+      <li><a href="#e0"><span class="n">03</span>Preparar a máquina</a></li>
+      <li><a href="#sdd"><span class="n">04</span>Spec-driven development</a></li>
+      <li><a href="#e1"><span class="n">05</span>Ingestão</a></li>
+      <!-- OCULTO: liberar junto com as etapas 2 a 5, voltando a numeracao 06..11
+      <li><a href="#e2"><span class="n">06</span>Transformação</a></li>
+      <li><a href="#e3"><span class="n">07</span>Marts em SQL</a></li>
+      <li><a href="#e4"><span class="n">08</span>Dashboard</a></li>
+      <li><a href="#e5"><span class="n">09</span>Testes</a></li>
+      -->
+      <li><a href="#ia"><span class="n">06</span>A IA como copiloto</a></li>
+      <li><a href="#desafios"><span class="n">07</span>O desafio da aula 1</a></li>
+      <li><a href="#contagens"><span class="n">A1</span>Contagens esperadas</a></li>
+      <li><a href="#erros"><span class="n">A2</span>Quando quebrar</a></li>
+      <li><a href="#comandos"><span class="n">A3</span>Comandos</a></li>
+    </ol>
+  </nav>
+
+  <div class="side-foot">
+    <button class="tbtn" id="theme" type="button">Tema</button>
+    <button class="tbtn" id="reset" type="button">Zerar progresso</button>
+  </div>
+</aside>
+
+<main>
+<div class="wrap">
+
+  <p class="eyebrow">Curso prático &middot; 4 encontros de 1h20</p>
+  <h1>Do CSV ao dashboard, com as suas próprias mãos</h1>
+  <p class="lede">Você já passou pela trilha de SQL e pela trilha de Python e IA. O que falta é usar isso em dado de verdade &mdash; sujo, grande, sem documentação. Aqui você constrói, do zero ao fim, um pipeline sobre 1,5 milhão de registros reais de vendas do e-commerce brasileiro.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Dados</dt><dd>Olist &middot; 9 tabelas</dd></div>
+    <div class="fact"><dt>Registros</dt><dd class="mono">1.550.922</dd></div>
+    <div class="fact"><dt>Stack</dt><dd>Python &middot; DuckDB</dd></div>
+    <div class="fact"><dt>Entrega</dt><dd>Dashboard vivo</dd></div>
+  </dl>
+
+  <section id="construir">
+    <h2>00 &middot; O destino</h2>
+    <p class="h2big">O que vamos construir</p>
+    <p>O dataset da Olist é público e real: todo pedido feito na plataforma entre 2016 e 2018, com item, pagamento, avaliação, vendedor e cliente. Chega até você como nove arquivos <code>.csv</code> soltos numa pasta — do jeito que dado chega no mundo real, sem ninguém para explicar.</p>
+    <p>No fim das quatro aulas, esses arquivos viram um dashboard que responde perguntas de negócio. Primeiro a planta da casa &mdash; onde cada coisa fica e quem escreve o quê:</p>
+
+    <div class="fig">
+      <div class="fig-scroll">
+      <svg viewBox="0 0 760 352" role="img" aria-label="Arquitetura: pasta de CSVs, scripts Python, banco olist.duckdb com os schemas raw, refined e marts, e o dashboard Streamlit">
+        <defs>
+          <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--ink-3)"/>
+          </marker>
+        </defs>
+
+        <g font-family="Archivo, sans-serif">
+
+          <text x="62" y="16" text-anchor="middle" font-size="10" letter-spacing="1.5" fill="var(--ink-3)">O DADO CHEGA</text>
+          <text x="370" y="16" text-anchor="middle" font-size="10" letter-spacing="1.5" fill="var(--ink-3)">O DADO MORA</text>
+          <text x="694" y="16" text-anchor="middle" font-size="10" letter-spacing="1.5" fill="var(--ink-3)">O DADO É LIDO</text>
+          <line x1="638" y1="140" x2="752" y2="140" stroke="var(--line)" stroke-width="1"/>
+
+          <rect x="22" y="44" width="80" height="54" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+          <rect x="16" y="52" width="80" height="54" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+          <rect x="10" y="60" width="80" height="54" rx="6" fill="var(--sunken)" stroke="var(--line)"/>
+          <text x="50" y="82" text-anchor="middle" font-size="12.5" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">raw/</text>
+          <text x="50" y="98" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">9 arquivos</text>
+          <text x="56" y="134" text-anchor="middle" font-size="11" fill="var(--ink-3)">.csv.gz &#183; 42 MB</text>
+          <text x="56" y="150" text-anchor="middle" font-size="11" fill="var(--ink-3)">somente leitura</text>
+
+          <line x1="106" y1="87" x2="146" y2="87" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#a2)"/>
+          <text x="126" y="76" text-anchor="middle" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">ingestao.py</text>
+
+          <rect x="150" y="30" width="440" height="268" rx="12" fill="var(--sunken)" stroke="var(--line)" stroke-width="1.4"/>
+          <text x="166" y="50" font-size="12.5" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">olist.duckdb</text>
+          <text x="262" y="50" font-size="11" fill="var(--ink-3)">um arquivo no seu disco &#183; nenhum banco para instalar</text>
+
+          <rect x="166" y="62" width="250" height="52" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="180" y="84" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">raw.*</text>
+          <text x="180" y="101" font-size="11" fill="var(--ink-3)">espelho fiel do CSV &#183; tudo texto</text>
+          <text x="398" y="94" text-anchor="end" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--ink-3)">9 tabelas</text>
+
+          <line x1="291" y1="118" x2="291" y2="146" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#a2)"/>
+          <text x="302" y="136" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">transformacao.py</text>
+
+          <rect x="166" y="150" width="250" height="52" rx="8" fill="var(--amber-soft)" stroke="var(--amber)"/>
+          <text x="180" y="172" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--amber)">refined.*</text>
+          <text x="180" y="189" font-size="11" fill="var(--amber)">tipado e deduplicado &#183; 1 linha = 1 pedido</text>
+
+          <line x1="291" y1="206" x2="291" y2="234" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#a2)"/>
+          <text x="302" y="224" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">sql/marts/*.sql</text>
+
+          <rect x="166" y="238" width="250" height="52" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+          <text x="180" y="260" font-size="13" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--accent)">marts.*</text>
+          <text x="180" y="277" font-size="11" fill="var(--accent)">agregado &#183; responde uma pergunta cada</text>
+
+          <path d="M 594 264 L 606 264 Q 616 264 616 254 L 616 188 Q 616 178 626 178 L 632 178"
+                fill="none" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#a2)"/>
+          <text x="610" y="226" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">SELECT</text>
+
+          <rect x="638" y="152" width="114" height="52" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="695" y="174" text-anchor="middle" font-size="12.5" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">app.py</text>
+          <text x="695" y="190" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">Streamlit</text>
+
+          <rect x="638" y="238" width="114" height="52" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+          <text x="695" y="260" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--accent)">dashboard</text>
+          <text x="695" y="277" text-anchor="middle" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--accent)">localhost:8501</text>
+
+          <line x1="695" y1="208" x2="695" y2="234" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#a2)"/>
+
+          <rect x="638" y="62" width="114" height="52" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="695" y="84" text-anchor="middle" font-size="12.5" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink)">ui.py</text>
+          <text x="695" y="100" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">servidor local</text>
+          <text x="695" y="130" text-anchor="middle" font-size="10.5" font-family="JetBrains Mono, monospace" fill="var(--ink-3)">localhost:4213</text>
+
+          <line x1="594" y1="88" x2="632" y2="88" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#a2)"/>
+          <text x="613" y="78" text-anchor="middle" font-size="10" font-family="JetBrains Mono, monospace" fill="var(--accent)">SQL</text>
+
+          <rect x="150" y="312" width="602" height="32" rx="8" fill="none" stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="5 4"/>
+          <text x="166" y="332" font-size="11.5" font-weight="700" font-family="JetBrains Mono, monospace" fill="var(--ink-2)">tests/</text>
+          <text x="214" y="332" font-size="11" fill="var(--ink-3)">pytest &#183; confere contagem e unicidade em cada camada, depois de cada etapa</text>
+        </g>
+      </svg>
+      </div>
+      <p class="fig-cap">Tudo isso roda na sua máquina, sem nuvem: o banco inteiro é o arquivo <code>olist.duckdb</code> e não existe banco de dados para instalar. As duas saídas à direita são servidores locais &mdash; <code>ui.py</code> para explorar o dado em SQL pelo navegador, <code>app.py</code> para o dashboard. As setas são código seu, e cada uma pode ser rodada de novo, do zero, quantas vezes precisar.</p>
+    </div>
+
+    <p>Lido de cima a baixo, o mesmo caminho com o que cada camada entrega:</p>
+
+    <div class="pipe">
+      <div class="layer l-raw">
+        <span class="tag">raw/</span>
+        <span class="desc"><b>Os 9 CSVs</b> — intocados. A gente nunca escreve aqui.</span>
+      </div>
+      <div class="arrow"><span class="stem">&darr;</span><span class="what">ingestao.py &middot; <em>Python</em> lê o arquivo e grava no banco</span></div>
+      <div class="layer l-raw">
+        <span class="tag">raw.*</span>
+        <span class="desc"><b>Espelho fiel</b> do CSV, agora consultável com SQL.</span>
+      </div>
+      <div class="arrow"><span class="stem">&darr;</span><span class="what">transformacao.py &middot; <em>Python</em> limpa, deduplica, converte data</span></div>
+      <div class="layer l-ref">
+        <span class="tag">refined.*</span>
+        <span class="desc"><b>Dado confiável</b> — ainda granular: 1 linha = 1 pedido.</span>
+      </div>
+      <div class="arrow"><span class="stem">&darr;</span><span class="what">sql/marts/*.sql &middot; <em>SQL</em> agrega e responde perguntas</span></div>
+      <div class="layer l-mart">
+        <span class="tag">marts.*</span>
+        <span class="desc"><b>Pronto para consumo</b> — vendas por mês, entrega no prazo.</span>
+      </div>
+      <div class="arrow"><span class="stem">&darr;</span><span class="what">app.py &middot; <em>Streamlit</em> só faz SELECT</span></div>
+      <div class="layer l-mart">
+        <span class="tag">dash</span>
+        <span class="desc"><b>O dashboard</b> que você abre no navegador.</span>
+      </div>
+    </div>
+
+    <p class="small">Três camadas, três nomes, uma regra que vale para todas: <strong>qualquer etapa pode ser rodada de novo do zero sem quebrar</strong>. Travou no meio da aula? Roda de novo e segue. Ninguém fica para trás.</p>
+  </section>
+
+  <section id="vocab">
+    <h2>01 &middot; Antes de começar</h2>
+    <p class="h2big">Seis palavras que vão aparecer o tempo todo</p>
+    <p>Nenhuma delas é difícil, mas todas vão ser ditas como se você já soubesse. Então:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Termo</th><th>O que quer dizer aqui</th></tr></thead>
+        <tbody>
+          <tr><td class="term">ingestão</td><td>Pegar o dado de onde ele está e colocar onde dá para trabalhar. Sem mudar nada — copiar, não corrigir.</td></tr>
+          <tr><td class="term">transformação</td><td>Tornar o dado confiável: tipo certo, duplicata fora, nulo decidido. É onde mora o julgamento.</td></tr>
+          <tr><td class="term">mart</td><td>Tabela já agregada, feita para responder uma pergunta específica. "Vendas por mês" é um mart.</td></tr>
+          <tr><td class="term">granular</td><td>Uma linha por evento (um pedido, um item). O oposto de agregado.</td></tr>
+          <tr><td class="term">idempotente</td><td>Rodar uma vez ou dez vezes dá o mesmo resultado. É o que deixa você errar sem medo.</td></tr>
+          <tr><td class="term">DuckDB</td><td>Um banco analítico que vive num arquivo só, sem servidor. Fala SQL igual ao BigQuery.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>Por que DuckDB e não um banco "de verdade".</b> Porque instalar Postgres com Docker custaria os primeiros 40 minutos da aula 1, e o seu tempo aqui é para SQL e Python — não para porta ocupada e WSL. O SQL que você escrever no DuckDB funciona igualzinho no BigQuery e no Snowflake.</div>
+  </section>
+
+  <section id="encontros">
+    <h2>02 &middot; O mapa</h2>
+    <p class="h2big">Os quatro encontros</p>
+    <p>Uma hora e vinte cada. Da aula 2 em diante, os primeiros quinze minutos são a correção do desafio anterior — ao vivo, na tela, com os erros de todo mundo à mostra. É de propósito: ver onde o outro travou ensina tanto quanto acertar.</p>
+
+    <div class="clock">
+      <span class="c1" style="flex:1 1 19%">correção 15min</span>
+      <span class="c2" style="flex:1 1 62%">construção 50min</span>
+      <span class="c3" style="flex:1 1 19%">dúvidas 15min</span>
+    </div>
+    <p class="small">A aula, na prática. Traga o desafio feito — mesmo quebrado, principalmente quebrado.</p>
+
+    <div class="aulas">
+      <article class="aula">
+        <div class="when"><b>01</b>ingestão</div>
+        <div>
+          <h3>Do arquivo para a tabela</h3>
+          <p>Ler os nove CSVs e gravá-los no banco sem mudar nada. Python aqui é caminho de arquivo, laço e função. O momento que fecha a aula é você rodar <code>SELECT * FROM raw.pedidos LIMIT 5</code> e ver o arquivo virar tabela.</p>
+        </div>
+      </article>
+
+      <article class="aula">
+        <div class="when"><b>02</b>transformação</div>
+        <div>
+          <h3>Ler o dado ≠ confiar no dado</h3>
+          <p>Aula mais densa e a mais desconfortável, porque não existe resposta certa única. Data que era texto vira timestamp, duplicata sai, e cada nulo vira uma decisão sua — escrita, justificada. É aqui que a IA entra pela primeira vez, e onde você aprende a não acreditar nela.</p>
+        </div>
+      </article>
+
+      <article class="aula">
+        <div class="when"><b>03</b>SQL</div>
+        <div>
+          <h3>Cinquenta minutos direto de SQL</h3>
+          <p>Quatro arquivos <code>.sql</code>, quatro perguntas de negócio, um degrau de dificuldade cada: <code>GROUP BY</code>, depois <code>JOIN</code>, depois <code>CASE WHEN</code> com datas, e por fim CTE com window function. Sem Python no caminho.</p>
+        </div>
+      </article>
+
+      <article class="aula">
+        <div class="when"><b>04</b>dash</div>
+        <div>
+          <h3>Dashboard e a rede de segurança</h3>
+          <p>Streamlit lendo os marts — e é rápido justamente porque o trabalho pesado já está no SQL. Sobra tempo para escrever dois ou três testes ao vivo, ver verde, quebrar um <code>.sql</code> de propósito e ver vermelho.</p>
+        </div>
+      </article>
+    </div>
+    <p class="small" style="margin-top:14px">Cada encontro fecha com um desafio para casa — os quatro estão juntos em <a href="#desafios">Os desafios</a>.</p>
+  </section>
+
+  <section id="e0">
+    <h2>03 &middot; Passo a passo</h2>
+    <p class="h2big">Preparar a máquina</p>
+    <p>Faça isto <strong>antes da aula 1</strong>. São dez minutos em casa que, multiplicados por uma turma, seriam a aula inteira.</p>
+
+    <article class="step" data-id="s0">
+      <div class="step-head">
+        <span class="step-n">00</span>
+        <div><p class="step-title">Instalar o uv</p><p class="step-sub">O gerenciador que resolve Python e bibliotecas de uma vez</p></div>
+      </div>
+      <div class="step-body">
+        <p>O <a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">uv</a> instala o Python certo e todas as bibliotecas do projeto com um comando só. Sem <code>venv</code>, sem "na minha máquina funciona". A documentação oficial fica em <a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">docs.astral.sh/uv</a> — vale deixar aberta numa aba.</p>
+        <p>Vamos instalar com o <code>pipx</code>, que coloca cada ferramenta Python no seu próprio ambiente isolado:</p>
+        <div class="codewrap"><pre><span class="c"># 1. pipx (se você ainda não tem)</span>
+python -m pip install --user pipx
+python -m pipx ensurepath
+
+<span class="c"># 2. uv</span>
+pipx install uv</pre><button class="copy" type="button">copiar</button></div>
+        <div class="verify"><p class="vh">Confira</p><p>Feche e reabra o terminal — o <code>ensurepath</code> só vale na próxima sessão — e rode <code>uv --version</code>. Tem que aparecer um número.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-s0"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <article class="step" data-id="s1">
+      <div class="step-head">
+        <span class="step-n">01</span>
+        <div><p class="step-title">Criar o projeto</p><p class="step-sub">Pasta vazia &rarr; ambiente pronto</p></div>
+      </div>
+      <div class="step-body">
+        <p>Escolha onde o projeto vai morar — Documentos, Desktop, tanto faz, contanto que você saiba voltar lá. Um caminho <strong>sem acento e sem espaço</strong> evita uma classe inteira de dor de cabeça mais adiante.</p>
+        <div class="codewrap"><pre><span class="c"># 1. criar a pasta e entrar nela</span>
+mkdir olist
+cd olist
+
+<span class="c"># 2. iniciar o projeto (cria o pyproject.toml)</span>
+uv init --bare
+
+<span class="c"># 3. as bibliotecas do curso</span>
+uv add duckdb pandas streamlit
+uv add --dev pytest ruff</pre><button class="copy" type="button">copiar</button></div>
+        <p class="small">O <code>uv init</code> cria o <code>pyproject.toml</code>, que é a lista de tudo que o projeto precisa, e o <code>uv add</code> vai preenchendo essa lista. O ambiente (<code>.venv</code>) e o <code>uv.lock</code> nascem no primeiro <code>uv add</code> — e, se você não tiver a versão de Python exigida, o próprio uv baixa. Quem clonar seu projeto depois roda <code>uv sync</code> e recebe exatamente as mesmas versões. Daqui para frente, todo comando começa com <code>uv run</code>.</p>
+        <div class="note"><b>Por que <code>--bare</code>.</b> Sem ele, o <code>uv init</code> monta um projeto <em>empacotável</em>: cria uma pasta <code>src/</code> e uma seção <code>[build-system]</code> no <code>pyproject.toml</code>. Aí todo <code>uv run</code> passa a tentar <em>construir</em> o projeto antes de rodar — e como nosso código vai morar em <code>pipeline/</code>, e não em <code>src/</code>, ele falha com um erro de build que não tem nada a ver com o que você escreveu. O <code>--bare</code> cria só o <code>pyproject.toml</code> e mais nada.</div>
+        <div class="verify"><p class="vh">Confira</p><p><code>uv run python -c "import duckdb, pandas, streamlit"</code> tem que rodar sem dizer nada. Silêncio é sucesso — em Python, notícia só aparece quando é ruim.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-s1"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <article class="step" data-id="s2">
+      <div class="step-head">
+        <span class="step-n">02</span>
+        <div><p class="step-title">Conferir os dados</p><p class="step-sub">Nove arquivos, 1.550.922 registros</p></div>
+      </div>
+      <div class="step-body">
+        <p>Os nove arquivos estão prontos no repositório do curso — sem conta, sem cadastro, 42&nbsp;MB:</p>
+        <p><a href="https://github.com/ckoliveiraa/pipeline-olist" target="_blank" rel="noopener"><strong>github.com/ckoliveiraa/pipeline-olist</strong></a></p>
+        <p>Clone dentro da pasta do projeto, de um jeito que os dados caiam direto em <code>raw/</code>:</p>
+        <p class="cmdlabel">Windows &middot; Prompt de Comando</p>
+        <div class="codewrap"><pre>git clone https://github.com/ckoliveiraa/pipeline-olist.git dados
+move dados\raw raw
+rmdir /s /q dados</pre><button class="copy" type="button">copiar</button></div>
+        <p class="cmdlabel">macOS, Linux ou Git Bash</p>
+        <div class="codewrap"><pre>git clone https://github.com/ckoliveiraa/pipeline-olist.git dados
+mv dados/raw .
+rm -rf dados</pre><button class="copy" type="button">copiar</button></div>
+        <div class="note"><b>Os comandos do terminal mudam conforme onde você digita.</b> <code>rm</code>, <code>mv</code> e <code>ls</code> são do mundo Unix — no Prompt de Comando do Windows eles não existem, e a resposta é <code>'rm' não é reconhecido como um comando interno ou externo</code>. Lá os nomes são <code>del</code>, <code>move</code>, <code>rmdir</code> e <code>dir</code>. Nada a ver com Python: é só o terminal. Os comandos <code>uv</code> e <code>git</code>, esses funcionam igual em todo lugar.</div>
+        <p class="small">Sem <code>git</code> instalado? Baixe o ZIP pelo botão verde <b>Code &rsaquo; Download ZIP</b> e mova a pasta <code>raw/</code> de dentro dele para o seu projeto, pelo explorador de arquivos mesmo.</p>
+        <div class="note"><b>Os arquivos terminam em <code>.csv.gz</code> — e está certo assim.</b> São os mesmos CSVs, comprimidos: 42&nbsp;MB em vez de 121&nbsp;MB. <strong>Não descompacte</strong>. O pandas lê <code>.csv.gz</code> exatamente como leria um <code>.csv</code>, sem parâmetro nenhum, e o DuckDB também. É de graça e você nem percebe.</div>
+        <div class="verify"><p class="vh">Confira</p><p>Você tem que enxergar nove arquivos dentro de <code>raw/</code>, soltos, sem subpasta — o pipeline procura por <code>raw/olist_orders_dataset.csv.gz</code>. A lista completa, com o número de registros de cada um, está no <a href="#contagens">anexo de contagens</a>.</p></div>
+        <p class="small">A fonte original é o Kaggle: <a href="https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce" target="_blank" rel="noopener">Brazilian E-Commerce Public Dataset by Olist</a>, sob licença CC BY-NC-SA 4.0.</p>
+        <div class="note"><b>Nunca edite nada dentro de <code>raw/</code>.</b> É a fonte da verdade. Se você abrir um CSV no Excel e salvar, o Excel reescreve datas e números no formato dele e o pipeline inteiro passa a mentir — silenciosamente, que é o pior jeito.</div>
+        <label class="mark"><input type="checkbox" id="chk-s2"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <section id="sdd">
+    <h2>04 &middot; O método</h2>
+    <p class="h2big">Spec-driven development</p>
+    <p>O nome é novo, a ideia é velha: <strong>decida antes de digitar, e deixe a decisão escrita</strong>. O que mudou foi quem digita. Quando o código saía da sua cabeça direto para o teclado, a decisão podia ficar na cabeça. Agora que boa parte dele sai de um prompt, o que não estiver escrito vai ser inventado por outra pessoa &mdash; que não conhece o seu dado e não vai avisar que inventou.</p>
+
+    <div class="fig">
+      <svg viewBox="0 0 720 230" role="img" aria-label="Ciclo do spec-driven development: decidir, spec, codigo, conferir, e de volta a spec">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--ink-3)"/>
+          </marker>
+          <marker id="ar-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--amber)"/>
+          </marker>
+        </defs>
+
+        <g font-family="Archivo, sans-serif">
+          <text x="360" y="14" text-anchor="middle" font-size="10.5" letter-spacing="1.6" fill="var(--ink-3)">O CÓDIGO É CONSEQUÊNCIA, NÃO O PONTO DE PARTIDA</text>
+
+          <rect x="4" y="34" width="150" height="66" rx="9" fill="var(--sunken)" stroke="var(--line)"/>
+          <text x="79" y="62" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">1 &#183; DECIDIR</text>
+          <text x="79" y="82" text-anchor="middle" font-size="12.5" fill="var(--ink-3)">as sete perguntas</text>
+
+          <rect x="193" y="28" width="150" height="78" rx="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6"/>
+          <text x="268" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="var(--accent)">2 &#183; SPEC</text>
+          <text x="268" y="76" text-anchor="middle" font-size="12.5" fill="var(--accent)">escrita e versionada</text>
+          <text x="268" y="94" text-anchor="middle" font-size="11" fill="var(--accent)">o artefato principal</text>
+
+          <rect x="382" y="34" width="150" height="66" rx="9" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="457" y="62" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">3 &#183; CÓDIGO</text>
+          <text x="457" y="82" text-anchor="middle" font-size="12.5" fill="var(--ink-3)">você ou a IA</text>
+
+          <rect x="566" y="34" width="150" height="66" rx="9" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="641" y="62" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">4 &#183; CONFERIR</text>
+          <text x="641" y="82" text-anchor="middle" font-size="12.5" fill="var(--ink-3)">contra a spec</text>
+
+          <line x1="158" y1="67" x2="187" y2="67" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#ar)"/>
+          <line x1="347" y1="67" x2="376" y2="67" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#ar)"/>
+          <line x1="536" y1="67" x2="560" y2="67" stroke="var(--ink-3)" stroke-width="1.4" marker-end="url(#ar)"/>
+
+          <path d="M 641 104 L 641 158 Q 641 170 629 170 L 280 170 Q 268 170 268 158 L 268 112"
+                fill="none" stroke="var(--amber)" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ar-a)"/>
+          <text x="455" y="192" text-anchor="middle" font-size="12.5" fill="var(--amber)" font-style="italic">tudo que precisou ser assumido vira linha nova na spec</text>
+        </g>
+      </svg>
+      <p class="fig-cap">A seta pontilhada é o método inteiro em uma linha: o que a IA teve que adivinhar é a medida exata do que faltava na sua spec.</p>
+    </div>
+
+    <h3>O nome certo para cada coisa</h3>
+    <p>Três palavras que vivem sendo trocadas uma pela outra, e a troca custa caro:</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Palavra</th><th>Responde</th><th>Quando é escrita</th></tr></thead>
+        <tbody>
+          <tr><td><b>Arquitetura</b></td><td>Que peças existem e como se ligam &mdash; <code>raw &rarr; refined &rarr; marts</code>, DuckDB no meio, dashboard na ponta.</td><td>Uma vez, no começo. Muda pouco.</td></tr>
+          <tr><td><b>Spec</b></td><td>O que <em>esta</em> peça faz e o que ela tem proibido fazer. É um contrato, não uma explicação.</td><td>Antes de cada etapa. É o que você vai escrever quatro vezes neste curso.</td></tr>
+          <tr><td><b>Documentação</b></td><td>Como usar o que já existe.</td><td>Depois. Conta o passado.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A confusão mais comum é chamar de spec o que é documentação: um texto que descreve o código que já está lá. Esse texto não decide nada &mdash; ele concorda com qualquer coisa que o código faça. Spec é o que foi escrito <em>antes</em>, e é só por isso que ela é capaz de dizer que o código está errado.</p>
+
+    <h3>Por que isso pesa mais agora</h3>
+    <div class="versus">
+      <div class="vs-card bad">
+        <p class="vs-h">Sem spec</p>
+        <p class="vs-flow">prompt &rarr; código &rarr; rodou?<br>&nbsp;&nbsp;&rarr; prompt de novo &rarr; código&hellip;</p>
+        <p>Sobra uma única pergunta para avaliar a sugestão: <em>rodou?</em> Em código de dados ela não serve de nada &mdash; o erro típico roda liso e devolve número errado. E cada volta do ciclo joga a anterior no lixo, porque não existe nada fora do chat dizendo o que era certo.</p>
+      </div>
+      <div class="vs-card good">
+        <p class="vs-h">Com spec</p>
+        <p class="vs-flow">decisões &rarr; spec &rarr; código<br>&nbsp;&nbsp;&rarr; confere contra a spec</p>
+        <p>A pergunta passa a ser <em>respeitou o que eu decidi?</em> &mdash; e essa você responde item por item. O que se acumula é a spec, não o histórico de conversa: quando a etapa 2 mudar de ideia, o código é gerado de novo a partir dela em um minuto.</p>
+      </div>
+    </div>
+    <p>O ganho não é escrever menos código. É <strong>ter um critério de aceite</strong> que não dependa de você lembrar o que queria vinte minutos atrás.</p>
+
+    <div class="note"><b>Spec não é documento longo.</b> As sete decisões da próxima etapa caberiam num guardanapo, e esse é o tamanho certo. Spec grande ninguém escreve antes &mdash; e spec escrita depois não é spec, é documentação.</div>
+
+    <p>É isto que você vai praticar quatro vezes, uma por etapa: fechar as decisões, escrever, gerar, conferir. A <a href="#e1">etapa 1</a> já vem com a spec pronta e com o prompt que sai dela, para você ver o formato antes de escrever o seu na etapa 2. A outra metade &mdash; como conferir o que voltou &mdash; tem seção própria em <a href="#ia">A IA como copiloto</a>.</p>
+  </section>
+
+  <section id="e1">
+    <p class="h2big">Etapa 1 &mdash; Ingestão</p>
+    <p class="small" style="margin-top:-8px;margin-bottom:18px">Aula 1 &middot; <code>pipeline/db.py</code> &middot; <code>pipeline/ingestao.py</code></p>
+
+    <div class="spec">
+      <p class="spec-h">Antes de escrever a primeira linha</p>
+      <p>Ingestão parece o pedaço bobo do pipeline — ler arquivo e gravar. É o que engana. Quase todo defeito difícil de achar depois nasce de uma decisão que ninguém tomou aqui, e sim deixou acontecer. Feche estas sete antes de abrir o editor; são dez minutos e valem a aula inteira.</p>
+      <ol class="body">
+        <li><strong>Que tabelas existem e como se chamam.</strong> Escreva o mapa <code>arquivo &rarr; tabela</code> inteiro antes. <code>olist_order_items_dataset.csv.gz</code> vira <code>raw.itens_pedido</code> ou <code>raw.order_items</code>? Traduzir ou manter o original? Não existe resposta certa — existe resposta <em>escrita</em>, porque daqui a duas aulas você vai escrever esse nome de memória num <code>JOIN</code>.</li>
+        <li><strong>O que é proibido fazer aqui.</strong> Diga na spec, com todas as letras: nenhuma conversão de tipo, nenhuma linha descartada, nenhum nome de coluna alterado. Sem essa frase, a tentação de "já que estou aqui, corrijo" sempre vence — e some a fronteira entre o dado que chegou e o dado que você decidiu.</li>
+        <li><strong>O que acontece ao rodar duas vezes.</strong> Recria a tabela, acrescenta, ou dá erro? Só uma dessas respostas deixa você errar sem medo. Escolha recriar e escreva isso: é o que sustenta a promessa de rodar de novo quando travar.</li>
+        <li><strong>Como o arquivo é lido.</strong> Encoding declarado (<code>utf-8</code>), nunca adivinhado; <code>.csv.gz</code> lido direto, sem descompactar. Duas linhas na spec que economizam a meia hora clássica de caçar acento quebrado.</li>
+        <li><strong>Quem decide os tipos.</strong> Deixar o leitor inferir, ou trazer tudo como texto e converter só na etapa 2? Inferência é confortável até o dia em que ela lê um CEP com zero à esquerda como número e o zero some. Decida — e anote por quê.</li>
+        <li><strong>O que aparece na tela.</strong> Defina o formato da saída: uma linha por tabela, com nome e contagem. Isso não é enfeite, é seu único instrumento de conferência nesta etapa — e é o que você vai comparar com a tabela de contagens.</li>
+        <li><strong>O que fazer quando der errado.</strong> Faltou um arquivo em <code>raw/</code>: para tudo com mensagem clara, ou pula e continua? Prefira parar. Um pipeline que ingere oito de nove tabelas em silêncio produz um dashboard errado que parece certo.</li>
+      </ol>
+      <p class="spec-foot">Essa lista é também um bom prompt: entregue as sete decisões escritas para a IA e peça o código. O que você vai avaliar não é se ele roda — é se ele respeita o que você decidiu.</p>
+    </div>
+
+    <details class="spec spec-det">
+      <summary class="spec-h">O prompt &middot; spec-driven development<span class="spec-cue"></span></summary>
+      <p>As sete decisões acima, escritas no formato que a IA consegue obedecer. É isso que <em>spec-driven development</em> significa na prática: a spec é o artefato principal, o código é consequência dela. Você revisa a spec antes de rodar, e depois revisa o código <strong>contra</strong> a spec — não contra a sua intuição.</p>
+      <p class="cmdlabel">Cole no Claude Code, ChatGPT ou Copilot</p>
+      <div class="codewrap"><pre>CONTEXTO
+Estou construindo um pipeline de dados em Python sobre o dataset público da
+Olist (e-commerce brasileiro, 2016-2018). Trabalho com spec-driven development:
+a spec abaixo é a fonte da verdade e o código é consequência dela. Não
+acrescente requisito que não esteja escrito aqui. Se algo estiver ambíguo,
+pergunte antes de escrever código.
+
+STACK
+- Python 3.13, dependências gerenciadas com uv
+- pandas para ler os arquivos
+- DuckDB como banco, arquivo olist.duckdb na raiz do projeto
+- Nenhum orquestrador. Script executável pela linha de comando.
+
+O QUE JÁ EXISTE
+Só a pasta raw/ com os nove .csv.gz e o pyproject.toml. Nenhum código ainda.
+
+ARTEFATOS A PRODUZIR, nesta ordem
+1. pipeline/db.py, o módulo de conexão que as quatro etapas do curso vão
+   importar (spec própria logo abaixo; é a primeira coisa a existir)
+2. pipeline/ingestao.py, executável com:
+     uv run python -m pipeline.ingestao
+3. ui.py, na raiz do projeto, executável com:
+     uv run python ui.py
+   (spec própria no fim deste prompt; ui.py e ingestao.py não se importam)
+
+SPEC DO pipeline/db.py (primeiro artefato)
+Expõe exatamente isto, com estes nomes:
+  PASTA_RAW                          Path da pasta raw/ com os nove .csv.gz
+  conectar()                         abre o olist.duckdb, criando se faltar
+  criar_schema(con, nome)            CREATE SCHEMA IF NOT EXISTS
+  gravar(con, df, schema, tabela)    grava e devolve a contagem lida do banco
+
+D1. CAMINHOS
+    PASTA_RAW e o olist.duckdb são resolvidos a partir da localização do
+    próprio db.py (a pasta acima de pipeline/), nunca do diretório corrente.
+    Motivo: rodar o script de outra pasta não pode criar um olist.duckdb
+    vazio no lugar errado, que parece ingestão quebrada.
+D2. TRÊS FUNÇÕES E UMA CONSTANTE, NADA MAIS
+    db.py não lê CSV, não conhece nome de tabela, não imprime nada e não
+    converte tipo. Quem decide tudo isso é cada etapa.
+    Motivo: as aulas 2, 3 e 4 importam este arquivo. Regra de negócio
+    escondida aqui vale para todas as etapas sem aparecer em nenhuma spec.
+D3. gravar
+    Recria a tabela (CREATE OR REPLACE TABLE schema.tabela) com as colunas
+    e os tipos do DataFrame, sem alterar nada: coluna str vira VARCHAR,
+    nulo continua NULL. Não deixa view ou tabela temporária para trás.
+    Devolve SELECT count(*) da tabela recém-gravada, lido do banco.
+    Motivo: a contagem que aparece na tela tem que ser a do que foi
+    gravado, não a do que estava na memória.
+D4. CONEXÃO
+    conectar() devolve a conexão aberta; quem chama é quem fecha.
+    db.py não guarda conexão global.
+
+CRITÉRIOS DE ACEITE (db.py)
+- Importar pipeline.db não abre banco nem cria arquivo nenhum.
+- conectar() chamado de dentro de outra pasta cria o olist.duckdb na raiz
+  do projeto, e não na pasta corrente.
+- gravar() com um DataFrame de 3 linhas devolve 3, e rodar duas vezes
+  continua devolvendo 3.
+
+SPEC DA INGESTÃO (segundo artefato)
+
+1. ESCOPO E NOMES
+   Schema de destino: raw
+   Mapa arquivo -&gt; tabela, completo e literal:
+     olist_orders_dataset.csv.gz               -&gt; pedidos
+     olist_order_items_dataset.csv.gz          -&gt; itens_pedido
+     olist_order_payments_dataset.csv.gz       -&gt; pagamentos
+     olist_order_reviews_dataset.csv.gz        -&gt; avaliacoes
+     olist_customers_dataset.csv.gz            -&gt; clientes
+     olist_sellers_dataset.csv.gz              -&gt; vendedores
+     olist_products_dataset.csv.gz             -&gt; produtos
+     product_category_name_translation.csv.gz  -&gt; traducao_categorias
+     olist_geolocation_dataset.csv.gz          -&gt; geolocalizacao
+   Os nomes vão para o português porque é o vocabulário que vou digitar de
+   memória num JOIN nas próximas aulas.
+
+2. PROIBIÇÕES (a regra central desta etapa)
+   Nenhuma conversão de tipo. Nenhuma linha descartada ou deduplicada.
+   Nenhum nome de coluna alterado. Nenhum valor corrigido, preenchido ou
+   normalizado. Data continua texto, nulo continua nulo.
+   Motivo: a fronteira entre "o dado que chegou" e "o dado que eu decidi"
+   precisa existir em algum lugar, e esse lugar é a passagem de raw para
+   refined, na etapa 2. Se a correção acontecer aqui, a fronteira some.
+
+3. REEXECUÇÃO
+   Rodar dez vezes tem que dar o mesmo resultado que rodar uma: a tabela é
+   recriada (CREATE OR REPLACE), nunca acrescentada. É o que me deixa errar
+   sem medo.
+
+4. LEITURA DO ARQUIVO
+   encoding declarado como utf-8, nunca adivinhado.
+   Os .csv.gz são lidos direto, sem descompactar.
+   Campo vazio continua virando nulo; não transforme em string vazia.
+
+5. TIPAGEM
+   Toda coluna entra como texto (dtype=str), inferência desligada.
+   Motivo: inferência lê CEP com zero à esquerda como número e o zero
+   desaparece sem aviso. A conversão acontece na etapa 2, onde é uma
+   decisão registrada.
+
+6. SAÍDA NA TELA
+   Uma linha por tabela, com nome qualificado e contagem de linhas vinda do
+   banco (não do DataFrame), milhar separado por ponto.
+   Uma linha final com o total.
+   Essa saída é meu único instrumento de conferência nesta etapa.
+   O stdout precisa ser reconfigurado para utf-8: rodo no Prompt de Comando
+   do Windows, onde acento sai embaralhado por padrão.
+
+7. ERRO
+   Antes de abrir o banco, verifique se os nove arquivos existem.
+   Faltando qualquer um: liste os que faltam, diga em que pasta procurou e
+   encerre com sys.exit(1). Não ingira parcialmente.
+   Motivo: ingerir oito de nove tabelas em silêncio produz um dashboard
+   errado que parece certo.
+
+CRITÉRIOS DE ACEITE (ingestão)
+- A execução imprime nove linhas e um total de 1.550.922 registros.
+- Rodar duas vezes seguidas imprime exatamente a mesma coisa.
+- SELECT * FROM raw.pedidos devolve todas as colunas como VARCHAR.
+- Remover um arquivo da pasta faz o script parar antes de gravar qualquer
+  tabela.
+- O script termina sozinho e devolve o terminal: nenhum processo fica de pé.
+
+SPEC DO ui.py (terceiro artefato)
+Quero explorar o banco pelo navegador, em vez de ler tabela no terminal.
+
+U1. O QUE FAZ
+    Abre o olist.duckdb da raiz do projeto, instala e carrega a extensão
+    `ui` do DuckDB (INSTALL ui; LOAD ui;) e chama CALL start_ui(), que sobe
+    o servidor em http://localhost:4213 e abre o navegador.
+U2. FICA DE PÉ ATÉ CTRL+C
+    A extensão serve enquanto a conexão estiver viva. O script mantém o
+    processo rodando, imprime a URL e a instrução "Ctrl+C para encerrar", e
+    no Ctrl+C fecha a conexão e sai limpo, sem traceback.
+    Motivo: o arquivo .duckdb aceita um único processo escrevendo. Com o
+    ui.py de pé, a ingestão falha com "Could not set lock on file". Saber
+    exatamente como desligar o servidor faz parte da ferramenta.
+U3. NÃO CRIA BANCO
+    Se olist.duckdb não existir, diga que é preciso rodar a ingestão antes
+    e encerre com sys.exit(1). Por isso NÃO use conectar() de pipeline/db.py,
+    que cria o arquivo quando ele falta: um banco vazio aberto no navegador
+    parece ingestão quebrada.
+U4. SEPARAÇÃO
+    ui.py não importa pipeline/ingestao.py, e a ingestão não importa ui.py:
+    a ingestão não sobe servidor, não abre navegador e não depende da
+    extensão ui para rodar.
+U5. SAÍDA NA TELA
+    Mesma regra do item 6: stdout reconfigurado para utf-8.
+
+CRITÉRIOS DE ACEITE (ui.py)
+- uv run python ui.py abre o navegador em localhost:4213 e o schema raw
+  aparece com as nove tabelas.
+- Ctrl+C devolve o terminal sem traceback, e logo depois a ingestão roda
+  sem erro de lock.
+- Renomear olist.duckdb faz o ui.py parar com a mensagem, sem criar arquivo
+  novo.
+
+ENTREGA, nesta ordem, para cada um dos três arquivos
+1. A spec como docstring no topo do arquivo, dizendo por que cada regra
+   existe — não só o que ela manda fazer.
+2. O código, com comentários apenas onde a decisão não é óbvia pelo código.
+3. Uma lista final do que você assumiu e que não estava na spec. Se a lista
+   não estiver vazia, é a minha spec que precisa melhorar.</pre><button class="copy" type="button">copiar</button></div>
+      <p class="spec-foot">Repare no item 3 da entrega. Ele é o truque do método: tudo que a IA precisou assumir é um buraco na sua spec, e vira a próxima linha dela. Dois ciclos disso e a spec passa a valer mais que o código — porque é dela que sai o código de novo, quando a etapa 2 mudar de ideia sobre alguma coisa.</p>
+    </details>
+
+    <article class="step" data-id="s3">
+      <div class="step-head">
+        <span class="step-n">03</span>
+        <div><p class="step-title">Rodar a ingestão</p><p class="step-sub">CSV &rarr; schema <code>raw</code> no olist.duckdb</p></div>
+      </div>
+      <div class="step-body">
+        <p>A regra desta etapa é a mais fácil de dizer e a mais fácil de trair: <strong>não transforme nada</strong>. Data continua texto, nulo continua nulo, nome de coluna continua o que veio. A tentação de "já que estou aqui, deixa eu corrigir" é exatamente o que faz pipeline virar caixa-preta.</p>
+        <div class="codewrap"><pre>uv run python -m pipeline.ingestao</pre><button class="copy" type="button">copiar</button></div>
+        <p>Cada tabela ingerida se anuncia:</p>
+        <pre><span class="ok">&check;</span> raw.pedidos              99.441 linhas
+<span class="ok">&check;</span> raw.itens_pedido        112.650 linhas
+<span class="ok">&check;</span> raw.clientes             99.441 linhas</pre>
+        <div class="verify"><p class="vh">Confira</p><p>Os números da tela batem com a <a href="#contagens">tabela de contagens</a>? Então a ingestão está certa. Não bateu — <em>não continue</em>. Dado errado aqui contamina tudo que vem depois, e você vai caçar o erro três etapas adiante.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-s3"> Marcar como feito</label>
+      </div>
+    </article>
+
+    <article class="step" data-id="s4">
+      <div class="step-head">
+        <span class="step-n">04</span>
+        <div><p class="step-title">Olhar o dado com os próprios olhos</p><p class="step-sub">O primeiro SELECT, no notebook do DuckDB</p></div>
+      </div>
+      <div class="step-body">
+        <p>O DuckDB tem interface web própria, e ela roda na sua máquina. Suba o servidor:</p>
+        <div class="codewrap"><pre>uv run python ui.py</pre><button class="copy" type="button">copiar</button></div>
+        <p>O navegador abre em <code>localhost:4213</code>. À esquerda, os schemas do banco &mdash; clique em <code>raw</code> e as nove tabelas estão lá, com as colunas de cada uma. Clicar numa tabela já mostra as primeiras linhas, sem escrever nada.</p>
+        <p>À direita fica o <strong>notebook</strong>: células de SQL, uma embaixo da outra, cada uma com seu resultado em tabela logo abaixo. É o mesmo formato de um notebook de Python &mdash; só que a linguagem é SQL e o resultado sai direto do banco. Rode cada célula com <code>Ctrl+Enter</code>.</p>
+        <p class="cmdlabel">Célula 1 &middot; as primeiras linhas</p>
+        <div class="codewrap"><pre>SELECT * FROM raw.pedidos LIMIT 5;</pre><button class="copy" type="button">copiar</button></div>
+        <p class="cmdlabel">Célula 2 &middot; que colunas existem, e de que tipo</p>
+        <div class="codewrap"><pre>DESCRIBE raw.pedidos;</pre><button class="copy" type="button">copiar</button></div>
+        <p class="cmdlabel">Célula 3 &middot; o tamanho da coisa</p>
+        <div class="codewrap"><pre>SELECT count(*) AS linhas FROM raw.pedidos;</pre><button class="copy" type="button">copiar</button></div>
+        <p>Guarde o notebook aberto: ele volta em todas as aulas. A partir daqui, toda pergunta que você tiver sobre o dado se responde numa célula nova &mdash; e é assim que os <code>SELECT</code> da etapa 3 vão nascer, testados um por um antes de virarem arquivo <code>.sql</code>.</p>
+        <div class="note"><b>Encerre o servidor antes de rodar o pipeline.</b> O arquivo <code>olist.duckdb</code> aceita <strong>um único processo escrevendo nele</strong>. Com o <code>ui.py</code> de pé, a transformação da próxima aula falha com <code>IO Error: Could not set lock on file</code> &mdash; que parece corrupção de banco e não é. <code>Ctrl+C</code> no terminal do <code>ui.py</code> resolve. A regra do curso: servidor para olhar, terminal para escrever, nunca os dois ao mesmo tempo.</div>
+        <div class="note"><b>Na primeira vez o DuckDB baixa a extensão <code>ui</code>.</b> São poucos megabytes e precisa de internet, uma vez só. Depois disso funciona offline.</div>
+        <div class="verify"><p class="vh">Confira</p><p>Na célula 2, repare no tipo das colunas de data: <code>VARCHAR</code>, texto puro &mdash; e <code>order_id</code> também. Guarde essa imagem, porque é exatamente o que a etapa 2 vai consertar: rodar o mesmo <code>DESCRIBE</code> em <code>refined.pedidos</code> e ver <code>TIMESTAMP</code> no lugar é como você vai saber que ela funcionou.</p></div>
+        <details>
+          <summary>A extensão não baixou &mdash; como olhar o dado pelo terminal</summary>
+          <p>Rede corporativa costuma bloquear o download da extensão. O plano B devolve as mesmas cinco linhas, só mais feio:</p>
+          <div class="codewrap"><pre>uv run python -X utf8 -c "import duckdb; print(duckdb.connect('olist.duckdb').sql('SELECT * FROM raw.pedidos LIMIT 5'))"</pre><button class="copy" type="button">copiar</button></div>
+          <p>O <code>-X utf8</code> não é decoração: o DuckDB desenha a tabela com caracteres de moldura, e o Prompt de Comando do Windows, que por padrão não fala UTF-8, estoura com <code>UnicodeEncodeError: 'charmap' codec can't encode characters</code>. Parece erro de código e não é &mdash; o dado está perfeito, quem não sabe imprimir é o terminal.</p>
+        </details>
+        <label class="mark"><input type="checkbox" id="chk-s4"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <div class="embreve">
+    <b>As etapas 2 a 5 abrem depois da aula 1.</b> O caminho inteiro está desenhado na
+    <a href="#construir">arquitetura</a> e resumido em <a href="#encontros">os quatro encontros</a> —
+    o passo a passo de cada etapa é liberado no fim do encontro anterior, para a turma chegar
+    na aula sem ter lido a resposta.
+  </div>
+
+  <!-- OCULTO: etapas 2 a 5. Para liberar, remova o atributo hidden da div abaixo,
+       descomente os itens do menu lateral e renumere as seções. -->
+  <div class="oculto" hidden>
+  <section id="e2">
+    <p class="h2big">Etapa 2 &mdash; Transformação</p>
+    <p class="small" style="margin-top:-8px;margin-bottom:18px">Aula 2 &middot; <code>pipeline/transformacao.py</code></p>
+
+    <article class="step" data-id="s5">
+      <div class="step-head">
+        <span class="step-n">05</span>
+        <div><p class="step-title">De raw para refined</p><p class="step-sub">Onde o dado passa a merecer confiança</p></div>
+      </div>
+      <div class="step-body">
+        <p>Três coisas acontecem aqui, e a terceira é a que separa quem sabe de quem copia:</p>
+        <ol class="body">
+          <li><strong>Tipo.</strong> Texto que é data vira <code>TIMESTAMP</code>, com formato declarado — nunca adivinhado.</li>
+          <li><strong>Duplicata.</strong> Some, mas só depois de você saber quantas eram e por que existiam.</li>
+          <li><strong>Nulo.</strong> Cada um vira uma decisão explícita e escrita. Um pedido sem <code>data_aprovacao</code> não é um erro no arquivo: é um pedido que nunca foi aprovado. Isso é informação. Apagar a linha seria apagar um fato.</li>
+        </ol>
+        <div class="codewrap"><pre>uv run python -m pipeline.transformacao</pre><button class="copy" type="button">copiar</button></div>
+        <p>A saída mostra o antes e o depois, que é a parte que ensina:</p>
+        <pre>refined.pedidos    99.441 &rarr; 99.441 linhas   (0 duplicatas)
+  data_aprovacao: nulos mantidos <span class="c">(pedido não aprovado — é informação, não erro)</span></pre>
+        <div class="verify"><p class="vh">Confira</p><p>Toda linha que sumiu tem que ter explicação. Se entraram 99.441 e saíram 98.900, você precisa saber o nome das 541 — e concordar com o sumiço. "Deve ser lixo" não é resposta.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-s5"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <section id="e3">
+    <p class="h2big">Etapa 3 &mdash; Marts em SQL</p>
+    <p class="small" style="margin-top:-8px;margin-bottom:18px">Aula 3 &middot; <code>sql/marts/*.sql</code></p>
+
+    <article class="step" data-id="s6">
+      <div class="step-head">
+        <span class="step-n">06</span>
+        <div><p class="step-title">Quatro perguntas, quatro arquivos</p><p class="step-sub">Cada um sobe um degrau</p></div>
+      </div>
+      <div class="step-body">
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Arquivo</th><th>Pergunta</th><th>Técnica nova</th></tr></thead>
+            <tbody>
+              <tr><td class="term">01_vendas_mensais</td><td>Quanto vendemos por mês?</td><td><code>GROUP BY</code>, <code>date_trunc</code></td></tr>
+              <tr><td class="term">02_top_categorias</td><td>Quais categorias mais vendem?</td><td><code>JOIN</code> com a tradução</td></tr>
+              <tr><td class="term">03_entrega_no_prazo</td><td>Quanto chegou no prazo?</td><td><code>CASE WHEN</code> + datas</td></tr>
+              <tr><td class="term">04_nota_por_categoria</td><td>Nota média e ranking</td><td>CTE + window function</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="codewrap"><pre>uv run python -m pipeline.marts</pre><button class="copy" type="button">copiar</button></div>
+        <div class="note"><b>Por que SQL aqui e não pandas.</b> É a divisão de trabalho do curso inteiro: Python faz o que SQL faz mal — abrir arquivo, corrigir tipo, chamar API. SQL faz o que Python faz mal — agregar, juntar, rankear. Sair daqui sabendo <em>quando</em> usar cada um vale mais que decorar a sintaxe dos dois.</div>
+        <div class="verify"><p class="vh">Confira</p><p>Os quatro marts existem e nenhum volta vazio. Um mart vazio quase sempre é um <code>JOIN</code> que não casou — comece conferindo se as chaves dos dois lados têm o mesmo tipo.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-s6"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <section id="e4">
+    <p class="h2big">Etapa 4 &mdash; Dashboard</p>
+    <p class="small" style="margin-top:-8px;margin-bottom:18px">Aula 4 &middot; <code>app.py</code></p>
+
+    <article class="step" data-id="s7">
+      <div class="step-head">
+        <span class="step-n">07</span>
+        <div><p class="step-title">Subir o Streamlit</p><p class="step-sub">Uma página, dois gráficos, um filtro</p></div>
+      </div>
+      <div class="step-body">
+        <div class="codewrap"><pre>uv run streamlit run app.py</pre><button class="copy" type="button">copiar</button></div>
+        <p>Abre sozinho no navegador, em <code>localhost:8501</code>.</p>
+        <div class="note"><b>A regra do dashboard: ele não calcula nada.</b> Só <code>SELECT</code>. No dia em que você precisar de um número que não existe, a resposta certa é escrever um <code>.sql</code> novo em <code>sql/marts/</code> — nunca um <code>groupby</code> no <code>app.py</code>. Cálculo no dashboard é regra de negócio escondida num lugar onde ninguém procura.</div>
+        <div class="verify"><p class="vh">Confira</p><p>Mexa no filtro e veja os dois gráficos mudarem juntos. Se um muda e o outro não, é porque ele não está lendo o mesmo filtro.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-s7"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+
+  <section id="e5">
+    <p class="h2big">Etapa 5 &mdash; A rede de segurança</p>
+    <p class="small" style="margin-top:-8px;margin-bottom:18px">Aula 4 &middot; <code>tests/</code></p>
+
+    <article class="step" data-id="s8">
+      <div class="step-head">
+        <span class="step-n">08</span>
+        <div><p class="step-title">Rodar os testes</p><p class="step-sub">Dez segundos para saber se ainda funciona</p></div>
+      </div>
+      <div class="step-body">
+        <p>O repositório já vem com uns quinze testes. Eles não testam <em>como</em> o código faz — testam se o resultado continua verdadeiro: o pipeline roda do zero, as contagens batem, nenhum mart volta vazio.</p>
+        <div class="codewrap"><pre>uv run pytest
+uv run ruff check .</pre><button class="copy" type="button">copiar</button></div>
+        <div class="verify"><p class="vh">Confira</p><p>Verde. Agora faça o contrário: quebre um <code>.sql</code> de propósito, rode de novo e veja qual teste fica vermelho. Um teste em que você nunca viu falhar não é uma rede de segurança — é decoração.</p></div>
+        <label class="mark"><input type="checkbox" id="chk-s8"> Marcar como feito</label>
+      </div>
+    </article>
+  </section>
+  </div>
+  <!-- /OCULTO -->
+
+  <section id="ia">
+    <h2>06 &middot; Método</h2>
+    <p class="h2big">A IA é copiloto — e copiloto se confere</p>
+    <p>Use Claude, ChatGPT, o que preferir, à vontade, o curso inteiro. Não tem nada de errado em pedir a função pronta. O que tem de errado é <strong>colar sem conferir</strong> — e essa é a habilidade que o curso realmente treina.</p>
+    <p>O motivo é específico: em código de dados, o erro da IA quase nunca estoura. Ela escreve um <code>JOIN</code> que roda liso e duplica 4.000 linhas. Um <code>dropna()</code> que apaga 12% da base em silêncio. Um <code>parse</code> de data que lê 03/04 como 4 de março. Nada disso lança exceção. O código "funciona" e o número está errado — que é o pior defeito possível, porque alguém vai decidir com base nele.</p>
+    <p>Daí o hábito, que vale para cada sugestão que você aceitar:</p>
+    <ol class="body">
+      <li><strong>Conte antes.</strong> Quantas linhas tem agora?</li>
+      <li><strong>Rode.</strong></li>
+      <li><strong>Conte depois.</strong> Mudou? Você sabia que ia mudar? Consegue explicar a diferença exata?</li>
+    </ol>
+    <p>São três segundos. É por isso que cada etapa deste pipeline imprime contagem na tela — o hábito está embutido na ferramenta, para você não precisar lembrar dele.</p>
+  </section>
+
+  <section id="desafios">
+    <h2>07 &middot; Para casa</h2>
+    <p class="h2big">O desafio da aula 1</p>
+    <p>Um desafio por aula, entregue no fim do encontro e corrigido ao vivo no começo do seguinte. Todos seguem a mesma regra: usam o que foi dado em aula, mas exigem um passo que <em>não</em> foi mostrado. É de propósito — é o degrau que separa consolidar de copiar.</p>
+    <p>Traga feito. Se não saiu, traga quebrado: erro de todo mundo na tela é a parte mais útil da correção, e quem só assiste acerto nunca aprende a depurar.</p>
+
+    <div class="desafios">
+      <article class="desafio">
+        <div class="de-n"><b>01</b>ingestão</div>
+        <div>
+          <h3>O que esse dado é capaz de responder</h3>
+          <p>Abra o notebook do DuckDB e passeie pelas nove tabelas de <code>raw</code>: coluna por coluna, uma por uma. Depois escreva <strong>dez indicadores</strong> que esse dado permitiria calcular — e, para cada um, de que tabelas ele sai.</p>
+          <p>Nada de SQL ainda: o desafio é de leitura, não de código. Uma linha por indicador, neste formato:</p>
+          <p class="entrega-ex"><code>Ticket médio por pedido &mdash; itens_pedido (preco) + pedidos (order_id) &mdash; mede quanto vale uma venda típica</code></p>
+          <p>Três regras para a lista não virar chute:</p>
+          <ol class="body">
+            <li><strong>Só vale o que o dado sustenta.</strong> Se nenhuma coluna te dá a informação, o indicador não entra — por mais que o negócio quisesse. Descobrir isso é metade do exercício: <em>margem de lucro</em>, por exemplo, não tem como sair daqui, e saber dizer por quê vale mais que dez indicadores fáceis.</li>
+            <li><strong>Diga de onde sai.</strong> Nome da tabela e da coluna. É aqui que você descobre que quase nada interessante mora numa tabela só — e é esse o motivo de existir <code>JOIN</code>.</li>
+            <li><strong>Pelo menos três precisam cruzar duas tabelas ou mais.</strong> Os indicadores de uma tabela só são os óbvios; os bons atravessam.</li>
+          </ol>
+          <p>Marque com um <code>?</code> os que você não tem certeza se dão. Esses são os melhores — e são o começo da aula 2.</p>
+          <p class="entrega">Entrega: a lista dos dez, em <code>indicadores.md</code> na raiz do projeto, colada no <a href="https://github.com/ckoliveiraa/pipeline-olist/issues/new?template=desafio-01.yml" target="_blank" rel="noopener">formulário de entrega do desafio 1</a> (precisa de conta no GitHub). Vamos ler em voz alta na correção e escolher juntos quais viram os marts do curso.</p>
+        </div>
+      </article>
+
+      <!-- OCULTO: liberar junto com a aula 2 (remover o hidden da div abaixo) -->
+      <div class="oculto" hidden>
+      <article class="desafio">
+        <div class="de-n"><b>02</b>transformação</div>
+        <div>
+          <h3>Limpar o que não tem resposta certa</h3>
+          <p>A tabela de avaliações tem texto livre, nulo em quantidade e datas fora de ordem. Limpe — e justifique <em>cada</em> escolha por escrito. Sem justificativa não vale, porque o que está sendo avaliado é o critério, não o código.</p>
+          <p class="entrega">Entrega: a tabela em <code>refined</code> e uma linha de justificativa por decisão tomada.</p>
+        </div>
+      </article>
+
+      <article class="desafio">
+        <div class="de-n"><b>03</b>SQL</div>
+        <div>
+          <h3>O quinto mart</h3>
+          <p>Escreva <code>05_ticket_medio_por_estado.sql</code>: o ticket médio por estado do cliente. Ele precisa de um <code>JOIN</code> que não apareceu em aula — o estado está em <code>clientes</code>, o valor está em <code>itens_pedido</code>, e os dois não se tocam diretamente. Descobrir o caminho entre eles é o desafio.</p>
+          <p class="entrega">Entrega: o arquivo <code>.sql</code> rodando e a tabela em <code>marts</code>, não vazia.</p>
+        </div>
+      </article>
+
+      <article class="desafio">
+        <div class="de-n"><b>04</b>dash</div>
+        <div>
+          <h3>Fechar o ciclo</h3>
+          <p>Coloque o seu quinto mart no dashboard, com um filtro novo, <strong>e</strong> escreva um teste que garanta que ele nunca volta vazio. É o curso inteiro em miniatura: uma pergunta de negócio que atravessa SQL, apresentação e verificação.</p>
+          <p class="entrega">Entrega: o gráfico no <code>app.py</code> e o teste passando em <code>uv run pytest</code>.</p>
+        </div>
+      </article>
+      </div>
+      <!-- /OCULTO -->
+    </div>
+    <p class="small">Os desafios 2, 3 e 4 são publicados no fim de cada encontro.</p>
+  </section>
+
+  <section id="contagens">
+    <h2>A1 &middot; Anexo</h2>
+    <p class="h2big">Contagens esperadas</p>
+    <p>Medido nos arquivos do curso. São <strong>registros</strong>, não linhas de arquivo — há quebras de linha dentro dos comentários de avaliação, então <code>wc -l</code> vai te dar outro número (e vai estar certo, a pergunta é que era outra).</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Arquivo em <code>raw/</code></th><th style="text-align:right">Registros</th></tr></thead>
+        <tbody>
+          <tr><td class="term">olist_customers_dataset.csv.gz</td><td class="num">99.441</td></tr>
+          <tr><td class="term">olist_geolocation_dataset.csv.gz</td><td class="num">1.000.163</td></tr>
+          <tr><td class="term">olist_order_items_dataset.csv.gz</td><td class="num">112.650</td></tr>
+          <tr><td class="term">olist_order_payments_dataset.csv.gz</td><td class="num">103.886</td></tr>
+          <tr><td class="term">olist_order_reviews_dataset.csv.gz</td><td class="num">99.224</td></tr>
+          <tr><td class="term">olist_orders_dataset.csv.gz</td><td class="num">99.441</td></tr>
+          <tr><td class="term">olist_products_dataset.csv.gz</td><td class="num">32.951</td></tr>
+          <tr><td class="term">olist_sellers_dataset.csv.gz</td><td class="num">3.095</td></tr>
+          <tr><td class="term">product_category_name_translation.csv.gz</td><td class="num">71</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Uma pergunta para levar para a aula 1: <code>customers</code> e <code>orders</code> têm exatamente 99.441 linhas cada. Coincidência ou isso diz alguma coisa sobre como a Olist trata cliente?</p>
+  </section>
+
+  <section id="erros">
+    <h2>A2 &middot; Anexo</h2>
+    <p class="h2big">Quando quebrar</p>
+
+    <details>
+      <summary>Acentos viraram símbolos estranhos</summary>
+      <p>O CSV é UTF-8 e o Python assumiu outro encoding. Declare sempre: <code>encoding="utf-8"</code>. Nunca deixe adivinhar — no Windows o palpite costuma ser <code>cp1252</code>, e aí <code>São Paulo</code> vira <code>SÃ£o Paulo</code>.</p>
+    </details>
+
+    <details>
+      <summary>As datas estão certas, mas o mês é o dia</summary>
+      <p>Clássico brasileiro: <code>03/04/2017</code> lido como 4 de março. Declare o formato ao converter em vez de aceitar inferência. O sintoma que entrega o problema é um gráfico mensal em que só existem dados até o dia 12.</p>
+    </details>
+
+    <details>
+      <summary>A geolocalização demora uma eternidade</summary>
+      <p>Ela tem 1.000.163 linhas — sozinha, é dois terços do dataset inteiro. Não está travada, está trabalhando. É exatamente por isso que ela fica fora da aula 1 e vira desafio.</p>
+    </details>
+
+    <details>
+      <summary>Um mart voltou vazio</summary>
+      <p>Quase sempre é um <code>JOIN</code> que não casou. Rode um <code>COUNT</code> em cada lado separado antes de juntar: se os dois têm linhas e o <code>JOIN</code> não tem, o problema é a chave — tipo diferente, espaço sobrando, ou maiúscula contra minúscula.</p>
+    </details>
+
+    <details>
+      <summary>Quebrei tudo e não sei onde</summary>
+      <p>Esta é a saída de emergência, e usar não é vergonha nenhuma:</p>
+      <div class="codewrap"><pre>uv run python executar.py</pre><button class="copy" type="button">copiar</button></div>
+      <p>Apaga o banco, roda ingestão, transformação e marts na ordem, e te devolve exatamente onde a turma está. Existe para isto.</p>
+    </details>
+  </section>
+
+  <section id="comandos">
+    <h2>A3 &middot; Anexo</h2>
+    <p class="h2big">Todos os comandos</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Comando</th><th>O que faz</th></tr></thead>
+        <tbody>
+          <tr><td class="term">uv init --bare</td><td>Cria o <code>pyproject.toml</code></td></tr>
+          <tr><td class="term">uv add &lt;pacote&gt;</td><td>Adiciona uma biblioteca</td></tr>
+          <tr><td class="term">uv sync</td><td>Prepara o ambiente a partir do lock</td></tr>
+          <tr><td class="term">uv run python -m pipeline.ingestao</td><td>CSV &rarr; <code>raw</code></td></tr>
+          <tr><td class="term">uv run python -m pipeline.transformacao</td><td><code>raw</code> &rarr; <code>refined</code></td></tr>
+          <tr><td class="term">uv run python -m pipeline.marts</td><td><code>refined</code> &rarr; <code>marts</code></td></tr>
+          <tr><td class="term">uv run python executar.py</td><td>Tudo do zero</td></tr>
+          <tr><td class="term">uv run python ui.py</td><td>Sobe o notebook SQL do DuckDB em <code>localhost:4213</code></td></tr>
+          <tr><td class="term">uv run streamlit run app.py</td><td>Abre o dashboard</td></tr>
+          <tr><td class="term">uv run pytest</td><td>Roda os testes</td></tr>
+          <tr><td class="term">uv run ruff check .</td><td>Confere o estilo do código</td></tr>
+          <tr><td class="term">uv run python -X utf8 ...</td><td>Idem, com acentos e tabelas corretos no Windows</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Todo comando começa com <code>uv run</code> porque é isso que garante que você está usando as bibliotecas do projeto, e não as que estão soltas na sua máquina. A referência completa está na <a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">documentação do uv</a>.</p>
+  </section>
+
+  <footer>
+    Curso Olist &middot; 4 encontros de 1h20 &middot; dados públicos da Olist Store (Kaggle, CC BY-NC-SA 4.0).<br>
+    Seu progresso fica salvo neste navegador.
+  </footer>
+
+</div>
+</main>
+</div>
+
+<script>
+(function(){
+  // Só os passos visíveis contam no progresso: as etapas ainda não liberadas
+  // ficam dentro de uma div [hidden], e contá-las deixaria a barra travada.
+  var steps = Array.prototype.slice.call(document.querySelectorAll(".step"))
+    .filter(function(s){ return !s.closest("[hidden]"); });
+  var fill = document.getElementById("fill");
+  var pct = document.getElementById("pct");
+  var KEY = "olist-progresso";
+
+  function load(){
+    try { return JSON.parse(localStorage.getItem(KEY) || "{}"); }
+    catch(e){ return {}; }
+  }
+  function save(state){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  }
+  function paint(){
+    var done = 0;
+    steps.forEach(function(s){
+      var box = s.querySelector("input[type=checkbox]");
+      if (box.checked){ done++; s.classList.add("done"); }
+      else { s.classList.remove("done"); }
+    });
+    pct.textContent = done + "/" + steps.length;
+    fill.style.width = (steps.length ? (done / steps.length * 100) : 0) + "%";
+  }
+
+  var state = load();
+  steps.forEach(function(s){
+    var id = s.getAttribute("data-id");
+    var box = s.querySelector("input[type=checkbox]");
+    box.checked = !!state[id];
+    box.addEventListener("change", function(){
+      state[id] = box.checked;
+      save(state);
+      paint();
+    });
+  });
+  paint();
+
+  document.getElementById("reset").addEventListener("click", function(){
+    state = {};
+    save(state);
+    steps.forEach(function(s){ s.querySelector("input[type=checkbox]").checked = false; });
+    paint();
+  });
+
+  // copiar
+  document.querySelectorAll(".copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      var txt = pre.innerText.split("\n").filter(function(l){ return l.trim().indexOf("#") !== 0; }).join("\n").trim();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(txt).then(function(){
+          btn.textContent = "copiado";
+          setTimeout(function(){ btn.textContent = "copiar"; }, 1600);
+        });
+      }
+    });
+  });
+
+  // tema
+  var TKEY = "olist-tema";
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem(TKEY);
+    if (saved) root.setAttribute("data-theme", saved);
+  } catch(e){}
+  document.getElementById("theme").addEventListener("click", function(){
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem(TKEY, next); } catch(e){}
+  });
+})();
+</script>
