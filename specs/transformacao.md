@@ -25,12 +25,10 @@ SPEC
 
 1. ESCOPO
    Lê de raw, escreve no schema refined. Nunca escreve em raw.
-   Entram as nove tabelas: pedidos, itens_pedido, pagamentos, clientes,
-   vendedores, produtos, traducao_categorias, avaliacoes e geolocalizacao.
-   Nenhuma tabela fica de fora.
-   geolocalizacao entra como observações geográficas distintas; não será
-   reduzida a uma linha por CEP porque o CEP não identifica uma coordenada
-   única.
+   Entram oito tabelas: pedidos, itens_pedido, pagamentos, clientes,
+   vendedores, produtos, traducao_categorias, avaliacoes.
+   geolocalizacao fica de fora desta etapa porque tem script e spec próprios;
+   os critérios de 550.759 linhas desta transformação continuam separados.
 
 2. NOMES
    Colunas renomeadas para português, snake_case, com o mapa abaixo,
@@ -74,10 +72,6 @@ SPEC
      review_comment_message -> comentario
      review_creation_date -> data_criacao
      review_answer_timestamp -> data_resposta
-   geolocalizacao
-     geolocation_zip_code_prefix -> cep_prefixo
-     geolocation_lat -> latitude            geolocation_lng -> longitude
-     geolocation_city -> cidade             geolocation_state -> uf
 
 3. TIPOS
    Datas com hora: TIMESTAMP, formato declarado '%Y-%m-%d %H:%M:%S'
@@ -96,12 +90,6 @@ SPEC
    Todo o resto continua VARCHAR — inclusive cep_prefixo. Motivo: 23.995
      clientes têm CEP começando com zero; CEP é identificador, nunca é
      somado, e como número perderia o zero.
-   Em geolocalizacao, latitude e longitude viram DECIMAL(23,20). Motivo:
-     as coordenadas são medidas decimais, com até 20 casas fracionárias e
-     até três algarismos inteiros neste snapshot; esse tipo mantém os dígitos
-     recebidos sem a aproximação de DOUBLE. cep_prefixo, cidade e uf ficam
-     VARCHAR. CEP continua sendo identificador; cidade e UF são rótulos, não
-     medidas.
    A conversão é feita em SQL pelo DuckDB (strptime, CAST), disparada pelo
    Python. Motivo: o dado já está no banco; não há por que trazê-lo para a
    memória só para converter tipo.
@@ -123,18 +111,9 @@ SPEC
      avaliacoes (avaliacao_id, pedido_id)
        — avaliacao_id sozinho não é chave: o mesmo id aparece em mais
          de um pedido.
-     geolocalizacao (cep_prefixo, latitude, longitude, cidade, uf)
-       — não há id de observação nem chave única por CEP. A chave é a linha
-         completa: registros com o mesmo CEP e outros valores diferentes
-         são observações distintas, não conflitos.
    Linha inteira repetida: mantém uma, e conta quantas saíram.
    Chave repetida com conteúdo diferente: para, mostra a chave e as linhas
    conflitantes, sys.exit(1). Não escolhe uma por conta própria.
-   Para geolocalizacao, só a repetição da linha completa é duplicata; não
-   agrega coordenadas, não escolhe cidade/UF e não filtra coordenadas
-   extremas. Motivo: 17.823 CEPs têm mais de uma observação distinta, 8.556
-   têm mais de um rótulo de cidade e 8 têm mais de um rótulo de UF. Colapsar
-   essas linhas escolheria uma localização sem regra de negócio.
    Motivo: escolher em silêncio é decidir sem dizer que decidiu.
 
 6. NULOS
@@ -148,39 +127,27 @@ SPEC
    data_entrega, 166 com data_envio antes da data_compra, pedidos com
    mais de uma avaliação). refined não
    corrige fato; quem decide o que fazer com ele é a pergunta que o mart
-   responde. geolocalizacao não tem nulos nas cinco colunas neste snapshot;
-   nenhum valor será preenchido ou removido por nulo.
+   responde.
 
 7. SAÍDA NA TELA
    Uma linha por tabela, no formato:
      refined.pedidos            99.441 -> 99.441 linhas  (0 duplicatas)
-     refined.geolocalizacao     1.000.163 -> 738.332 linhas  (261.831 duplicatas)
    Abaixo dela, indentadas, as colunas com nulo e a contagem:
        nulos mantidos: data_aprovacao 160, data_envio 1.783, data_entrega 2.965
    As contagens vêm do banco, milhar separado por ponto. Linha final com o
-   total. Para geolocalizacao, não há resumo de nulos quando todas as cinco
-   colunas têm contagem zero. stdout reconfigurado para utf-8.
+   total. stdout reconfigurado para utf-8.
 
 REEXECUÇÃO
    CREATE OR REPLACE TABLE, nunca acrescenta. Rodar dez vezes = rodar uma.
 
 ERRO
-   Antes de transformar, verifica se as nove tabelas de entrada existem em
+   Antes de transformar, verifica se as oito tabelas de entrada existem em
    raw. Faltando qualquer uma: lista quais, diz para rodar
    "uv run python -m pipeline.ingestao" e encerra com sys.exit(1).
 
 CRITÉRIOS DE ACEITE
-- Nove tabelas em refined. Nas oito tabelas já especificadas, as 550.759
-  linhas entram e saem sem duplicatas. Em geolocalizacao, 1.000.163 entram,
-  738.332 saem e 261.831 linhas inteiras repetidas são removidas. Total:
-  1.550.922 linhas de entrada e 1.289.091 de saída.
-- refined.geolocalizacao tem 19.015 CEPs distintos; 17.823 CEPs continuam
-  com mais de uma observação, 8.556 com mais de uma cidade e 8 com mais de
-  uma UF. Os 4.354 CEPs distintos iniciados por zero continuam VARCHAR.
-- DESCRIBE refined.geolocalizacao mostra cep_prefixo, cidade e uf como
-  VARCHAR, e latitude e longitude como DECIMAL(23,20).
-- Cada uma das cinco colunas de geolocalizacao tem zero nulos antes e depois;
-  nenhuma latitude ou longitude falha na conversão estrita.
+- Oito tabelas em refined; em cada uma, linhas que saem = linhas que entram
+  (com este dado, 0 duplicatas em todas). Total: 550.759.
 - DESCRIBE refined.pedidos mostra TIMESTAMP nas cinco datas com hora e DATE
   em data_entrega_prevista.
 - Nulos depois = nulos antes, coluna por coluna (pedidos: 160 / 1.783 /
