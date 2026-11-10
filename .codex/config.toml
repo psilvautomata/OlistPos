@@ -1,5 +1,5 @@
 [mcp_servers.duckdb]
-command = "C:/Users/Paulo/.local/bin/uvx.exe"
-args = ["mcp-server-motherduck", "--db-path", "olist.duckdb"]
+command = "C:/Users/Paulo/projetos/pipeline_olist/tools/mcp-duckdb2/.venv/Scripts/mcp-server-motherduck.exe"
+args = ["--db-path", "C:/Users/Paulo/projetos/pipeline_olist/olist.duckdb"]
 cwd = "C:/Users/Paulo/projetos/pipeline_olist"
 startup_timeout_sec = 60

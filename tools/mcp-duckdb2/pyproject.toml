@@ -1,0 +1,8 @@
+[project]
+name = "olist-duckdb-mcp"
+version = "0.1.0"
+requires-python = ">=3.13,<3.14"
+dependencies = ["mcp-server-motherduck==1.1.0"]
+
+[tool.uv]
+override-dependencies = ["duckdb==2.0.0"]
