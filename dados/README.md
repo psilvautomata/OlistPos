@@ -3,12 +3,16 @@
 Os dados do curso **Pipeline Olist**: quatro encontros de 1h20 construindo um pipeline
 de ponta a ponta, do CSV ao dashboard, sobre vendas reais do e-commerce brasileiro.
 
-Este repositório guarda **só os dados**. O código você escreve durante as aulas.
+Este diretório guarda os dados de origem usados pelo projeto e a referência
+visual do dashboard. O código da pipeline e do painel fica na raiz do projeto.
 
 📖 **Guia do curso:** [ckoliveiraa.github.io/pipeline-olist](https://ckoliveiraa.github.io/pipeline-olist/)
 — o roteiro das quatro aulas, publicado via GitHub Pages a partir de [`docs/`](docs/).
 
 ## O que tem aqui
+
+O rascunho visual usado como referência para o dashboard está em
+[`design/rascunho.png`](design/rascunho.png).
 
 Nove arquivos em `raw/`, comprimidos com gzip — 1.550.922 registros no total:
 
